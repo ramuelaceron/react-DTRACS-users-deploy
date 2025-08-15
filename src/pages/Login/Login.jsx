@@ -3,18 +3,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { FiLogIn } from "react-icons/fi"; 
+import { FiLogIn } from "react-icons/fi";
 import background from "../../assets/images/Start-Up.png";
-import ParticleBackground from '../../components/ParticleBackground/Particle2.jsx';
-import '../../components/ParticleBackground/Particle2.css';
+import ParticleBackground from "../../components/ParticleBackground/Particle2.jsx";
+import "../../components/ParticleBackground/Particle2.css";
 import { motion } from "framer-motion";
+import logo from "../../assets/images/logo-w-text.png";
 
 const Login = () => {
-
   const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
   const [isHovering, setIsHovering] = useState(false);
-  const navigate = useNavigate(); // Added navigation hook
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,7 +27,7 @@ const Login = () => {
 
   const handleRegisterClick = (e) => {
     e.preventDefault();
-    
+
     if (location.pathname.includes("/login/school")) {
       navigate("/register/school");
     } else if (location.pathname.includes("/login/office")) {
@@ -38,80 +38,79 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-page">
-        {/* Fixed Background Image */}
-        <div className="background-image">
-          <img src={background} alt="DepEd Biñan City Building" />
-        </div>
+    <div className="login-page">
+      <div className="login-background-image">
+        <img src={background} alt="DepEd Biñan City Building" />
+      </div>
 
-        <motion.div
-          initial={{ x: "-50%" }}   // Start off-screen to the left
-          animate={{ x: 0 }}         // Slide in to normal position
-          exit={{ x: "-100%" }}      // Slide out to the left on exit (optional)
-          transition={{ duration: 0.2, ease: "easeInOut" }}
-          className="login-page"
-        >
-          <div className="blue-overlay">
-
-            <ParticleBackground />
-            
+      <motion.div
+        initial={{ x: "-25%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "-100%" }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+        className="login-page"
+      >
+        <div className="login-blue-overlay">
+          <ParticleBackground />
+          <div className="login-form-container">
             <div className="login-header">
-              <div className="logo-container">
-                <h1 className="logo-text">DepEd Biñan DTRACS</h1>
-                <div className="beta-tag">βeta</div>
+              <div className="login-logo-container">
+                {/* <h1 className="login-logo-text">DepEd Biñan DTRACS</h1> */}
+                <img src={logo} className="logo-w-text" />
+                {/* <div className="login-beta-tag">βeta</div> */}
               </div>
-              <p className="login-subtitle">Please login or sign up to start your session.</p>
+              <p className="login-subtitle">
+                Please login or sign up to start your session.
+              </p>
             </div>
 
             <form className="login-form" onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="email" className="form-label">Email</label>
-                <div className="input-group">
+              <div className="login-form-group">
+                <label htmlFor="email" className="login-form-label">
+                  Email
+                </label>
+                <div className="login-input-group">
                   <input
                     type="email"
                     id="email"
-                    className="form-input"
-                    placeholder="Enter your Email"
+                    className="login-form-input"
+                    placeholder="Enter your email"
                     required
                   />
                 </div>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="password" className="form-label">Password</label>
-                <div className="input-group password-input-group">
+              <div className="login-form-group">
+                <label htmlFor="password" className="login-form-label">
+                  Password
+                </label>
+                <div className="login-password-input-group">
                   <input
                     type={showPassword ? "text" : "password"}
                     id="password"
-                    className="form-input"
+                    className="login-form-input"
                     placeholder="Enter password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    // value={password}
+                    // onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                   <button
                     type="button"
-                    className="password-toggle"
+                    className="login-toggle-password"
                     onClick={togglePasswordVisibility}
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
-                    {showPassword ? (
-                      <FaEyeSlash className={isHovering ? "icon-hover" : ""} />
-                    ) : (
-                      <FaEye className={isHovering ? "icon-hover" : ""} />
-                    )}
+                    {showPassword ? "Hide" : "Show"}
                   </button>
                 </div>
-                <div className="forgot-password">
-                  <a href="#forgot" className="forgot-link">I forgot my password</a>
+                <div className="login-forgot-password">
+                  <a href="#forgot" className="login-forgot-link">
+                    I forgot my password
+                  </a>
                 </div>
               </div>
 
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="login-button"
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
@@ -138,19 +137,24 @@ const Login = () => {
               </p>
             </div>
 
-            <div className="terms-notice">
+            <div className="login-terms-notice">
               <p>
-                By using this service, you understand and agree to the DepEd Online Services{" "}
-                <a href="#terms" className="terms-link">Terms of Use</a> and{" "}
-                <a href="#privacy" className="terms-link">Privacy Statement</a>
+                By using this service, you understand and agree to the DepEd
+                Online Services{" "}
+                <a href="#terms" className="login-terms-link">
+                  Terms of Use
+                </a>{" "}
+                and{" "}
+                <a href="#privacy" className="login-terms-link">
+                  Privacy Statement
+                </a>
               </p>
             </div>
-
           </div>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

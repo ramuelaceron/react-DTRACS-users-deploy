@@ -1,0 +1,300 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+.register-school-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.register-background-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.regsiter-background-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.register-school-blue-overlay {
+  top: 0;
+  left: 0;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(20, 25, 63, 0.89);
+  align-items: center;
+  padding-left: 80px;
+  z-index: 1;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center; 
+  padding: 20px;       
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 40px 20px; 
+  overflow-y: auto; 
+}
+
+.register-school-form-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 500px;
+  padding: 1rem;
+  border-radius: 1rem;
+  margin: 0 auto;
+}
+
+.register-school-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.logo-w-text{
+  width: 30rem; 
+  height: 5rem;
+  object-fit: contain;
+}
+
+.register-school-logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.register-school-logo-text {
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.register-school-beta-tag {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.2rem;
+  font-weight: bold;
+}
+
+.register-school-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+}
+
+.register-school-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+}
+
+.register-school-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.register-school-name-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.register-school-name-input{
+  width: 100%;
+  padding: 12px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.register-school-form-label{
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.register-school-form-input{
+  width: 100%;
+  padding: 12px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 12px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* Custom dropdown arrow for School and Position selects */
+.register-school-form-group select.register-school-form-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center; 
+  padding-right: 30px;
+}
+
+/* Ensure password inputs are not affected */
+.school-password-input-container input.register-school-form-input {
+  background-image: none !important;
+  padding-right: 12px; 
+}
+
+.register-school-form-input:focus{
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+
+.school-phone-input-container{
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  background-color: #f5f5f5;
+  color: #666;
+  border-radius: 5px;
+  overflow: hidden;
+  font-size: 12px;
+}
+
+.school-country-code{
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+  color: #666;
+}
+
+.school-flag-icon {
+  width: 30px; /* Adjust size */
+  height: 25px;
+  object-fit: contain;
+}
+
+.school-phone-input{
+  flex: 1;
+  padding: 12px 12px;
+  border: none;
+  font-size: 11px;
+}
+
+.school-password-input-container{
+  position: relative;
+}
+
+.school-toggle-password{
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #777;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px;
+}
+
+.school-register-button{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #0066cc;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 102, 204, 0.2);
+}
+
+.school-register-button:hover{
+  background-color: #0052a3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 102, 204, 0.3);
+}
+
+.school-register-button:active{
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2);
+}
+
+.school-login-prompt{
+  text-align: center;
+  margin-top: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem
+}
+
+.school-login-link{
+  color: #0066cc;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.school-login-link:hover{
+  text-decoration: underline;
+  color: #00d2ff;
+}
+
+.school-privacy-notice{
+  position: relative;
+  margin-top: 2rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.school-privacy-notice p{
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.school-privacy-link{
+  color: #0066cc;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.school-privacy-link:hover{
+  color: #00d2ff;
+  text-decoration: underline;
+}
+
+
+
+
+

@@ -5,7 +5,7 @@
   font-family: 'Roboto', sans-serif;
 }
 
-.landing-page {
+.home-landing-page {
   position: fixed;
   top: 0;
   left: 0;
@@ -14,8 +14,7 @@
   overflow: hidden;
 }
 
-/* Fixed Background Image */
-.background-image {
+.home-background-image {
   position: fixed;
   top: 0;
   left: 0;
@@ -24,15 +23,14 @@
   z-index: -1;
 }
 
-.background-image img {
+.home-background-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
 }
 
-/* Blue Overlay Container (863px wide) */
-.blue-overlay {
+.home-blue-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -45,8 +43,7 @@
   z-index: 1;
 }
 
-/* Content Container */
-.content-container {
+.home-content-container {
   max-width: 700px;
   color: white;
   display: flex;
@@ -54,12 +51,11 @@
   gap: 2rem;
 }
 
-/* Greeting Section */
-.greeting-section {
+.home-greeting-section {
   margin-bottom: 1rem;
 }
 
-.greeting-text {
+.home-greeting-text {
   color: #ffffff;
   font-size: 50px;
   font-weight: 700;
@@ -68,7 +64,7 @@
   margin-bottom: 0.5rem; 
 }
 
-.welcome-text {
+.home-welcome-text {
   color: #ffffff;
   font-size: 16px;
   font-weight: 300;
@@ -77,33 +73,30 @@
   margin: 0;
 }
 
-/* Instruction Section */
-.instruction-section {
+.home-instruction-section {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.instruction-text {
+.home-instruction-text {
   font-size: 16px;
   font-weight: 300;
   letter-spacing: 1px;
 }
 
-arrow-icon {
-  font-size: 24px; /* Adjust size */
-  color: white; /* Change color */
-  margin-bottom: 10px; /* Add spacing */
-  animation: bounce 2s infinite; /* Optional: Add bounce animation */
+.home-arrow-icon {
+  font-size: 20px; 
+  color: white; 
+  animation: bounce 2s infinite; 
 }
 
-/* Side-by-side Button Group */
-.button-group {
+.home-button-group {
   display: flex;
   gap: 1rem;
 }
 
-.btn-school, .btn-office {
+.home-btn-school, .home-btn-office {
   border-radius: 5px;
   color: #ffffff;
   font-family: 'Poppins', sans-serif;
@@ -118,60 +111,56 @@ arrow-icon {
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.btn-school {
+.home-btn-school {
   background-color: #ffd700;
 }
 
-.btn-office {
+.home-btn-office {
   background-color: #ff0000;
 }
 
-.btn-school:hover, .btn-office:hover {
+.home-btn-school:hover, .btn-office:hover {
   transform: translateY(-2px);
   box-shadow: 3px 5px 5px rgba(0, 0, 0, 0.4);
 }
 
-.btn-school:active, .btn-office:active {
+.home-btn-school:active, .btn-office:active {
   transform: translateY(0);
   box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.4);
 }
 
-.btn-school {
+.home-btn-school {
   background-color: #ffd700;
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
 }
 
-.btn-office {
+.home-btn-office {
   background-color: #ff0000;
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
 }
 
-/* Hover effects for both buttons */
-.btn-school:hover, 
-.btn-office:hover {
+.home-btn-school:hover, 
+.home-btn-office:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* School button specific hover */
-.btn-school:hover {
+.home-btn-school:hover {
   background-color: #ffc800;
   color: #fff;
 }
 
-/* Office button specific hover */
-.btn-office:hover {
+.home-btn-office:hover {
   background-color: #e60000;
   color: #fff;
 }
 
-/* Ripple effect for both buttons */
-.btn-school::after,
-.btn-office::after {
+.home-btn-school::after,
+.home-btn-office::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -185,8 +174,8 @@ arrow-icon {
   transform-origin: 50% 50%;
 }
 
-.btn-school:hover::after,
-.btn-office:hover::after {
+.home-btn-school:hover::after,
+.home-btn-office:hover::after {
   animation: ripple 1s ease-out;
 }
 
@@ -201,52 +190,48 @@ arrow-icon {
   }
 }
 
-/* Active (click) state */
-.btn-school:active, 
-.btn-office:active {
+.home-btn-school:active, 
+.home-btn-office:active {
   transform: translateY(1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Focus state for accessibility */
-.btn-school:focus, 
-.btn-office:focus {
+.home-btn-school:focus, 
+.home-btn-office:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(58, 185, 254, 0.5);
 }
 
-/* Terms Disclaimer */
-.terms-disclaimer {
+.home-terms-disclaimer {
   font-size: 14px;
   line-height: 1.6;
   opacity: 0.8;
   max-width: 500px;
 }
 
-.link {
+.home-link {
   color: #4FC3F7;
   text-decoration: underline;
   transition: color 0.2s;
 }
 
-.link:hover {
+.home-link:hover {
   color: #81D4FA;
 }
 
-/* Responsive Design */
 @media (max-width: 1200px) {
-  .blue-overlay {
+  .home-blue-overlay {
     width: 50%;
     padding-left: 40px;
   }
   
-  .greeting-text {
+  .home-greeting-text {
     font-size: 3rem;
   }
 }
 
 @media (max-width: 669px) {
-  .landing-page {
+  .home-landing-page {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -254,7 +239,7 @@ arrow-icon {
     min-height: 100vh;
   }
   
-  .blue-overlay {
+  .home-blue-overlay {
     position: relative;
     width: 100%;
     height: auto;
@@ -263,13 +248,13 @@ arrow-icon {
     padding: 40px 20px;
   }
   
-  .button-group {
+  .home-button-group {
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
   }
   
-  .btn-school, .btn-office {
+  .home-btn-school, .home-btn-office {
     width: 150px;
     font-size: 1.2rem;
     padding: 15px 0;
@@ -277,19 +262,19 @@ arrow-icon {
 }
 
 @media (max-width: 480px) {
-  .greeting-text {
+  .home-greeting-text {
     font-size: 2rem;
   }
   
-  .welcome-text {
+  .home-welcome-text {
     font-size: 1.2rem;
   }
   
-  .button-group {
+  .home-button-group {
     gap: 1rem;
   }
   
-  .btn-school, .btn-office {
+  .home-btn-school, .home-btn-office {
     width: 140px;
     font-size: 1.1rem;
     padding: 12px 0;

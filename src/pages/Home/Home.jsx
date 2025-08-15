@@ -8,50 +8,49 @@ import '../../components/ParticleBackground/Particle1.css';
 import { motion } from "framer-motion";
 
 const Home = () => {
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate(); 
 
   return (
-    <div className="landing-page">
-      {/* Fixed Background Image */}
-      <div className="background-image">
+    <div className="home-landing-page">
+      <div className="home-background-image">
         <img src={background} alt="DepEd Biñan City Building" />
       </div>
 
       <motion.div
-        initial={{ x: 0 }}        // Start at normal position
-        animate={{ x: 0 }}        // Stay in place
-        exit={{ x: "100%" }}      // Slide out to the right on exit
-        transition={{ duration: 0.5, ease: "easeInOut" }}
+        initial={{ x: 0 }}      
+        animate={{ x: 0 }}      
+        exit={{ x: "100%" }}      
+        transition={{ duration: 0.2, ease: "easeInOut" }}
         className="landing-page"
       >
-        <div className="blue-overlay">
+        <div className="home-blue-overlay">
           <ParticleBackground />
 
-          <div className="content-container">
-            <div className="greeting-section">
-              <h1 className="greeting-text">Magandang Buhay!</h1>
-              <p className="welcome-text">
+          <div className="home-content-container">
+            <div className="home-greeting-section">
+              <h1 className="home-greeting-text">Magandang Buhay!</h1>
+              <p className="home-welcome-text">
                 Welcome to DepEd Biñan Record Monitoring System
               </p>
             </div>
 
-            <div className="instruction-section">
-              <FaArrowDown className="arrow-icon" aria-hidden="true" />
-              <p className="instruction-text">
+            <div className="home-instruction-section">
+              <FaArrowDown className="home-arrow-icon" aria-hidden="true" />
+              <p className="home-instruction-text">
                 Please click or tap your destination.
               </p>
             </div>
 
-            <div className="button-group">
+            <div className="home-button-group">
               <button 
-                className="btn-school"
+                className="home-btn-school"
                 onClick={() => navigate("/login/school")} // Now works!
                 aria-label="School login"
               >
                 School
               </button>
               <button 
-                className="btn-office"
+                className="home-btn-office"
                 onClick={() => navigate("/login/office")} // Now works!
                 aria-label="Office login"
               >
@@ -59,12 +58,12 @@ const Home = () => {
               </button>
             </div>
 
-            <div className="terms-disclaimer">
+            <div className="home-terms-disclaimer">
               <p>
                 By using this service, you understand and agree to the DepEd
                 Online Services{" "}
-                <a href="#terms" className="link">Terms of Use</a> and{" "}
-                <a href="#privacy" className="link">Privacy Statement</a>
+                <a href="#terms" className="home-link">Terms of Use</a> and{" "}
+                <a href="#privacy" className="home-link">Privacy Statement</a>
               </p>
             </div>
           </div>
