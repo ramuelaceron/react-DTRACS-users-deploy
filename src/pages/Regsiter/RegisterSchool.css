@@ -14,7 +14,7 @@
   overflow: hidden;
 }
 
-.register-background-image {
+.background-image {
   position: fixed;
   top: 0;
   left: 0;
@@ -23,14 +23,14 @@
   z-index: -1;
 }
 
-.regsiter-background-image img {
+.school-background-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
 }
 
-.register-school-blue-overlay {
+.school-blue-overlay {
   top: 0;
   left: 0;
   position: fixed;
@@ -50,7 +50,7 @@
   overflow-y: auto; 
 }
 
-.register-school-form-container {
+.school-form-container {
   position: relative;
   z-index: 1;
   width: 100%;
@@ -60,7 +60,7 @@
   margin: 0 auto;
 }
 
-.register-school-header {
+.school-header {
   text-align: center;
   margin-bottom: 2rem;
   width: 100%;
@@ -72,21 +72,22 @@
   object-fit: contain;
 }
 
-.register-school-logo-container {
+.school-logo-container {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
+  cursor: pointer;
 }
 
-.register-school-logo-text {
+.school-logo-text {
   color: #fff;
   font-size: 1.8rem;
   font-weight: 700;
 }
 
-.register-school-beta-tag {
+.school-beta-tag {
   background-color: #4CAF50;
   color: white;
   font-size: 0.7rem;
@@ -95,32 +96,32 @@
   font-weight: bold;
 }
 
-.register-school-subtitle {
+.school-subtitle {
   color: rgba(255, 255, 255, 0.8);
   font-size: 1rem;
 }
 
-.register-school-form {
+.school-form {
   display: flex;
   flex-direction: column;
   gap: 10px;
 
 }
 
-.register-school-form-group {
+.school-form-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.register-school-name-inputs {
+.school-name-inputs {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 12px;
   width: 100%;
 }
 
-.register-school-name-input{
+.school-name-input{
   width: 100%;
   padding: 12px 12px;
   border: 1px solid #ddd;
@@ -129,13 +130,13 @@
   box-sizing: border-box;
 }
 
-.register-school-form-label{
+.school-form-label{
   color: #fff;
   font-size: 0.9rem;
   font-weight: 500;
 }
 
-.register-school-form-input{
+.school-form-input{
   width: 100%;
   padding: 12px 12px;
   border: 1px solid #ddd;
@@ -146,23 +147,33 @@
 }
 
 /* Custom dropdown arrow for School and Position selects */
-.register-school-form-group select.register-school-form-input {
+.school-form-group select.school-form-input {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 10px center; 
+  background-position: right 10px center;
   padding-right: 30px;
+  color: #999; /* Gray color for the placeholder */
+}
+
+.school-form-group select.school-form-input option {
+  color: #000; /* Black color for the options */
+}
+
+.school-form-group select.school-form-input:valid,
+.school-form-group select.school-form-input:focus {
+  color: #000;
 }
 
 /* Ensure password inputs are not affected */
-.school-password-input-container input.register-school-form-input {
+.school-password-input-container input.school-form-input {
   background-image: none !important;
   padding-right: 12px; 
 }
 
-.register-school-form-input:focus{
+.school-form-input:focus{
   outline: none;
   border-color: #0066cc;
   box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
@@ -197,7 +208,7 @@
   flex: 1;
   padding: 12px 12px;
   border: none;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .school-password-input-container{

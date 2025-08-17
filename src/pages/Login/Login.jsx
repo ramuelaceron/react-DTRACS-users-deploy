@@ -2,7 +2,6 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FiLogIn } from "react-icons/fi";
 import background from "../../assets/images/Start-Up.png";
 import ParticleBackground from "../../components/ParticleBackground/Particle2.jsx";
@@ -12,13 +11,12 @@ import logo from "../../assets/images/logo-w-text.png";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  // const [password, setPassword] = useState("");
   const [isHovering, setIsHovering] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login submitted");
+    navigate("/home"); // Redirect to home after login
   };
 
   const togglePasswordVisibility = () => {
@@ -35,6 +33,10 @@ const Login = () => {
     } else {
       navigate("/register");
     }
+  };
+
+  const handleLogoClick = () => {
+    navigate("/"); // Navigates to the home page
   };
 
   return (
@@ -54,10 +56,8 @@ const Login = () => {
           <ParticleBackground />
           <div className="login-form-container">
             <div className="login-header">
-              <div className="login-logo-container">
-                {/* <h1 className="login-logo-text">DepEd Biñan DTRACS</h1> */}
-                <img src={logo} className="logo-w-text" />
-                {/* <div className="login-beta-tag">βeta</div> */}
+              <div className="login-logo-container" onClick={handleLogoClick}>
+                <img src={logo} className="logo-w-text" alt="Logo" />
               </div>
               <p className="login-subtitle">
                 Please login or sign up to start your session.
@@ -90,8 +90,6 @@ const Login = () => {
                     id="password"
                     className="login-form-input"
                     placeholder="Enter password"
-                    // value={password}
-                    // onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                   <button

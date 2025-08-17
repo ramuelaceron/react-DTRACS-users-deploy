@@ -26,7 +26,13 @@ const RegisterSchool = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    // For contactNumber field, only allow numbers
+    if (name === "contactNumber") {
+      const numbersOnly = value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+      setFormData(prev => ({ ...prev, [name]: numbersOnly }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = (e) => {
@@ -39,38 +45,40 @@ const RegisterSchool = () => {
     navigate("/login/school");
   };
 
+  const handleLogoClick = () => {
+  navigate("/"); // Navigates to the home page
+  };
+
   return (
     <div className="register-school-page">
-      <div className="regsiter-background-image">
+      <div className="school-background-image">
         <img src={background} alt="DepEd Biñan City Building" />
       </div>
 
-      <div className="register-school-blue-overlay">
+      <div className="school-blue-overlay">
         <ParticleBackground />
-        <div className="register-school-form-container">
-          <div className="register-school-header">
-            <div className="register-school-logo-container">
-              {/* <h1 className="register-school-logo-text">DepEd Biñan DTRACS</h1>
-              <div className="register-school-beta-tag">βeta</div> */}
-              <img src={logo} className="logo-w-text" />
+        <div className="school-form-container">
+          <div className="school-header">
+            <div className="school-logo-container" onClick={handleLogoClick}>
+              <img src={logo} className="logo-w-text" alt="Logo" />
             </div>
-            <p className="register-school-subtitle">
+            <p className="school-subtitle">
               Please fill up information below to register.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="register-school-form">
+          <form onSubmit={handleSubmit} className="school-form">
             {/* Name Fields */}
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">Name</label>
-              <div className="register-school-name-inputs">
+            <div className="school-form-group">
+              <label className="school-form-label">Name</label>
+              <div className="school-name-inputs">
                 <input
                   type="text"
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
                   placeholder="First name"
-                  className="register-school-name-input"
+                  className="school-name-input"
                   required
                 />
                 <input
@@ -79,7 +87,7 @@ const RegisterSchool = () => {
                   value={formData.lastName}
                   onChange={handleChange}
                   placeholder="Last name"
-                  className="register-school-name-input"
+                  className="school-name-input"
                   required
                 />
                 <input
@@ -88,28 +96,28 @@ const RegisterSchool = () => {
                   value={formData.middleName}
                   onChange={handleChange}
                   placeholder="Middle name"
-                  className="register-school-name-input"
+                  className="school-name-input"
                 />
               </div>
             </div>
 
             {/* Email */}
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">Email</label>
+            <div className="school-form-group">
+              <label className="school-form-label">Email</label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                className="register-school-name-input"
+                className="school-name-input"
                 required
               />
             </div>
 
             {/* Contact Number */}
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">
+            <div className="school-form-group">
+              <label className="school-form-label">
                 Contact Number
               </label>
               <div className="school-phone-input-container">
@@ -123,17 +131,22 @@ const RegisterSchool = () => {
                   placeholder="Enter your contact number"
                   className="school-phone-input"
                   required
+                  pattern="[0-9]{10}"  // Exactly 10 digits
+                  inputMode="numeric"
+                  minLength="10"
+                  maxLength="10"
+                  title="Please enter exactly 10 digits (e.g., 9123456789)"
                 />
               </div>
             </div>
 
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">School</label>
+            <div className="school-form-group">
+              <label className="school-form-label">School</label>
               <select
                 name="school"
                 value={formData.school}
                 onChange={handleChange}
-                className="register-school-form-input"
+                className="school-form-input"
                 required
               >
                 <option value="">Select your school</option>
@@ -220,13 +233,13 @@ const RegisterSchool = () => {
               </select>
             </div>
 
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">Position</label>
+            <div className="school-form-group">
+              <label className="school-form-label">Position</label>
               <select
                 name="position"
                 value={formData.position}
                 onChange={handleChange}
-                className="register-school-form-input"
+                className="school-form-input"
                 required
               >
                 <option value="">Select your position</option>
@@ -236,8 +249,8 @@ const RegisterSchool = () => {
             </div>
 
             {/* Password */}
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">Password</label>
+            <div className="school-form-group">
+              <label className="school-form-label">Password</label>
               <div className="school-password-input-container">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -245,7 +258,7 @@ const RegisterSchool = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter password"
-                  className="register-school-form-input"
+                  className="school-form-input"
                   required
                 />
                 <button
@@ -259,8 +272,8 @@ const RegisterSchool = () => {
             </div>
 
             {/* Confirm Password */}
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">
+            <div className="school-form-group">
+              <label className="school-form-label">
                 Confirm Password
               </label>
               <div className="school-password-input-container">
@@ -270,7 +283,7 @@ const RegisterSchool = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="Confirm password"
-                  className="register-school-form-input"
+                  className="school-form-input"
                   required
                 />
                 <button

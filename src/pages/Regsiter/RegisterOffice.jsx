@@ -26,7 +26,13 @@ const RegisterOffice = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    // For contactNumber field, only allow numbers
+    if (name === "contactNumber") {
+      const numbersOnly = value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+      setFormData(prev => ({ ...prev, [name]: numbersOnly }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = (e) => {
@@ -39,38 +45,40 @@ const RegisterOffice = () => {
     navigate("/login/office");
   };
 
+  const handleLogoClick = () => {
+  navigate("/"); // Navigates to the home page
+  };
+
   return (
-    <div className="register-school-page">
-      <div className="regsiter-background-image">
+    <div className="register-office-page">
+      <div className="office-background-image">
         <img src={background} alt="DepEd Biñan City Building" />
       </div>
 
-      <div className="register-school-blue-overlay">
+      <div className="office-blue-overlay">
         <ParticleBackground />
-        <div className="register-school-form-container">
-          <div className="register-school-header">
-            <div className="register-school-logo-container">
-              {/* <h1 className="register-school-logo-text">DepEd Biñan DTRACS</h1>
-              <div className="register-school-beta-tag">βeta</div> */}
-              <img src={logo} className="logo-w-text" />
+        <div className="office-form-container">
+          <div className="office-header">
+            <div className="office-logo-container" onClick={handleLogoClick}>
+              <img src={logo} className="logo-w-text" alt="Logo" />
             </div>
-            <p className="register-school-subtitle">
+            <p className="office-subtitle">
               Please fill up information below to register.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="register-school-form">
+          <form onSubmit={handleSubmit} className="office-form">
             {/* Name Fields */}
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">Name</label>
-              <div className="register-school-name-inputs">
+            <div className="office-form-group">
+              <label className="office-form-label">Name</label>
+              <div className="office-name-inputs">
                 <input
                   type="text"
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
                   placeholder="First name"
-                  className="register-school-name-input"
+                  className="office-name-input"
                   required
                 />
                 <input
@@ -79,7 +87,7 @@ const RegisterOffice = () => {
                   value={formData.lastName}
                   onChange={handleChange}
                   placeholder="Last name"
-                  className="register-school-name-input"
+                  className="office-name-input"
                   required
                 />
                 <input
@@ -88,52 +96,57 @@ const RegisterOffice = () => {
                   value={formData.middleName}
                   onChange={handleChange}
                   placeholder="Middle name"
-                  className="register-school-name-input"
+                  className="office-name-input"
                 />
               </div>
             </div>
 
             {/* Email */}
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">Email</label>
+            <div className="office-form-group">
+              <label className="office-form-label">Email</label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                className="register-school-name-input"
+                className="office-name-input"
                 required
               />
             </div>
 
             {/* Contact Number */}
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">
+            <div className="office-form-group">
+              <label className="office-form-label">
                 Contact Number
               </label>
-              <div className="school-phone-input-container">
-                <img src={phflag} className="school-flag-icon" />
-                <span className="school-country-code">+63</span>
+              <div className="office-phone-input-container">
+                <img src={phflag} className="office-flag-icon" />
+                <span className="office-country-code">+63</span>
                 <input
                   type="tel"
                   name="contactNumber"
                   value={formData.contactNumber}
                   onChange={handleChange}
                   placeholder="Enter your contact number"
-                  className="school-phone-input"
+                  className="office-phone-input"
                   required
+                  pattern="[0-9]{10}"  // Exactly 10 digits
+                  inputMode="numeric"
+                  minLength="10"
+                  maxLength="10"
+                  title="Please enter exactly 10 digits (e.g., 9123456789)"
                 />
               </div>
             </div>
 
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">School</label>
+            <div className="office-form-group">
+              <label className="office-form-label">School</label>
               <select
                 name="school"
                 value={formData.school}
                 onChange={handleChange}
-                className="register-school-form-input"
+                className="office-form-input"
                 required
               >
                 <option value="">Select your school</option>
@@ -220,13 +233,13 @@ const RegisterOffice = () => {
               </select>
             </div>
 
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">Position</label>
+            <div className="office-form-group">
+              <label className="office-form-label">Position</label>
               <select
                 name="position"
                 value={formData.position}
                 onChange={handleChange}
-                className="register-school-form-input"
+                className="office-form-input"
                 required
               >
                 <option value="">Select your position</option>
@@ -236,21 +249,21 @@ const RegisterOffice = () => {
             </div>
 
             {/* Password */}
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">Password</label>
-              <div className="school-password-input-container">
+            <div className="office-form-group">
+              <label className="office-form-label">Password</label>
+              <div className="office-password-input-container">
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter password"
-                  className="register-school-form-input"
+                  className="office-form-input"
                   required
                 />
                 <button
                   type="button"
-                  className="school-toggle-password"
+                  className="office-toggle-password"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? "Hide" : "Show"}
@@ -259,23 +272,23 @@ const RegisterOffice = () => {
             </div>
 
             {/* Confirm Password */}
-            <div className="register-school-form-group">
-              <label className="register-school-form-label">
+            <div className="office-form-group">
+              <label className="office-form-label">
                 Confirm Password
               </label>
-              <div className="school-password-input-container">
+              <div className="office-password-input-container">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="Confirm password"
-                  className="register-school-form-input"
+                  className="office-form-input"
                   required
                 />
                 <button
                   type="button"
-                  className="school-toggle-password"
+                  className="office-toggle-password"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
                   {showConfirmPassword ? "Hide" : "Show"}
@@ -283,27 +296,27 @@ const RegisterOffice = () => {
               </div>
             </div>
 
-            <button type="submit" className="school-register-button">
+            <button type="submit" className="office-register-button">
               Register
             </button>
           </form>
 
-          <div className="school-login-prompt">
+          <div className="office-login-prompt">
             Already have an account?{" "}
-            <span className="school-login-link" onClick={handleLoginClick}>
+            <span className="office-login-link" onClick={handleLoginClick}>
               Log in
             </span>
           </div>
 
-          <div className="school-privacy-notice">
+          <div className="office-privacy-notice">
             <p>
               By using this service, you understand and agree to the DepEd
               Online Services{" "}
-              <a href="#terms" className="school-privacy-link">
+              <a href="#terms" className="office-privacy-link">
                 Terms of Use
               </a>{" "}
               and{" "}
-              <a href="#privacy" className="school-privacy-link">
+              <a href="#privacy" className="office-privacy-link">
                 Privacy Statement
               </a>
             </p>
