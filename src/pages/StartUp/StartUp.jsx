@@ -5,7 +5,6 @@ import "./StartUp.css";
 import background from "../../assets/images/Start-Up.png";
 import ParticleBackground from '../../components/ParticleBackground/Particle1.jsx';
 import '../../components/ParticleBackground/Particle1.css';
-import { motion } from "framer-motion";
 
 const StartUp = () => {
   const navigate = useNavigate(); 
@@ -15,14 +14,6 @@ const StartUp = () => {
       <div className="home-background-image">
         <img src={background} alt="DepEd Biñan City Building" />
       </div>
-
-      <motion.div
-        initial={{ x: 0 }}      
-        animate={{ x: 0 }}      
-        exit={{ x: "100%" }}      
-        transition={{ duration: 0.2, ease: "easeInOut" }}
-        className="landing-page"
-      >
         <div className="home-blue-overlay">
           <ParticleBackground />
 
@@ -68,7 +59,6 @@ const StartUp = () => {
             </div>
           </div>
         </div>
-      </motion.div>
     </div>
   );
 };

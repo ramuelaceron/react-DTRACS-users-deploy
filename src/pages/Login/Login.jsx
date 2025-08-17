@@ -6,7 +6,6 @@ import { FiLogIn } from "react-icons/fi";
 import background from "../../assets/images/Start-Up.png";
 import ParticleBackground from "../../components/ParticleBackground/Particle2.jsx";
 import "../../components/ParticleBackground/Particle2.css";
-import { motion } from "framer-motion";
 import logo from "../../assets/images/logo-w-text.png";
 
 const Login = () => {
@@ -44,14 +43,6 @@ const Login = () => {
       <div className="login-background-image">
         <img src={background} alt="DepEd Biñan City Building" />
       </div>
-
-      <motion.div
-        initial={{ x: "-25%" }}
-        animate={{ x: 0 }}
-        exit={{ x: "-100%" }}
-        transition={{ duration: 0.2, ease: "easeInOut" }}
-        className="login-page"
-      >
         <div className="login-blue-overlay">
           <ParticleBackground />
           <div className="login-form-container">
@@ -150,7 +141,6 @@ const Login = () => {
             </div>
           </div>
         </div>
-      </motion.div>
     </div>
   );
 };

@@ -1,25 +1,25 @@
-import React, { useState } from "react";
-import SchoolHeader from '../../components/Header/SchoolHeader'
-import SchoolSidebar from '../../components/Sidebar/SchoolSidebar'
-import Footer from '../../components/Footer/Footer'
+import React from "react";
+import { Outlet } from "react-router-dom";
+import SchoolHeader from "../../components/Header/SchoolHeader";
+import SchoolSidebar from "../../components/Sidebar/SchoolSidebar";
+import Footer from "../../components/Footer/Footer";
+import { useSidebar } from "../../context/SidebarContext"; // ✅ import context
 
 const Home = () => {
+  const { isExpanded, toggleSidebar } = useSidebar(); // ✅ use context
 
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
-
-  const toggleSidebar = () => {
-    setIsSidebarExpanded((prev) => !prev);
-  };
-  
   return (
     <div className="app">
       <SchoolHeader toggleSidebar={toggleSidebar} />
-      <SchoolSidebar isExpanded={isSidebarExpanded} />
-      <main className="app-content">{/* Your content here */}</main>
+      <div className="app-body">
+        <SchoolSidebar isExpanded={isExpanded} />
+        <main className="app-content">
+          <Outlet />
+        </main>
+      </div>
       <Footer />
     </div>
+  );
+};
 
-  )
-}
-
-export default Home
+export default Home;

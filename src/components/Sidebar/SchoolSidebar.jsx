@@ -3,6 +3,7 @@ import "./SchoolSidebar.css";
 import { FaHome, FaBriefcase } from "react-icons/fa";
 import { FiCheckSquare } from "react-icons/fi";
 import { MdOutlineManageAccounts } from "react-icons/md";
+import { NavLink } from "react-router-dom";
 
 const SchoolSidebar = ({ isExpanded }) => {
   return (
@@ -10,28 +11,51 @@ const SchoolSidebar = ({ isExpanded }) => {
       <nav className="sidebar-nav">
         <ul>
           <li>
-            <a href="" className="sidebar-link" title="Home">
+            <NavLink
+              to="/home"
+              className={({ isActive }) =>
+                `sidebar-link ${isActive ? "active" : ""}`
+              }
+              end
+            >
               <FaHome className="sidebar-icon" />
               {isExpanded && <span className="sidebar-text">Home</span>}
-            </a>
+            </NavLink>
           </li>
           <li>
-            <a href="#" className="sidebar-link" title="To-do">
+            <NavLink
+              to="/home/todo"
+              className={({ isActive }) =>
+                `sidebar-link ${isActive ? "active" : ""}`
+              }
+            >
               <FiCheckSquare className="sidebar-icon" />
               {isExpanded && <span className="sidebar-text">To-do</span>}
-            </a>
+            </NavLink>
           </li>
           <li>
-            <a href="#" className="sidebar-link" title="Offices">
+            <NavLink
+              to="/home/offices"
+              className={({ isActive }) =>
+                `sidebar-link ${isActive ? "active" : ""}`
+              }
+            >
               <FaBriefcase className="sidebar-icon" />
               {isExpanded && <span className="sidebar-text">Offices</span>}
-            </a>
+            </NavLink>
           </li>
           <li>
-            <a href="#" className="sidebar-link" title="Manage Account">
+            <NavLink
+              to="/home/manage-account"
+              className={({ isActive }) =>
+                `sidebar-link ${isActive ? "active" : ""}`
+              }
+            >
               <MdOutlineManageAccounts className="sidebar-icon" />
-              {isExpanded && <span className="sidebar-text">Manage Account</span>}
-            </a>
+              {isExpanded && (
+                <span className="sidebar-text">Manage Account</span>
+              )}
+            </NavLink>
           </li>
         </ul>
       </nav>

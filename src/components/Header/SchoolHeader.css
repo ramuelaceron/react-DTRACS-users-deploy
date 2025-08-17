@@ -28,7 +28,6 @@ body {
   z-index: 1000;
 }
 
-
 .header-left {
   display: flex;
   align-items: center;
@@ -38,11 +37,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: -5px;
   font-size: 35px;
   background: none;
   border: none;
   color: white;
-  margin-right: 1rem;
+  margin-right: 0.5rem;
   cursor: pointer;
   padding: 0 6px ;
 }
