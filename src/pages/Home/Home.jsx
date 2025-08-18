@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import SchoolHeader from "../../components/Header/SchoolHeader";
+import Header from "../../components/Header/Header";
 import SchoolSidebar from "../../components/Sidebar/SchoolSidebar";
 import Footer from "../../components/Footer/Footer";
 import { useSidebar } from "../../context/SidebarContext";
@@ -11,7 +11,7 @@ const Home = () => {
   return (
     <div className="app">
       {/* Header with sidebar toggle */}
-      <SchoolHeader toggleSidebar={toggleSidebar} />
+      <Header toggleSidebar={toggleSidebar} />
 
       <div className="app-body">
 
