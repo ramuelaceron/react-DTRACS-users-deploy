@@ -76,7 +76,7 @@ const SchoolSidebar = ({ isExpanded }) => {
                       `sidebar-link sub-link ${isActive ? "active" : ""}`
                     }
                   >
-                    SGOD (School Gover…)
+                    <span className="sidebar-text">SGOD (School Gover…)</span>
                   </NavLink>
                 </li>
               </ul>
