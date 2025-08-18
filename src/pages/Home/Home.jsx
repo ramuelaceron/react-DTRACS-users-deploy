@@ -3,20 +3,27 @@ import { Outlet } from "react-router-dom";
 import SchoolHeader from "../../components/Header/SchoolHeader";
 import SchoolSidebar from "../../components/Sidebar/SchoolSidebar";
 import Footer from "../../components/Footer/Footer";
-import { useSidebar } from "../../context/SidebarContext"; // ✅ import context
+import { useSidebar } from "../../context/SidebarContext";
 
 const Home = () => {
-  const { isExpanded, toggleSidebar } = useSidebar(); // ✅ use context
+  const { isExpanded, toggleSidebar } = useSidebar();
 
   return (
     <div className="app">
+      {/* Header with sidebar toggle */}
       <SchoolHeader toggleSidebar={toggleSidebar} />
+
       <div className="app-body">
+
         <SchoolSidebar isExpanded={isExpanded} />
-        <main className="app-content">
-          <Outlet />
+
+        {/* Content area where child routes will be injected */}
+        <main className="app-content">  
+          <Outlet />   {/* 👈 This is where Dashboard, Todo, Offices, etc. will show */}
         </main>
       </div>
+
+      {/* Footer */}
       <Footer />
     </div>
   );

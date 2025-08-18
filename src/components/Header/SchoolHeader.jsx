@@ -9,7 +9,7 @@ import { IoChevronDownCircle } from "react-icons/io5";
 const SchoolHeader = ({ toggleSidebar }) => {
   const navigate = useNavigate();
   const handleLogoClick = () => {
-    navigate("/");
+    navigate("/"); // Navigates to the startup page
   };
 
   return (

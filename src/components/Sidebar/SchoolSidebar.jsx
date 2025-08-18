@@ -4,12 +4,23 @@ import { FaHome, FaBriefcase } from "react-icons/fa";
 import { FiCheckSquare } from "react-icons/fi";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { NavLink } from "react-router-dom";
+import { useSidebar } from "../../context/SidebarContext";
+import { IoChevronDown } from "react-icons/io5";
 
 const SchoolSidebar = ({ isExpanded }) => {
+  const { isExpanded: expanded, toggleSidebar, openDropdown, toggleDropdown } =
+    useSidebar();
+
+  const handleOfficesClick = () => {
+    if (!isExpanded) toggleSidebar(true);
+    toggleDropdown("offices"); // 👈 controlled by context
+  };
+
   return (
     <aside className={`sidebar ${isExpanded ? "expanded" : ""}`}>
       <nav className="sidebar-nav">
         <ul>
+          {/* Home */}
           <li>
             <NavLink
               to="/home"
@@ -22,9 +33,11 @@ const SchoolSidebar = ({ isExpanded }) => {
               {isExpanded && <span className="sidebar-text">Home</span>}
             </NavLink>
           </li>
+
+          {/* To-do */}
           <li>
             <NavLink
-              to="/home/todo"
+              to="/todo"
               className={({ isActive }) =>
                 `sidebar-link ${isActive ? "active" : ""}`
               }
@@ -33,20 +46,47 @@ const SchoolSidebar = ({ isExpanded }) => {
               {isExpanded && <span className="sidebar-text">To-do</span>}
             </NavLink>
           </li>
+
+          {/* Offices dropdown */}
           <li>
-            <NavLink
-              to="/home/offices"
-              className={({ isActive }) =>
-                `sidebar-link ${isActive ? "active" : ""}`
-              }
+            <button
+              className="sidebar-link dropdown-toggle"
+              onClick={handleOfficesClick}
             >
               <FaBriefcase className="sidebar-icon" />
-              {isExpanded && <span className="sidebar-text">Offices</span>}
-            </NavLink>
+              {isExpanded && (
+                <>
+                  <span className="sidebar-text">Offices</span>
+                  <IoChevronDown
+                    className={`dropdown-icon ${
+                      openDropdown === "offices" ? "open" : ""
+                    }`}
+                  />
+                </>
+              )}
+            </button>
+
+            {/* Dropdown items */}
+            {isExpanded && openDropdown === "offices" && (
+              <ul className="sidebar-submenu">
+                <li>
+                  <NavLink
+                    to="/SGOD"
+                    className={({ isActive }) =>
+                      `sidebar-link sub-link ${isActive ? "active" : ""}`
+                    }
+                  >
+                    SGOD (School Gover…)
+                  </NavLink>
+                </li>
+              </ul>
+            )}
           </li>
+
+          {/* Manage Account */}
           <li>
             <NavLink
-              to="/home/manage-account"
+              to="/manage-account"
               className={({ isActive }) =>
                 `sidebar-link ${isActive ? "active" : ""}`
               }
