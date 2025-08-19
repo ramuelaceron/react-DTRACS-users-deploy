@@ -1,13 +1,13 @@
 import React from "react";
-import "./Dashboard.css";
+import "./SchoolDashboard.css";
 import CardLogo from "../../components/CardLogo/CardLogo";
 
-const Dashboard = () => {
+const SchoolDashboard = () => {
   return (
-    <div className="dashboard">
+    <div className="school-dashboard">
       <CardLogo />
     </div>
   );
 };
 
-export default Dashboard;
+export default SchoolDashboard;

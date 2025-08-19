@@ -2,7 +2,7 @@ import React from "react";
 import "./SchoolSidebar.css";
 import { FaHome, FaBriefcase } from "react-icons/fa";
 import { FiCheckSquare } from "react-icons/fi";
-import { MdOutlineManageAccounts } from "react-icons/md";
+import { MdManageAccounts } from "react-icons/md"; // Manage Account icon
 import { NavLink } from "react-router-dom";
 import { useSidebar } from "../../context/SidebarContext";
 import { IoChevronDown } from "react-icons/io5";
@@ -86,12 +86,12 @@ const SchoolSidebar = ({ isExpanded }) => {
           {/* Manage Account */}
           <li>
             <NavLink
-              to="/manage-account"
+              to="/s-manage-account"
               className={({ isActive }) =>
                 `sidebar-link ${isActive ? "active" : ""}`
               }
             >
-              <MdOutlineManageAccounts className="sidebar-icon" />
+              <MdManageAccounts className="sidebar-icon" />
               {isExpanded && (
                 <span className="sidebar-text">Manage Account</span>
               )}

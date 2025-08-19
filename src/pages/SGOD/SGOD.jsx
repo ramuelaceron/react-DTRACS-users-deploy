@@ -14,9 +14,9 @@ const SGOD = () => {
     { title: "Human Resource Development Section", path: "HRD", image: NoImage },
     { title: "School Health Section", path: "school-health", image: NoImage },
     { title: "Education Facilities Section", path: "education-facilities", image: NoImage },
-    { title: "Social Mobilization and Networking Section", image: NoImage },
-    { title: "Disaster Risk Reduction and Management Unit", image: NoImage },
-    { title: "Youth Formation Section", image: NoImage },
+    { title: "Social Mobilization and Networking Section", path: "SMN", image: NoImage },
+    { title: "Disaster Risk Reduction and Management Unit", path: "DRRM", image: NoImage },
+    { title: "Youth Formation Section", path: "youth-formation", image: NoImage },
   ];
 
   return (
