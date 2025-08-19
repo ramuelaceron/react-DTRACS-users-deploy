@@ -1,0 +1,9 @@
+.section-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+  gap: 20px;
+  margin-top: 60px;
+  margin-left: 0;
+  padding: 0 40px;
+  box-sizing: border-box;
+}

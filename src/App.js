@@ -7,8 +7,13 @@ import RegisterOffice from "./pages/Regsiter/RegisterOffice";
 import Home from "./pages/Home/Home";
 import Todo from "./pages/Todo/Todo";
 import ManageAccount from "./pages/ManageAccount/ManageAccount";
-import SGOD from "./pages/SGOD/SGOD";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import SGOD from "./pages/SGOD/SGOD";
+import PlanningResearch from "./pages/SGOD/PlanningResearch/PlanningResearch";
+import SMME from "./pages/SGOD/SMME/SMME";
+import HRD from "./pages/SGOD/HRD/HRD";
+import SchoolHealth from "./pages/SGOD/SchoolHealth/SchoolHealth";
+import EducationFacilities from "./pages/SGOD/EducationFacilities/EducationFacilities";
 
 function App() {
   const location = useLocation();
@@ -24,9 +29,16 @@ function App() {
 
       {/* Protected layout: Home + Sidebar nav */}
       <Route element={<Home />}>
-        <Route path="/home" element={<Dashboard />} />     {/* landing inside Home */}
-        <Route path="/todo" element={<Todo />} />
+        <Route path="/home" element={<Dashboard />} />
+        
         <Route path="/SGOD" element={<SGOD />} />
+        <Route path="/SGOD/SMME" element={<SMME />} />
+        <Route path="/SGOD/planning-research" element={<PlanningResearch />} />
+        <Route path="/SGOD/HRD" element={<HRD />} />
+        <Route path="/SGOD/school-health" element={<SchoolHealth />} />
+        <Route path="/SGOD/education-facilities" element={<EducationFacilities />} />
+
+        <Route path="/todo" element={<Todo />} />
         <Route path="/manage-account" element={<ManageAccount />} />
       </Route>
     </Routes>

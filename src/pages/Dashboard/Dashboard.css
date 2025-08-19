@@ -1,0 +1,7 @@
+.dashboard { 
+  display: flex; 
+  align-items: flex-start; 
+  padding: 40px 0 0 40px; 
+  height: 100%; 
+  box-sizing: border-box; 
+} 
