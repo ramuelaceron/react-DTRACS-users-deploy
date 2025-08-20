@@ -34,7 +34,7 @@ const SchoolSidebar = ({ isExpanded }) => {
             </NavLink>
           </li>
 
-          {/* To-do */}
+          {/* To-do */} 
           <li>
             <NavLink
               to="/todo"

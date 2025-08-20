@@ -1,0 +1,78 @@
+/* FocalTaskCard.css */
+
+.focal-task-card {
+  width: 400px;
+  padding: 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e0e7ff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: all 0.3s ease;
+  margin-top: 70px;
+  margin-left: 20px;
+}
+
+.focal-task-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 
+    0 12px 24px rgba(79, 96, 235, 0.15),
+    0 4px 8px rgba(79, 96, 235, 0.1);
+  border-color: #7a8bff;
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatar-container {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f60eb, #7a8bff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.focal-task-card:hover .avatar-container {
+  background: linear-gradient(135deg, #3a50c0, #6377e0);
+  transform: scale(1.08);
+}
+
+.profile-icon {
+  color: white;
+  font-size: 28px;
+}
+
+.text-content {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.focal-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #203061;
+  letter-spacing: -0.02em;
+}
+
+.focal-person {
+  margin: 0;
+  font-size: 14px;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.focal-task-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px; 
+  padding: 20px;
+}

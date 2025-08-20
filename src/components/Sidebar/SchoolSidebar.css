@@ -3,7 +3,7 @@
   top: 54px; /* header height */
   left: 0;
   width: 70px; 
-  height: calc(100vh - 64px);
+  height: calc(105vh - 64px);
   background-color: #f4f5f7;
   border-right: 1px solid #ddd;
   display: flex;

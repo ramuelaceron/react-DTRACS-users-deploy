@@ -6,7 +6,7 @@ import RegisterSchool from "./pages/Regsiter/RegisterSchool";
 import RegisterOffice from "./pages/Regsiter/RegisterOffice";
 import SchoolHome from "./pages/Home/SchoolHome";
 import OfficeHome from "./pages/Home/OfficeHome";
-import Todo from "./pages/Todo/Upcoming/Upcoming";
+import Upcoming from "./pages/Todo/Upcoming/Upcoming";
 import PastDue from "./pages/Todo/PastDue/PastDue";
 import Completed from "./pages/Todo/Completed/Completed";
 import TaskDetail from "./pages/Todo/TaskDetail/TaskDetail";
@@ -20,6 +20,7 @@ import HRD from "./pages/SGOD/HRD/HRD";
 import SchoolHealth from "./pages/SGOD/SchoolHealth/SchoolHealth";
 import EducationFacilities from "./pages/SGOD/EducationFacilities/EducationFacilities";
 import SMN from "./pages/SGOD/SMN/SMN";
+import DRRM from "./pages/SGOD/DRRM/DRRM";
 import YouthFormation from "./pages/SGOD/YouthFormation/YouthFormation";
 import Schools from "./pages/School/School";
 import OfficeDashboard from "./pages/Dashboard/OfficeDashboard";
@@ -46,16 +47,15 @@ function App() {
         <Route path="/SGOD/school-health" element={<SchoolHealth />} />
         <Route path="/SGOD/education-facilities" element={<EducationFacilities />} />
         <Route path="/SGOD/SMN" element={<SMN />} />
-        <Route path="/SGOD/DRRM" element={<SMN />} />
+        <Route path="/SGOD/DRRM" element={<DRRM />} />
         <Route path="/SGOD/youth-formation" element={<YouthFormation />} />
         
          {/* Todo routes */}
-        <Route path="/todo" element={<Todo />} />
-        <Route path="/todo/upcoming" element={<Todo />} />
+        <Route path="/todo" element={<Upcoming />} />
+        <Route path="/todo/upcoming" element={<Upcoming />} />
         <Route path="/todo/past-due" element={<PastDue />} />
         <Route path="/todo/completed" element={<Completed />} />
         <Route path="/todo/task/:id" element={<TaskDetail />} />
-
         <Route path="/s-manage-account" element={<SchoolManageAccount />} />
       </Route>
 
