@@ -4,7 +4,7 @@ import FocalTaskList from '../../../components/FocalTaskCard/FocalTaskList'
 const SchoolHealth = () => {
   return (
     <div>
-      <FocalTaskList filterTitle="School Health" />
+      <FocalTaskList titles={["Dental", "Medical", "SBFP", "GPP", "WINS", "NDEP", "RH"]} />
     </div>
   )
 }

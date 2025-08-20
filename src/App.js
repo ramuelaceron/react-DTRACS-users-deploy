@@ -6,10 +6,8 @@ import RegisterSchool from "./pages/Regsiter/RegisterSchool";
 import RegisterOffice from "./pages/Regsiter/RegisterOffice";
 import SchoolHome from "./pages/Home/SchoolHome";
 import OfficeHome from "./pages/Home/OfficeHome";
-import Upcoming from "./pages/Todo/Upcoming/Upcoming";
-import PastDue from "./pages/Todo/PastDue/PastDue";
-import Completed from "./pages/Todo/Completed/Completed";
-import TaskDetail from "./pages/Todo/TaskDetail/TaskDetail";
+import Todo from "./pages/Todo/Todo";
+import TaskListPage from "./pages/TaskListPage/TaskListPage";
 import OfficeManageAccount from "./pages/ManageAccount/OfficeManageAccount";
 import SchoolManageAccount from "./pages/ManageAccount/SchoolManageAccount";
 import SchoolDashboard from "./pages/Dashboard/SchoolDashboard";
@@ -24,6 +22,7 @@ import DRRM from "./pages/SGOD/DRRM/DRRM";
 import YouthFormation from "./pages/SGOD/YouthFormation/YouthFormation";
 import Schools from "./pages/School/School";
 import OfficeDashboard from "./pages/Dashboard/OfficeDashboard";
+
 
 function App() {
   const location = useLocation();
@@ -42,20 +41,22 @@ function App() {
         <Route path="/home" element={<SchoolDashboard />} />
         <Route path="/SGOD" element={<SGOD />} />
         <Route path="/SGOD/SMME" element={<SMME />} />
+        <Route path="/SGOD/SMME/task-list" element={<TaskListPage />} />
         <Route path="/SGOD/planning-research" element={<PlanningResearch />} />
+        <Route path="/SGOD/planning-research/task-list" element={<TaskListPage />} />
         <Route path="/SGOD/HRD" element={<HRD />} />
+        <Route path="/SGOD/HRD/task-list" element={<TaskListPage />} />
         <Route path="/SGOD/school-health" element={<SchoolHealth />} />
+        <Route path="/SGOD/school-health/task-list" element={<TaskListPage />} />
         <Route path="/SGOD/education-facilities" element={<EducationFacilities />} />
+        <Route path="/SGOD/education-facilities/task-list" element={<TaskListPage />} />
         <Route path="/SGOD/SMN" element={<SMN />} />
+        <Route path="/SGOD/SMN/task-list" element={<TaskListPage />} />
         <Route path="/SGOD/DRRM" element={<DRRM />} />
+        <Route path="/SGOD/DRRM/task-list" element={<TaskListPage />} />
         <Route path="/SGOD/youth-formation" element={<YouthFormation />} />
-        
-         {/* Todo routes */}
-        <Route path="/todo" element={<Upcoming />} />
-        <Route path="/todo/upcoming" element={<Upcoming />} />
-        <Route path="/todo/past-due" element={<PastDue />} />
-        <Route path="/todo/completed" element={<Completed />} />
-        <Route path="/todo/task/:id" element={<TaskDetail />} />
+        <Route path="/SGOD/youth-formation/task-list" element={<TaskListPage />} />
+        <Route path="/todo" element={<Todo />} />
         <Route path="/s-manage-account" element={<SchoolManageAccount />} />
       </Route>
 

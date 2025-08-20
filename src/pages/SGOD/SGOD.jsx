@@ -2,7 +2,7 @@ import React from "react";
 import "./SGOD.css";
 import SectionCard from "../../components/SectionCard/SectionCard";
 import NoImage from "../../assets/images/no-image.png";
-import { useOutletContext, useNavigate } from "react-router-dom"; // 👈 get context from Home
+import { useOutletContext, useNavigate } from "react-router-dom"; 
 
 const SGOD = () => {
   const { isExpanded } = useOutletContext();

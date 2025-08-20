@@ -13,6 +13,8 @@
   transition: all 0.3s ease;
   margin-top: 70px;
   margin-left: 20px;
+  margin-bottom: -50px;
+  cursor: pointer;
 }
 
 .focal-task-card:hover {
@@ -63,6 +65,14 @@
   letter-spacing: -0.02em;
 }
 
+.focal-title:hover {
+  font-size: 24px;
+  font-weight: 700;
+  color: #203061;
+  letter-spacing: -0.02em;
+  text-decoration: underline;
+}
+
 .focal-person {
   margin: 0;
   font-size: 14px;
@@ -73,6 +83,6 @@
 .focal-task-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px; 
+  gap: 5px; 
   padding: 20px;
 }

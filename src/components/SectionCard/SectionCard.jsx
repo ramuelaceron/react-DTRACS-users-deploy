@@ -15,7 +15,7 @@ const SectionCard = ({ title, image, onClick }) => {
         <h3>{title}</h3>
         <div className="section-card-footer">
           <img src={sgodCircle} alt="SGOD" className="sgod-logo" />
-          <span>School Governance and Operations Division</span>
+          <span>School Governance and <br/> Operations Division</span>
         </div>
       </div>
     </div>
