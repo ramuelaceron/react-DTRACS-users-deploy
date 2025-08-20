@@ -6,7 +6,10 @@ import RegisterSchool from "./pages/Regsiter/RegisterSchool";
 import RegisterOffice from "./pages/Regsiter/RegisterOffice";
 import SchoolHome from "./pages/Home/SchoolHome";
 import OfficeHome from "./pages/Home/OfficeHome";
-import Todo from "./pages/Todo/Todo";
+import Todo from "./pages/Todo/Upcoming/Upcoming";
+import PastDue from "./pages/Todo/PastDue/PastDue";
+import Completed from "./pages/Todo/Completed/Completed";
+import TaskDetail from "./pages/Todo/TaskDetail/TaskDetail";
 import OfficeManageAccount from "./pages/ManageAccount/OfficeManageAccount";
 import SchoolManageAccount from "./pages/ManageAccount/SchoolManageAccount";
 import SchoolDashboard from "./pages/Dashboard/SchoolDashboard";
@@ -45,7 +48,14 @@ function App() {
         <Route path="/SGOD/SMN" element={<SMN />} />
         <Route path="/SGOD/DRRM" element={<SMN />} />
         <Route path="/SGOD/youth-formation" element={<YouthFormation />} />
+        
+         {/* Todo routes */}
         <Route path="/todo" element={<Todo />} />
+        <Route path="/todo/upcoming" element={<Todo />} />
+        <Route path="/todo/past-due" element={<PastDue />} />
+        <Route path="/todo/completed" element={<Completed />} />
+        <Route path="/todo/task/:id" element={<TaskDetail />} />
+
         <Route path="/s-manage-account" element={<SchoolManageAccount />} />
       </Route>
 
