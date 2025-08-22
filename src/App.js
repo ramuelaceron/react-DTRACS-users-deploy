@@ -22,6 +22,7 @@ import DRRM from "./pages/SGOD/DRRM/DRRM";
 import YouthFormation from "./pages/SGOD/YouthFormation/YouthFormation";
 import Schools from "./pages/School/School";
 import OfficeDashboard from "./pages/Dashboard/OfficeDashboard";
+import TaskDetailPage from "./pages/TaskDetailPage/TaskDetailPage";
 
 
 function App() {
@@ -36,16 +37,18 @@ function App() {
       <Route path="/register/school" element={<RegisterSchool />} />
       <Route path="/register/office" element={<RegisterOffice />} />
 
-      {/* Protected layout: Home + Sidebar nav */}
       <Route element={<SchoolHome />}>
         <Route path="/home" element={<SchoolDashboard />} />
         <Route path="/SGOD" element={<SGOD />} />
         <Route path="/SGOD/SMME" element={<SMME />} />
         <Route path="/SGOD/SMME/task-list" element={<TaskListPage />} />
+        <Route path="/SGOD/SMME/task-list/:taskSlug" element={<TaskDetailPage />} />
         <Route path="/SGOD/planning-research" element={<PlanningResearch />} />
         <Route path="/SGOD/planning-research/task-list" element={<TaskListPage />} />
+        <Route path="/SGOD/planning-research/task-list/:taskSlug" element={<TaskDetailPage />} />
         <Route path="/SGOD/HRD" element={<HRD />} />
         <Route path="/SGOD/HRD/task-list" element={<TaskListPage />} />
+        
         <Route path="/SGOD/school-health" element={<SchoolHealth />} />
         <Route path="/SGOD/school-health/task-list" element={<TaskListPage />} />
         <Route path="/SGOD/education-facilities" element={<EducationFacilities />} />
