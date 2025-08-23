@@ -1,15 +1,37 @@
+// components/FocalTaskCard/FocalTaskCard.jsx
 import React from 'react';
 import { FaUser } from 'react-icons/fa';
+import { useNavigate, useParams } from 'react-router-dom'; // ✅ use useParams
 import './FocalTaskCard.css';
 
-const FocalTaskCard = ({ title, focalPerson, onClick }) => {
+const FocalTaskCard = ({ title, focalPerson, path = 'task-list' }) => {
+  const navigate = useNavigate();
+  const { sectionId } = useParams(); // ✅ Get from URL
+
+  const handleClick = () => {
+    if (!sectionId) {
+      console.error("No sectionId found in route");
+      return;
+    }
+
+    navigate(`${path}`, {
+      state: { title, focalPerson, sectionId },
+    });
+  };
+
   return (
-    <div 
-      className={`focal-task-card ${onClick ? 'clickable' : ''}`} 
-      onClick={onClick}
-      role={onClick ? "button" : undefined}
-      tabIndex={onClick ? 0 : -1}
-      aria-label={onClick ? `Go to ${title}` : undefined}
+    <div
+      className="focal-task-card clickable"
+      onClick={handleClick}
+      role="button"
+      tabIndex={0}
+      aria-label={`View tasks for ${title}, managed by ${focalPerson}`}
+      onKeyPress={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
     >
       <div className="card-content">
         <div className="avatar-container">

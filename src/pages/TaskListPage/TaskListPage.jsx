@@ -1,40 +1,69 @@
-// TaskListPage.js
+// src/pages/TaskList/TaskListPage.js
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { sectionData } from '../../data/focals'; // Adjust path as needed
 import './TaskListPage.css';
 
-// Helper: Convert title to URL-friendly slug
-const createSlug = (title) => {
-  return title
+// Utility to create URL-friendly slug
+const createSlug = (str) => {
+  return str
     .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
     .trim()
-    .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
-    .replace(/\s+/g, '-');         // Replace spaces with -
+    .replace(/\s+/g, '-');
 };
 
 const TaskListPage = () => {
-  const location = useLocation();
+  const { sectionId } = useParams(); // e.g., "SMME"
+  const { state } = useLocation();
   const navigate = useNavigate();
 
-  const pageTitle = location.state?.title || 'Task List';
-  const focalPerson = location.state?.focalPerson || 'Unknown Focal';
+  console.log("📍 TaskListPage Debug");
+  console.log("→ sectionId:", sectionId);
+  console.log("→ location.state:", state);
+  console.log("→ sectionData[sectionId]:", sectionData[sectionId]);
 
-  const tasks = [
-    { id: 1, title: 'Project Proposal', dueTime: '3:30 PM' },
-    { id: 2, title: 'Annual Report', dueTime: '5:00 PM' },
-    { id: 3, title: 'Budget Planning', dueTime: '4:15 PM' },
-  ];
+  const { title: focalTitle, focalPerson } = state || {};
+
+  // Default fallbacks
+  const pageTitle = focalTitle || 'Task List';
+  const person = focalPerson || 'Unknown Focal';
+
+  // Find the correct focal entry in sectionData[sectionId] that matches the title
+  const section = sectionData[sectionId];
+  let tasks = [];
+
+  if (section && Array.isArray(section)) {
+    const focalEntry = section.find(
+      (item) => item.title === focalTitle && item.focalPerson === focalPerson
+    );
+    tasks = focalEntry?.tasklist || [];
+  }
+
+  if (tasks.length === 0) {
+    return (
+      <div className="task-list-page">
+        <div className="header">
+          <h1>{pageTitle}</h1>
+          <p>{person}</p>
+        </div>
+        <p className="no-tasks">No tasks assigned for this focal area.</p>
+      </div>
+    );
+  }
 
   const handleViewTask = (task) => {
     const slug = createSlug(task.title);
-    navigate(slug, {
-      state: {
-        ...location.state,
-        taskId: task.id,
-        taskTitle: task.title,
-        dueTime: task.dueTime,
-      },
-    });
+      navigate(`${slug}`, {
+        state: {
+          ...location.state, // forwards section, focalPerson, etc.
+          taskTitle: task.title,
+          dueTime: task.dueTime,
+          dueDate: task.dueDate,
+          postDate: task.postDate,
+          taskDescription: task.description,
+        }
+      });
   };
 
   return (
@@ -46,7 +75,7 @@ const TaskListPage = () => {
         </div>
         <div className="header-info">
           <h1>{pageTitle}</h1>
-          <p>{focalPerson}</p>
+          <p>{person}</p>
         </div>
       </div>
 
