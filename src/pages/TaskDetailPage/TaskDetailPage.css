@@ -12,11 +12,11 @@
 /* Main Content */
 .task-detail-main {
   flex: 1;
-  padding: 20px;
+  padding: 40px;
   background-color: #ffffff;
   border: none;
   overflow-y: auto;
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
 /* Back Button */
@@ -27,12 +27,19 @@
   font-size: 16px;
   cursor: pointer;
   padding: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  margin-left: -10px;
   display: flex;
   align-items: center;
   gap: 8px;
   font-family: inherit;
   line-height: 1;
+  text-decoration: none; /* Ensures no unexpected underline from anchor-like behavior */
+  transition: text-decoration 0.2s ease; /* Smooth underline on hover */
+}
+
+.back-button:hover {
+  text-decoration: underline;
 }
 
 .back-button span {
@@ -103,6 +110,13 @@
   font-weight: normal;
 }
 
+.divider {
+  height: 1px;
+  background-color: #ddd;
+  margin: 8px 0; /* Adjust spacing as needed */
+  border: none;
+}
+
 /* Author */
 .task-author {
   color: #666;
@@ -140,3 +154,4 @@
   width: 25px;
   height: 25px;
 }
+
