@@ -19,6 +19,8 @@ import TaskListPage from "./pages/TaskListPage/TaskListPage";
 import TaskDetailPage from "./pages/TaskDetailPage/TaskDetailPage";
 import ManageAccount from "./pages/ManageAccount/ManageAccount";
 
+// 🔽 Import moved component
+import RoleBasedRedirect from "./components/RoleBasedRedirect/RoleBasedRedirect";
 
 function App() {
   const location = useLocation();
@@ -35,21 +37,32 @@ function App() {
       {/* School Protected Routes */}
       <Route element={<SchoolHome />}>
         <Route path="/home" element={<SchoolDashboard />} />
+        <Route path="/todo" element={<Todo />} />
         <Route path="/SGOD" element={<SGOD />} />
         <Route path="/SGOD/:sectionId" element={<SectionPage />}>
           <Route path="task-list" element={<TaskListPage />} />
           <Route path="task-list/:taskSlug" element={<TaskDetailPage />} />
         </Route>
-        <Route path="/todo" element={<Todo />} />
-        <Route path="manage-account" element={<ManageAccount />} />
+        <Route path="/s-manage-account" element={<ManageAccount />} />
       </Route>
 
       {/* Office Protected Routes */}
       <Route element={<OfficeHome />}>
         <Route path="/task" element={<OfficeDashboard />} />
         <Route path="/schools" element={<Schools />} />
-        <Route path="manage-account" element={<ManageAccount />} />
+        <Route path="/o-manage-account" element={<ManageAccount />} />
       </Route>
+
+      {/* ✅ Unified redirect */}
+      <Route
+        path="/manage-account"
+        element={
+          <RoleBasedRedirect
+            schoolPath="/s-manage-account"
+            officePath="/o-manage-account"
+          />
+        }
+      />
     </Routes>
   );
 }

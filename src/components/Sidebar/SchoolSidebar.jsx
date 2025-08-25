@@ -87,14 +87,10 @@ const SchoolSidebar = ({ isExpanded }) => {
           <li>
             <NavLink
               to="/manage-account"
-              className={({ isActive }) =>
-                `sidebar-link ${isActive ? "active" : ""}`
-              }
+              className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
             >
               <MdManageAccounts className="sidebar-icon" />
-              {isExpanded && (
-                <span className="sidebar-text">Manage Account</span>
-              )}
+              {isExpanded && <span className="sidebar-text">Manage Account</span>}
             </NavLink>
           </li>
         </ul>
