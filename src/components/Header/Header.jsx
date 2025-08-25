@@ -69,8 +69,8 @@ const Header = ({ toggleSidebar }) => {
         {isDropdownOpen && (
           <div className="profile-dropdown">
             <div className="profile-info">
-              <FaUserCircle className="profile-avatar" />
-              <div className="profile-details">
+              <FaUserCircle className="header-profile-avatar" />
+              <div className="header-profile-details">
                 <strong>Juan D Cruz</strong>
                 <div className="profile-email">juandcruz@gmail.com</div>
                 <div className="profile-id">2023-00***-01</div>
