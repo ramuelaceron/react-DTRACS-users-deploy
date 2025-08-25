@@ -291,3 +291,16 @@
   padding: 2rem;
 }
 
+.login-error {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  border: 1px solid #ef9a9a;
+}
+
+.login-error p {
+  margin: 0;
+}

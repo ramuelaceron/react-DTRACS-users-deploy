@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+// CommentBox.jsx
+import React, { useState, useRef, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { MdAccountCircle } from "react-icons/md";
@@ -8,28 +9,50 @@ import './CommentBox.css';
 
 const CommentBox = ({ onSubmit, disabled }) => {
   const [htmlContent, setHtmlContent] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
   const quillRef = useRef(null);
 
+  // ✅ Load current user from sessionStorage
+  useEffect(() => {
+    const savedUser = sessionStorage.getItem("currentUser");
+    if (savedUser) {
+      setCurrentUser(JSON.parse(savedUser));
+    }
+  }, []);
+
   const handleSend = () => {
-  if (disabled || !quillRef.current) return;
+    if (disabled || !quillRef.current) return;
 
-  if (quillRef.current.isEmpty()) {
-    toast.error("Please enter a comment");
-    return;
-  }
+    // ✅ Use custom isEmpty() from RichTextEditor ref
+    if (quillRef.current.isEmpty()) {
+      toast.error("Please enter a comment");
+      return;
+    }
 
-  onSubmit(quillRef.current.getHTML());
+    const content = quillRef.current.getHTML();
+    onSubmit(content);
 
-  setHtmlContent('');
-  quillRef.current.clear();
+    // Reset editor
+    setHtmlContent('');
+    quillRef.current.clear();
   };
 
   return (
     <div className="comment-box">
       <div className="comment-input-container">
+        {/* ✅ Show user avatar or fallback */}
         <div className="comment-avatar">
-          <MdAccountCircle size={32} />
+          {currentUser?.avatar ? (
+            <img
+              src={currentUser.avatar}
+              alt="Your avatar"
+              className="comment-avatar-img"
+            />
+          ) : (
+            <MdAccountCircle size={32} color="#555" />
+          )}
         </div>
+
         <div className="comment-input-wrapper">
           <div className="comment-editor-container">
             <RichTextEditor

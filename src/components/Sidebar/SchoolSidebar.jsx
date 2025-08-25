@@ -86,7 +86,7 @@ const SchoolSidebar = ({ isExpanded }) => {
           {/* Manage Account */}
           <li>
             <NavLink
-              to="/s-manage-account"
+              to="/manage-account"
               className={({ isActive }) =>
                 `sidebar-link ${isActive ? "active" : ""}`
               }

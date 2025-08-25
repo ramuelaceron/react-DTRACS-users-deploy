@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+// src/pages/ManageAccount/ManageAccount.jsx
+import React, { useState, useRef, useEffect } from 'react';
 import './ManageAccount.css';
 
 // Toastify
@@ -10,25 +11,61 @@ import EditLinks from '../../components/EditLinks/EditLinks';
 import ProfileInfoCard from '../../components/ProfileInfoCard/ProfileInfoCard';
 import ProfileAvatar from '../../components/ProfileAvatar/ProfileAvatar';
 
-// 🔽 Import shared data
-import { accountData } from '../../data/account';
+// 🔽 Import both account templates (for fallback structure)
+import { schoolAccountData, officeAccountData } from '../../data/account';
 
-const OfficeManageAccount = () => {
+const ManageAccount = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showNameForm, setShowNameForm] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
 
-  // ✅ Use accountData as initial state
-  const [userData, setUserData] = useState({ ...accountData });
-  const [avatar, setAvatar] = useState(accountData.avatar);
+  // ✅ State: user data from session or fallback
+  const [userData, setUserData] = useState(null);
+  const [avatar, setAvatar] = useState(null);
 
   const fileInputRef = useRef(null);
 
-  // ✅ Temp states (for forms)
+  // ✅ Temp states
   const [tempName, setTempName] = useState(null);
   const [tempEmail, setTempEmail] = useState(null);
   const [tempContact, setTempContact] = useState(null);
+
+  // ✅ Load user on mount
+  useEffect(() => {
+    const savedUser = sessionStorage.getItem("currentUser");
+    if (!savedUser) {
+      toast.error("Not logged in. Redirecting...");
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
+      return;
+    }
+
+    const user = JSON.parse(savedUser);
+
+    // 🔍 Determine which template to use
+    const accountData =
+      user.role === "school" ? { ...schoolAccountData } : { ...officeAccountData };
+
+    // Merge session data with template
+    const mergedData = {
+      ...accountData,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      middleName: user.middleName || "",
+      email: user.email,
+      contactNumber: user.contactNumber || accountData.contactNumber,
+      avatar: user.avatar,
+    };
+
+    setUserData(mergedData);
+    setAvatar(user.avatar || accountData.avatar);
+  }, []);
+
+  if (!userData) {
+    return <div className="manage-account-app">Loading...</div>;
+  }
 
   // Open forms
   const openNameForm = () => {
@@ -84,12 +121,19 @@ const OfficeManageAccount = () => {
   // Save handlers
   const handleSaveName = () => {
     if (tempName.firstName.trim() && tempName.lastName.trim()) {
-      setUserData(prev => ({
-        ...prev,
+      const updated = {
+        ...userData,
         firstName: tempName.firstName.trim(),
         middleName: tempName.middleName?.trim() || '',
-        lastName: tempName.lastName.trim()
-      }));
+        lastName: tempName.lastName.trim(),
+      };
+      setUserData(updated);
+      // Update session
+      const savedUser = JSON.parse(sessionStorage.getItem("currentUser"));
+      sessionStorage.setItem(
+        "currentUser",
+        JSON.stringify({ ...savedUser, ...tempName })
+      );
       toast.success("Name updated successfully!");
       setShowNameForm(false);
       setTempName(null);
@@ -100,7 +144,14 @@ const OfficeManageAccount = () => {
 
   const handleSaveEmail = () => {
     if (tempEmail.includes("@")) {
-      setUserData(prev => ({ ...prev, email: tempEmail.trim() }));
+      const updated = { ...userData, email: tempEmail.trim() };
+      setUserData(updated);
+      // Update session
+      const savedUser = JSON.parse(sessionStorage.getItem("currentUser"));
+      sessionStorage.setItem(
+        "currentUser",
+        JSON.stringify({ ...savedUser, email: tempEmail.trim() })
+      );
       toast.success("Email updated successfully!");
       setShowEmailForm(false);
       setTempEmail(null);
@@ -111,7 +162,9 @@ const OfficeManageAccount = () => {
 
   const handleSaveContact = () => {
     if (tempContact.trim()) {
-      setUserData(prev => ({ ...prev, contactNumber: tempContact.trim() }));
+      const updated = { ...userData, contactNumber: tempContact.trim() };
+      setUserData(updated);
+      // No need to update session for contact only (unless used elsewhere)
       toast.success("Contact number updated successfully!");
       setShowContactForm(false);
       setTempContact(null);
@@ -140,6 +193,12 @@ const OfficeManageAccount = () => {
       const reader = new FileReader();
       reader.onload = () => {
         setAvatar(reader.result);
+        // Update session
+        const savedUser = JSON.parse(sessionStorage.getItem("currentUser"));
+        sessionStorage.setItem(
+          "currentUser",
+          JSON.stringify({ ...savedUser, avatar: reader.result })
+        );
         toast.info("Profile picture updated!", { autoClose: 1500 });
       };
       reader.readAsDataURL(file);
@@ -174,7 +233,6 @@ const OfficeManageAccount = () => {
             onFileChange={handleFileChange}
           />
 
-          {/* ✅ Pass full userData including static fields */}
           <ProfileInfoCard
             userData={userData}
             isEditing={isEditing}
@@ -228,4 +286,4 @@ const OfficeManageAccount = () => {
   );
 };
 
-export default OfficeManageAccount;
+export default ManageAccount;

@@ -144,10 +144,22 @@ const TaskDetailPage = () => {
       return;
     }
 
+    // ✅ Get full user data from sessionStorage
+    const savedUser = sessionStorage.getItem("currentUser");
+    const currentUser = savedUser ? JSON.parse(savedUser) : {
+      firstName: "Unknown",
+      lastName: "User",
+      email: "unknown@deped.gov.ph"
+    };
+
+    const fullName = `${currentUser.firstName} ${currentUser.middleName ? currentUser.middleName + ' ' : ''}${currentUser.lastName}`.trim();
+
     const newComment = {
       id: Date.now(),
-      author: currentUser.name,
-      school: currentUser.school,
+      author: fullName,
+      email: currentUser.email,
+      firstName: currentUser.firstName,
+      lastName: currentUser.lastName,
       time: new Date().toLocaleString("en-US", {
         month: "numeric",
         day: "numeric",
@@ -156,7 +168,7 @@ const TaskDetailPage = () => {
         minute: "2-digit",
         hour12: true,
       }).replace(/,/g, ""),
-      text: html,  // <-- now using HTML from CommentBox
+      text: html,
       isEdited: false,
     };
 

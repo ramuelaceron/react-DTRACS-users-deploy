@@ -43,7 +43,7 @@ const OfficeSidebar = ({ isExpanded }) => {
           {/* Manage Account */}
           <li>
             <NavLink
-              to="/o-manage-account"
+              to="/manage-account"
               className={({ isActive }) =>
                 `sidebar-link ${isActive ? "active" : ""}`
               }
