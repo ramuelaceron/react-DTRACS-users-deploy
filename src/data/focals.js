@@ -1,11 +1,11 @@
 import { idFromName } from "../utils/idGenerator";
-import avatar1 from '../assets/images/avatar2.png';
+import avatar2 from '../assets/images/avatar2.png';
 
 export const sectionData = {
   SMME: [
     {
       id: idFromName("Isidra L. Galman"),
-      avatar: avatar1,
+      avatar: avatar2,
       title: "School Management Monitoring and Evaluation",
       focalPerson: "Isidra L. Galman",
       path: "task-list",
@@ -28,6 +28,7 @@ export const sectionData = {
   "planning-research": [
     {
       id: idFromName("Edward R. Manuel"),
+      avatar: avatar2,
       title: "Research",
       focalPerson: "Edward R. Manuel",
       path: "task-list",
@@ -47,6 +48,7 @@ export const sectionData = {
     },
     {
       id: idFromName("Charles M. Patio"),
+      avatar: avatar2,
       title: "Planning",
       focalPerson: "Charles M. Patio",
       path: "task-list",
@@ -69,6 +71,7 @@ export const sectionData = {
   HRD: [
     {
       id: idFromName("Arlene P. Alora"),
+      avatar: avatar2,
       title: "Human Resource Development",
       focalPerson: "Arlene P. Alora",
       path: "task-list",
@@ -91,6 +94,7 @@ export const sectionData = {
   SMN: [
     {
       id: idFromName("Donna Jane M. Alfonso"),
+      avatar: avatar2,
       title: "Social Mobilization and Networking",
       focalPerson: "Donna Jane M. Alfonso",
       path: "task-list",
@@ -124,6 +128,7 @@ export const sectionData = {
   "education-facilities": [
     {
       id: idFromName("Precious Joy A. Coronado"),
+      avatar: avatar2,
       title: "Education Facilities",
       focalPerson: "Precious Joy A. Coronado",
       path: "task-list",
@@ -157,6 +162,7 @@ export const sectionData = {
   DRRM: [
     {
       id: idFromName("Ernane S. Escuvania"),
+      avatar: avatar2,
       title: "Disaster Risk Reduction and Management",
       focalPerson: "Ernane S. Escuvania",
       path: "task-list",
@@ -179,6 +185,7 @@ export const sectionData = {
   "school-health": [
     {
       id: idFromName("Dr. Liza M. Cruz"),
+      avatar: avatar2,
       title: "Dental",
       focalPerson: "Focal_Name", // Replace with actual focal name
       path: "task-list",
@@ -198,6 +205,7 @@ export const sectionData = {
     },
     {
       id: idFromName("Nurse Juan P. Dela Cruz"),
+      avatar: avatar2,
       title: "Medical",
       focalPerson: "Focal_Name", // Replace with actual focal name
       path: "task-list",
@@ -217,6 +225,7 @@ export const sectionData = {
     },
     {
       id: idFromName("Teacher Anna L. Perez"),
+      avatar: avatar2,
       title: "SBFP",
       focalPerson: "Focal_Name", // Replace with actual focal name
       path: "task-list",
@@ -226,6 +235,7 @@ export const sectionData = {
     },
     {
       id: idFromName("Teacher Anna L. Perez"),
+      avatar: avatar2,
       title: "GPP",
       focalPerson: "Focal_Name", // Replace with actual focal name
       path: "task-list",
@@ -235,6 +245,7 @@ export const sectionData = {
     },
     {
       id: idFromName("Teacher Anna L. Perez"),
+      avatar: avatar2,
       title: "WINS",
       focalPerson: "Focal_Name", // Replace with actual focal name
       path: "task-list",
@@ -244,6 +255,7 @@ export const sectionData = {
     },
     {
       id: idFromName("Teacher Anna L. Perez"),
+      avatar: avatar2,
       title: "NDEP",
       focalPerson: "Focal_Name", // Replace with actual focal name
       path: "task-list",
@@ -253,6 +265,7 @@ export const sectionData = {
     },
     {
       id: idFromName("Teacher Anna L. Perez"),
+      avatar: avatar2,
       title: "RH",
       focalPerson: "Focal_Name", // Replace with actual focal name
       path: "task-list",
@@ -265,6 +278,7 @@ export const sectionData = {
   "youth-formation": [
     {
       id: idFromName("Maureen Jane Q. Alangco"),
+      avatar: avatar2,
       title: "Youth Formation",
       focalPerson: "Maureen Jane Q. Alangco",
       path: "task-list",

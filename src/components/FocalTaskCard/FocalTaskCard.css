@@ -33,24 +33,40 @@
 
 .avatar-container {
   flex-shrink: 0;
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4f60eb, #7a8bff);
+  background: #e0e7ff;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   transition: all 0.3s ease;
 }
 
 .focal-task-card:hover .avatar-container {
-  background: linear-gradient(135deg, #3a50c0, #6377e0);
   transform: scale(1.08);
+  background: #c3d0ff;
 }
 
-.profile-icon {
+/* Avatar Image */
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fallback if no avatar */
+.profile-fallback {
   color: white;
   font-size: 28px;
+  font-weight: bold;
+  background: #4f60eb;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .text-content {
@@ -63,13 +79,10 @@
   font-weight: 700;
   color: #203061;
   letter-spacing: -0.02em;
+  margin: 0;
 }
 
 .focal-title:hover {
-  font-size: 24px;
-  font-weight: 700;
-  color: #203061;
-  letter-spacing: -0.02em;
   text-decoration: underline;
 }
 
@@ -78,11 +91,4 @@
   font-size: 14px;
   color: #4a5568;
   font-weight: 500;
-}
-
-.focal-task-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px; 
-  padding: 20px;
 }

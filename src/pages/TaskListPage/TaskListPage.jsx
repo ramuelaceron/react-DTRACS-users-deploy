@@ -10,25 +10,31 @@ const TaskListPage = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  console.log("📍 TaskListPage Debug");
-  console.log("→ sectionId:", sectionId);
-  console.log("→ location.state:", state);
-  console.log("→ sectionData[sectionId]:", sectionData[sectionId]);
-
   // Fallback values
   const { title: focalTitle, focalPerson } = state || {};
   const pageTitle = focalTitle || 'Task List';
   const person = focalPerson || 'Unknown Focal';
 
-  // Find the correct focal entry and its tasks
+  // 🔍 Find the section and the correct focal entry
   const section = sectionData[sectionId];
   let tasks = [];
+  let avatar = null;
 
   if (section && Array.isArray(section)) {
     const focalEntry = section.find(
       (item) => item.title === focalTitle && item.focalPerson === focalPerson
     );
-    tasks = focalEntry?.tasklist || [];
+
+    if (focalEntry) {
+      tasks = focalEntry.tasklist || [];
+      avatar = focalEntry.avatar; // ✅ Use the real avatar
+    }
+  }
+
+  // Fallback avatar if not found
+  if (!avatar) {
+    console.warn(`Avatar not found for ${focalTitle} - ${focalPerson}`);
+    avatar = "https://via.placeholder.com/40"; // fallback
   }
 
   const handleViewTask = (task) => {
@@ -47,10 +53,10 @@ const TaskListPage = () => {
 
   return (
     <div className="task-list-page">
-      {/* ✅ Header is ALWAYS rendered the same */}
+      {/* ✅ Header with real avatar */}
       <div className="header">
         <div className="avatar">
-          <img src="https://via.placeholder.com/40" alt="Avatar" />
+          <img src={avatar} alt={`${person}'s avatar`} />
         </div>
         <div className="header-info">
           <h1>{pageTitle}</h1>
@@ -58,7 +64,7 @@ const TaskListPage = () => {
         </div>
       </div>
 
-      {/* ✅ Conditional rendering only for the content below */}
+      {/* Task List or Empty State */}
       {tasks.length === 0 ? (
         <div className="no-tasks-container">
           <p className="no-tasks">No tasks assigned for this focal area.</p>

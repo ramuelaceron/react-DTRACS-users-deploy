@@ -1,5 +1,5 @@
-
-import React, { useState, useRef } from "react";
+// TaskDetailPage.jsx
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./TaskDetailPage.css";
 import { FaFilePdf, FaFileWord, FaFileImage, FaFile } from "react-icons/fa";
@@ -15,26 +15,17 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useClickOutside from "../../hooks/useClickOutside";
 import { sectionData } from "../../data/focals";
-import { createSlug } from '../../utils/idGenerator';
-
+import { createSlug } from "../../utils/idGenerator";
 
 const TaskDetailPage = () => {
   const navigate = useNavigate();
-  const { sectionId, taskSlug } = useParams(); // e.g., SMME, project-proposal
+  const { sectionId, taskSlug } = useParams();
 
+  // State
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [isCompleted, setIsCompleted] = useState(false);
   const [showCommentBox, setShowCommentBox] = useState(false);
-  const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
-
-  // Current user
-  const currentUser = {
-    name: "Juan Dela Cruz",
-    school: "BINHS",
-  };
-
-  // Inline edit state
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
 
@@ -47,7 +38,7 @@ const TaskDetailPage = () => {
     if (showCommentBox) setShowCommentBox(false);
   });
 
-  // 🔍 Find the task and focal entry in sectionData
+  // 🔍 Find the task and focal entry
   const section = sectionData[sectionId];
   let focalEntry = null;
   let task = null;
@@ -63,12 +54,12 @@ const TaskDetailPage = () => {
     }
   }
 
-  // If not found, show error
+  // Handle task not found
   if (!focalEntry || !task) {
     return (
       <div className="task-detail-app">
         <main className="task-detail-main">
-          <button className="back-button" onClick={navigate(-1)}>
+          <button className="back-button" onClick={() => navigate(-1)}>
             <IoChevronBackOutline className="icon-md" /> Back
           </button>
           <div className="error-container">
@@ -80,15 +71,23 @@ const TaskDetailPage = () => {
     );
   }
 
-  // Extract data from found entries
+  // Extract task and focal data
   const { title: focalTitle, focalPerson } = focalEntry;
   const {
     title: taskTitle,
     dueTime,
-    dueDate = 'N/A',
-    postDate = 'Today',
-    description: taskDescription
+    dueDate = "N/A",
+    postDate = "Today",
+    description: taskDescription,
+    status: taskStatus,
   } = task;
+
+  // Sync completion status from data
+  useEffect(() => {
+    if (taskStatus === "Completed") {
+      setIsCompleted(true);
+    }
+  }, [taskStatus]);
 
   // Handlers
   const handleBack = () => navigate(-1);
@@ -100,7 +99,7 @@ const TaskDetailPage = () => {
       return;
     }
 
-    const newFiles = files.map(file => ({
+    const newFiles = files.map((file) => ({
       id: URL.createObjectURL(file),
       file,
       name: file.name,
@@ -108,19 +107,21 @@ const TaskDetailPage = () => {
       icon: getFileIcon(file),
     }));
 
-    setAttachedFiles(prev => [...prev, ...newFiles]);
+    setAttachedFiles((prev) => [...prev, ...newFiles]);
   };
 
   const handleRemoveFile = (fileId) => {
-    const fileToRemove = attachedFiles.find(f => f.id === fileId);
+    const fileToRemove = attachedFiles.find((f) => f.id === fileId);
     if (fileToRemove) URL.revokeObjectURL(fileToRemove.id);
-    setAttachedFiles(prev => prev.filter(f => f.id !== fileId));
+    setAttachedFiles((prev) => prev.filter((f) => f.id !== fileId));
   };
 
   const handleComplete = () => {
     if (attachedFiles.length === 0) {
-      toast.error("Please attach at least one file before completing.");
-      return;
+      const confirmed = window.confirm(
+        "You haven't attached any files. Are you sure you want to mark this task as completed?"
+      );
+      if (!confirmed) return;
     }
     setIsCompleted(true);
     toast.success("Task marked as completed!");
@@ -131,21 +132,19 @@ const TaskDetailPage = () => {
     toast.info("Task status reverted.");
   };
 
+  // Get current user once
+  const savedUser = sessionStorage.getItem("currentUser");
+  const currentUser = savedUser
+    ? JSON.parse(savedUser)
+    : { firstName: "Unknown", lastName: "User", middleName: "", email: "unknown@deped.gov.ph" };
+
+  const fullName = `${currentUser.firstName} ${currentUser.middleName ? currentUser.middleName + " " : ""}${currentUser.lastName}`.trim();
+
   const handleCommentSubmit = (html) => {
     if (!html || !html.trim() || html === "<p><br></p>") {
       toast.warn("Please enter a comment.");
       return;
     }
-
-    // ✅ Get full user data from sessionStorage
-    const savedUser = sessionStorage.getItem("currentUser");
-    const currentUser = savedUser ? JSON.parse(savedUser) : {
-      firstName: "Unknown",
-      lastName: "User",
-      email: "unknown@deped.gov.ph"
-    };
-
-    const fullName = `${currentUser.firstName} ${currentUser.middleName ? currentUser.middleName + ' ' : ''}${currentUser.lastName}`.trim();
 
     const newComment = {
       id: Date.now(),
@@ -165,14 +164,14 @@ const TaskDetailPage = () => {
       isEdited: false,
     };
 
-    setComments(prev => [...prev, newComment]);
+    setComments((prev) => [...prev, newComment]);
     setShowCommentBox(false);
     toast.success("Comment added successfully!");
   };
 
-  const handleEditStart = (c) => {
-    setEditingId(c.id);
-    setEditText(c.text);
+  const handleEditStart = (comment) => {
+    setEditingId(comment.id);
+    setEditText(comment.text);
     setTimeout(() => {
       if (editTextareaRef.current) {
         editTextareaRef.current.style.height = "auto";
@@ -187,13 +186,11 @@ const TaskDetailPage = () => {
       toast.warn("Comment cannot be empty.");
       return;
     }
-
-    setComments(prev =>
-      prev.map(c =>
+    setComments((prev) =>
+      prev.map((c) =>
         c.id === editingId ? { ...c, text: editText.trim(), isEdited: true } : c
       )
     );
-
     setEditingId(null);
     setEditText("");
     toast.info("Comment updated!");
@@ -206,7 +203,7 @@ const TaskDetailPage = () => {
 
   const handleDeleteComment = (id) => {
     if (window.confirm("Are you sure you want to delete this comment?")) {
-      setComments(prev => prev.filter(c => c.id !== id));
+      setComments((prev) => prev.filter((c) => c.id !== id));
       toast.error("Comment deleted.");
     }
   };
@@ -215,20 +212,21 @@ const TaskDetailPage = () => {
     setShowCommentBox(!showCommentBox);
   };
 
+  // File helpers
   const getFileIcon = (file) => {
-    const ext = file?.name.split('.').pop()?.toLowerCase();
-    if (ext === 'pdf') return <FaFilePdf />;
-    if (['doc', 'docx'].includes(ext)) return <FaFileWord />;
-    if (['jpg', 'jpeg', 'png'].includes(ext)) return <FaFileImage />;
+    const ext = file?.name.split(".").pop()?.toLowerCase();
+    if (ext === "pdf") return <FaFilePdf />;
+    if (["doc", "docx"].includes(ext)) return <FaFileWord />;
+    if (["jpg", "jpeg", "png"].includes(ext)) return <FaFileImage />;
     return <FaFile />;
   };
 
   const getFileType = (file) => {
-    const ext = file?.name.split('.').pop()?.toLowerCase();
-    if (ext === 'pdf') return 'PDF';
-    if (['doc', 'docx'].includes(ext)) return 'DOC';
-    if (['jpg', 'jpeg', 'png'].includes(ext)) return 'Image';
-    return ext?.toUpperCase() || 'FILE';
+    const ext = file?.name.split(".").pop()?.toLowerCase();
+    if (ext === "pdf") return "PDF";
+    if (["doc", "docx"].includes(ext)) return "DOC";
+    if (["jpg", "jpeg", "png"].includes(ext)) return "Image";
+    return ext?.toUpperCase() || "FILE";
   };
 
   return (
@@ -241,20 +239,38 @@ const TaskDetailPage = () => {
 
         {/* Header */}
         <div className="task-header">
-          <div className="task-icon">
-            <PiClipboardTextBold className="icon-lg" />
+          <div 
+            className="task-icon" 
+            style={{ 
+              background: taskStatus === "Past Due" ? "#D32F2F" : "#333",
+              transition: "background 0.3s ease"
+            }}
+          >
+            <PiClipboardTextBold 
+              className="icon-lg" 
+              style={{ 
+                color: "white" 
+              }} 
+            />
           </div>
           <h1 className="task-title">{taskTitle}</h1>
           <div className="task-status">
             {isCompleted ? (
-              <span style={{ color: '#4CAF50', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              // Completed
+              <span style={{ color: "#4CAF50", display: "flex", alignItems: "center", gap: "4px" }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
                 </svg>
                 Completed
               </span>
+            ) : taskStatus === "Past Due" ? (
+              // Past Due
+              <span style={{ color: "#D32F2F", display: "flex", alignItems: "center", gap: "4px", fontWeight: "bold" }}>
+                ⚠️ Past Due
+              </span>
             ) : (
-              'Assigned'
+              // Default (Upcoming or Assigned)
+              <span style={{ color: "#2E7D32", fontWeight: "bold" }}>Assigned</span>
             )}
           </div>
         </div>
@@ -265,8 +281,7 @@ const TaskDetailPage = () => {
           <div className="task-due">Due {dueDate} at {dueTime}</div>
         </div>
 
-         {/* Divider Line */}
-        <div className="divider"></div>
+        <div className="divider" />
 
         {/* Author & Date */}
         <div className="task-author">
@@ -274,9 +289,7 @@ const TaskDetailPage = () => {
         </div>
 
         {/* Description */}
-        <div className="task-description">
-          {taskDescription}
-        </div>
+        <div className="task-description">{taskDescription}</div>
 
         {/* Actions */}
         <TaskActions
@@ -288,30 +301,18 @@ const TaskDetailPage = () => {
 
         {/* Attached Files */}
         {attachedFiles.length > 0 && (
-          <AttachedFiles
-            files={attachedFiles}
-            onRemove={handleRemoveFile}
-            isCompleted={isCompleted}
-          />
+          <AttachedFiles files={attachedFiles} onRemove={handleRemoveFile} isCompleted={isCompleted} />
         )}
 
         {/* Add Comment Button */}
-        <SharedButton
-          variant="text"
-          size="medium"
-          onClick={toggleCommentBox}
-          aria-label="Add comment"
-        >
+        <SharedButton variant="text" size="medium" onClick={toggleCommentBox} aria-label="Add comment">
           <RiAccountPinBoxLine className="icon-md" /> Add comment
         </SharedButton>
 
-        {/* Comment Input Box */}
+        {/* Comment Input */}
         {showCommentBox && (
           <div ref={commentBoxRef}>
-            <CommentBox
-              onSubmit={handleCommentSubmit}
-              disabled={isCompleted}
-            />
+            <CommentBox onSubmit={handleCommentSubmit} disabled={isCompleted} />
           </div>
         )}
 
@@ -331,7 +332,6 @@ const TaskDetailPage = () => {
         )}
       </main>
 
-      {/* Toast Notifications */}
       <ToastContainer
         position="top-right"
         autoClose={3000}
