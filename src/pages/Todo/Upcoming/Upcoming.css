@@ -1,0 +1,203 @@
+/* Main App Container - Upcoming */
+.upcoming-app {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+}
+
+/* Main Content - Upcoming */
+.upcoming-main {
+  flex: 1;
+  padding: 0;
+  background-color: #ffffff;
+  border: none;
+  overflow-y: auto;
+  padding-top: 30px;
+}
+
+/* Date Header - Upcoming */
+.upcoming-date-header {
+  font-size: 16px;
+  color: #000;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Make the date bold */
+.upcoming-date-bold {
+  font-weight: bold;
+}
+
+/* Task Link - Upcoming */
+.upcoming-task-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* Task Card - Upcoming (with hover effect) */
+.upcoming-card {
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.upcoming-card:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Flex container to vertically align content */
+.upcoming-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  gap: 12px;
+}
+
+/* Task title and meta */
+.upcoming-card-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Due Date & Time - Vertically centered, aligned right */
+.upcoming-card-deadline {
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+}
+
+.upcoming-card-deadline .time {
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 12px;
+  color: #555;
+  white-space: nowrap;
+}
+
+/* Task Title - Upcoming */
+.upcoming-card-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+/* Optional: Office label below title */
+.upcoming-card-meta {
+  font-size: 14px;
+  color: #555;
+  margin-top: 4px;
+}
+
+.upcoming-office {
+  font-weight: 500;
+  color: #203061;
+}
+
+/* No tasks message */
+.upcoming-no-tasks {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  margin-top: 20px;
+}
+
+/* Header Actions - Right side */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+/* Task Count - Blue number */
+.upcoming-task-count {
+  font-size: 12px;
+  margin-right: 10px;
+  color: #2196f3;
+  font-weight: bold;
+}
+
+/* Dropdown Arrow - With hover circle */
+.upcoming-dropdown-arrow {
+  font-size: 20px;
+  color: #2196f3;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  position: relative;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+/* Hover Circle */
+.upcoming-dropdown-arrow::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: -1;
+}
+
+.upcoming-dropdown-arrow:hover::after {
+  opacity: 1;
+}
+
+.upcoming-dropdown-arrow:hover {
+  transform: scale(1.2);
+}
+
+.upcoming-dropdown-arrow svg {
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+}
+
+.upcoming-task-icon {
+  background: #2196f3;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.upcoming-task-icon svg {
+  width: 20px;
+  height: 20px;
+}

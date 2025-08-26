@@ -14,13 +14,16 @@ import SchoolDashboard from "./pages/Dashboard/SchoolDashboard";
 import OfficeDashboard from "./pages/Dashboard/OfficeDashboard";
 import SGOD from "./pages/SGOD/SGOD";
 import SectionPage from "./pages/Sections/SectionPage";
-import Todo from "./pages/Todo/Todo";
+import Upcoming from "./pages/Todo/Upcoming/Upcoming";
 import TaskListPage from "./pages/TaskListPage/TaskListPage";
 import TaskDetailPage from "./pages/TaskDetailPage/TaskDetailPage";
 import ManageAccount from "./pages/ManageAccount/ManageAccount";
 
 // 🔽 Import moved component
+import ToDoPage from "./pages/Todo/ToDoPage/ToDoPage";
 import RoleBasedRedirect from "./components/RoleBasedRedirect/RoleBasedRedirect";
+import PastDue from "./pages/Todo/PastDue/PastDue";
+import Completed from "./pages/Todo/Completed/Completed";
 
 function App() {
   const location = useLocation();
@@ -37,12 +40,18 @@ function App() {
       {/* School Protected Routes */}
       <Route element={<SchoolHome />}>
         <Route path="/home" element={<SchoolDashboard />} />
-        <Route path="/todo" element={<Todo />} />
         <Route path="/SGOD" element={<SGOD />} />
         <Route path="/SGOD/:sectionId" element={<SectionPage />}>
           <Route path="task-list" element={<TaskListPage />} />
           <Route path="task-list/:taskSlug" element={<TaskDetailPage />} />
         </Route>
+        
+        <Route path="/to-do" element={<ToDoPage />}>
+          <Route path="upcoming" element={<Upcoming />} />
+          <Route path="past-due" element={<PastDue />} />
+          <Route path="completed" element={<Completed />} />
+        </Route>
+
         <Route path="/s-manage-account" element={<ManageAccount />} />
       </Route>
 

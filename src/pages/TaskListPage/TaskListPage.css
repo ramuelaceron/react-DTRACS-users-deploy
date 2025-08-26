@@ -97,3 +97,15 @@
   background-color: #1a3666;
   color: white;
 }
+
+.no-tasks-container {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+.no-tasks {
+  margin: 0;
+  font-size: 1rem;
+}

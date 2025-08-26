@@ -1,19 +1,27 @@
 import React from "react";
-import "./SchoolSidebar.css";
+import { NavLink, useLocation } from "react-router-dom";
 import { FaHome, FaBriefcase } from "react-icons/fa";
 import { FiCheckSquare } from "react-icons/fi";
-import { MdManageAccounts } from "react-icons/md"; // Manage Account icon
-import { NavLink } from "react-router-dom";
-import { useSidebar } from "../../context/SidebarContext";
+import { MdManageAccounts } from "react-icons/md";
 import { IoChevronDown } from "react-icons/io5";
+import { useSidebar } from "../../context/SidebarContext";
+import "./SchoolSidebar.css";
 
 const SchoolSidebar = ({ isExpanded }) => {
-  const { isExpanded: expanded, toggleSidebar, openDropdown, toggleDropdown } =
-    useSidebar();
+  const { toggleSidebar, openDropdown, toggleDropdown } = useSidebar();
+  const location = useLocation(); // 👈 Central location
 
   const handleOfficesClick = () => {
     if (!isExpanded) toggleSidebar(true);
-    toggleDropdown("offices"); // 👈 controlled by context
+    toggleDropdown("offices");
+  };
+
+  // ✅ Helper: Check if path matches
+  const isActive = (path, exact = true) => {
+    if (exact) {
+      return location.pathname === path;
+    }
+    return location.pathname.startsWith(path);
   };
 
   return (
@@ -24,9 +32,7 @@ const SchoolSidebar = ({ isExpanded }) => {
           <li>
             <NavLink
               to="/home"
-              className={({ isActive }) =>
-                `sidebar-link ${isActive ? "active" : ""}`
-              }
+              className={`sidebar-link ${isActive("/home") ? "active" : ""}`}
               end
             >
               <FaHome className="sidebar-icon" />
@@ -34,13 +40,11 @@ const SchoolSidebar = ({ isExpanded }) => {
             </NavLink>
           </li>
 
-          {/* To-do */} 
+          {/* To-do */}
           <li>
             <NavLink
-              to="/todo"
-              className={({ isActive }) =>
-                `sidebar-link ${isActive ? "active" : ""}`
-              }
+              to="/to-do/upcoming"
+              className={`sidebar-link ${isActive("/to-do/", false) ? "active" : ""}`}
             >
               <FiCheckSquare className="sidebar-icon" />
               {isExpanded && <span className="sidebar-text">To-do</span>}
@@ -58,23 +62,18 @@ const SchoolSidebar = ({ isExpanded }) => {
                 <>
                   <span className="sidebar-text">Offices</span>
                   <IoChevronDown
-                    className={`dropdown-icon ${
-                      openDropdown === "offices" ? "open" : ""
-                    }`}
+                    className={`dropdown-icon ${openDropdown === "offices" ? "open" : ""}`}
                   />
                 </>
               )}
             </button>
 
-            {/* Dropdown items */}
             {isExpanded && openDropdown === "offices" && (
               <ul className="sidebar-submenu">
                 <li>
                   <NavLink
                     to="/SGOD"
-                    className={({ isActive }) =>
-                      `sidebar-link sub-link ${isActive ? "active" : ""}`
-                    }
+                    className={`sidebar-link sub-link ${isActive("/SGOD") ? "active" : ""}`}
                   >
                     <span className="sidebar-text">SGOD (School Gover…)</span>
                   </NavLink>
@@ -86,8 +85,8 @@ const SchoolSidebar = ({ isExpanded }) => {
           {/* Manage Account */}
           <li>
             <NavLink
-              to="/manage-account"
-              className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+              to="/s-manage-account"
+              className={`sidebar-link ${isActive("/manage-account") ? "active" : ""}`}
             >
               <MdManageAccounts className="sidebar-icon" />
               {isExpanded && <span className="sidebar-text">Manage Account</span>}

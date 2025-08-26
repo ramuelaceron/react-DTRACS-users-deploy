@@ -1,4 +1,4 @@
-// src/pages/TaskDetail/TaskDetailPage.js
+
 import React, { useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./TaskDetailPage.css";
@@ -15,15 +15,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useClickOutside from "../../hooks/useClickOutside";
 import { sectionData } from "../../data/focals";
+import { createSlug } from '../../utils/idGenerator';
 
-// Utility to create slug
-const createSlug = (str) => {
-  return str
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-');
-};
 
 const TaskDetailPage = () => {
   const navigate = useNavigate();

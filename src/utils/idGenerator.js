@@ -8,3 +8,12 @@ export const idFromName = (name) => {
     .trim()
     .replace(/\s+/g, "-");     // replace spaces with dashes
 };
+
+
+export const createSlug = (str) => {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+};
