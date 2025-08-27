@@ -3,6 +3,7 @@ import avatarImg2 from '../assets/images/avatar2.png';
 
 // 🔐 School User
 export const schoolAccountData = {
+  id: 1,
   avatar: avatarImg1,
   firstName: "Juan",
   middleName: "Ponce",
@@ -17,6 +18,7 @@ export const schoolAccountData = {
 
 // 🔐 Office User
 export const officeAccountData = {
+  id: 1,
   avatar: avatarImg2,
   firstName: "Isidra",
   middleName: "Lopez",

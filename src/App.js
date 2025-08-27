@@ -18,6 +18,7 @@ import Upcoming from "./pages/Todo/Upcoming/Upcoming";
 import TaskListPage from "./pages/TaskListPage/TaskListPage";
 import TaskDetailPage from "./pages/TaskDetailPage/TaskDetailPage";
 import ManageAccount from "./pages/ManageAccount/ManageAccount";
+import AccountDisplay from "./pages/Schools/AccountDisplay/AccountDisplay"
 
 // 🔽 Import moved component
 import ToDoPage from "./pages/Todo/ToDoPage/ToDoPage";
@@ -59,6 +60,7 @@ function App() {
       <Route element={<OfficeHome />}>
         <Route path="/task" element={<OfficeDashboard />} />
         <Route path="/schools" element={<Schools />} />
+        <Route path="/schools/:schoolSlug" element={<AccountDisplay />} />
         <Route path="/o-manage-account" element={<ManageAccount />} />
       </Route>
 
