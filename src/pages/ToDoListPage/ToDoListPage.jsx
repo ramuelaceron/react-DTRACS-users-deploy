@@ -3,7 +3,7 @@ import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { sectionData } from '../../data/focals';
 import { createSlug } from '../../utils/idGenerator';
-import './TaskListPage.css';
+import './ToDoListPage.css';
 
 const TaskListPage = () => {
   const { sectionId } = useParams();

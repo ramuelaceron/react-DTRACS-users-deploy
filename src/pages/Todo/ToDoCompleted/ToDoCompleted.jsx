@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
-import "./Completed.css";
+import "./ToDoCompleted.css";
 
 // Helper: Convert date string to Date object for sorting
 const parseDate = (dateStr) => {

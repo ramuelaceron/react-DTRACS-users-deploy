@@ -1,9 +1,9 @@
-// src/pages/Todo/PastDue/PastDue.jsx
+// src/pages/Todo/Upcoming/Upcoming.jsx
 import React, { useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
-import "./PastDue.css";
+import "./ToDoUpcoming.css";
 
 // Helper: Convert date string to Date object for sorting
 const parseDate = (dateStr) => {
@@ -36,12 +36,15 @@ const getWeekday = (dateStr) => {
   return date.toLocaleDateString("en-US", { weekday: "long" });
 };
 
-const PastDue = () => {
-  // ✅ Get pre-filtered past-due tasks from ToDoPage layout
-  const { pastDueTasks } = useOutletContext();
+const Upcoming = () => {
+  // ✅ Get pre-filtered upcoming tasks from ToDoPage layout
+  const { upcomingTasks } = useOutletContext();
+
+  // ✅ No local state for filtering — it's already done in ToDoPage
+  const hasUpcomingTasks = upcomingTasks.length > 0;
 
   // Group tasks by postDate
-  const groupedByDate = pastDueTasks.reduce((groups, task) => {
+  const groupedByDate = upcomingTasks.reduce((groups, task) => {
     const date = task.postDate;
     if (!groups[date]) groups[date] = [];
     groups[date].push(task);
@@ -51,7 +54,7 @@ const PastDue = () => {
   // Sort dates: newest first
   const sortedDates = Object.keys(groupedByDate).sort((a, b) => parseDate(b) - parseDate(a));
 
-  // Track open/closed state for each group
+  // Track open/closed state for each date group
   const [openGroups, setOpenGroups] = useState(() =>
     sortedDates.reduce((acc, date) => ({ ...acc, [date]: true }), {})
   );
@@ -64,9 +67,10 @@ const PastDue = () => {
   };
 
   return (
-    <div className="pastdue-app">
-      <main className="pastdue-main">
-        {/* ❌ Removed: <TaskTabs /> — already in ToDoPage layout */}
+    <div className="upcoming-app">
+      <main className="upcoming-main">
+        {/* ✅ TaskTabs is rendered in ToDoPage, so no need to include it here */}
+        {/* ❌ Remove: <TaskTabs /> — it's already in the layout above */}
 
         {/* Task List Grouped by postDate */}
         {sortedDates.length > 0 ? (
@@ -76,19 +80,19 @@ const PastDue = () => {
             const isOpen = openGroups[date];
 
             return (
-              <div key={date} className="pastdue-date-group">
+              <div key={date} className="upcoming-date-group">
                 <div
-                  className="pastdue-date-header"
+                  className="upcoming-date-header"
                   onClick={() => toggleGroup(date)}
                   style={{ cursor: "pointer", userSelect: "none" }}
                 >
-                  <span className="pastdue-date-bold">{date}</span>
-                  <span className="pastdue-weekday"> ({weekday})</span>
+                  <span className="upcoming-date-bold">{date}</span>
+                  <span className="upcoming-weekday"> ({weekday})</span>
 
                   <div className="header-actions">
-                    <span className="pastdue-task-count">{tasks.length}</span>
+                    <span className="upcoming-task-count">{tasks.length}</span>
                     <span
-                      className="pastdue-dropdown-arrow"
+                      className="upcoming-dropdown-arrow"
                       aria-label={isOpen ? "Collapse" : "Expand"}
                     >
                       {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
@@ -97,32 +101,32 @@ const PastDue = () => {
                 </div>
 
                 {isOpen && (
-                  <div className="pastdue-task-list">
+                  <div className="upcoming-task-list">
                     {tasks.map((task) => (
                       <Link
                         to={`/SGOD/${task.sectionId}/task-list/${task.taskSlug}`}
-                        className="pastdue-task-link"
+                        className="upcoming-task-link"
                         key={task.id}
                       >
-                        <div className="pastdue-card">
-                          <div className="pastdue-card-content">
-                            <div className="pastdue-card-text">
-                              <div className="pastdue-task-icon">
+                        <div className="upcoming-card">
+                          <div className="upcoming-card-content">
+                            <div className="upcoming-card-text">
+                              <div className="upcoming-task-icon">
                                 <PiClipboardTextBold className="icon-lg" />
                               </div>
                               <div>
-                                <div className="pastdue-card-title">
+                                <div className="upcoming-card-title">
                                   {task.title}
                                 </div>
-                                <div className="pastdue-card-meta">
-                                  <span className="pastdue-office">
+                                <div className="upcoming-card-meta">
+                                  <span className="upcoming-office">
                                     {task.office}
                                   </span>
                                 </div>
                               </div>
                             </div>
 
-                            <div className="pastdue-card-deadline">
+                            <div className="upcoming-card-deadline">
                               <span className="deadline-text">
                                 Due on {task.dueDate} at{" "}
                                 <span className="time">{task.dueTime}</span>
@@ -138,11 +142,13 @@ const PastDue = () => {
             );
           })
         ) : (
-          <div className="pastdue-no-tasks">No past-due tasks.</div>
+          <div className="upcoming-no-tasks">
+            No upcoming tasks
+          </div>
         )}
       </main>
     </div>
   );
 };
 
-export default PastDue;
+export default Upcoming;

@@ -2,7 +2,6 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import OfficeSidebar from "../../components/Sidebar/OfficeSidebar";
-//import Footer from "../../components/Footer/Footer";
 import "./OfficeHome.css";
 import { useSidebar } from "../../context/SidebarContext";
 
