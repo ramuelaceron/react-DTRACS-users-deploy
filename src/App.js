@@ -8,7 +8,7 @@ import Login from "./pages/Login/Login";
 import RegisterSchool from "./pages/Register/RegisterSchool";
 import RegisterOffice from "./pages/Register/RegisterOffice";
 import SchoolHome from "./pages/Home/SchoolHome";
-import Schools from "./pages/School/School";
+import Schools from "./pages/Schools/Schools";
 import OfficeHome from "./pages/Home/OfficeHome";
 import SchoolDashboard from "./pages/Dashboard/SchoolDashboard";
 import OfficeDashboard from "./pages/Dashboard/OfficeDashboard";
