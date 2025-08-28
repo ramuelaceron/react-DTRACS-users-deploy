@@ -70,7 +70,7 @@ const Login = () => {
     if (isSchoolPath) {
       navigate("/home");
     } else if (isOfficePath) {
-      navigate("/task");
+      navigate("/task/ongoing");
     } else {
       navigate("/home");
     }

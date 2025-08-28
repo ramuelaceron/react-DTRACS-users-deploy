@@ -1,5 +1,5 @@
 /* src/components/TaskTabs/TaskTabs.css */
-.task-tabs-container {
+.todo-tabs-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -9,13 +9,13 @@
   margin-left: 20px;
 }
 
-.task-tabs {
+.todo-tabs {
   display: flex;
   gap: 20px;
 }
 
 /* Tab Link Base Style */
-.task-tab {
+.todo-tab {
   padding: 10px 0;
   color: #003366;
   font-size: 15px;
@@ -28,7 +28,7 @@
 }
 
 /* Pseudo-element for smooth underline */
-.task-tab::after {
+.todo-tab::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -41,17 +41,17 @@
 }
 
 /* Active tab: grow the underline to full width */
-.task-tab.active::after {
+.todo-tab.active::after {
   width: 100%;
 }
 
 /* Optional: Keep text bold in active state */
-.task-tab.active {
+.todo-tab.active {
   font-weight: bold;
   color: #003366;
 }
 
-.task-indicator {
+.todo-indicator {
   position: absolute;
   top: 8px;
   right: -12px;
@@ -61,11 +61,15 @@
   pointer-events: none; /* Prevent interference */
 }
 
-.task-red {
+.todo-blue {
+  background-color: blue;
+}
+
+.todo-red {
   background-color: red;
 }
 
-.task-dropdown {
+.todo-dropdown {
   padding: 8px 32px 8px 12px; /* LTR: left, top, right, bottom */
   border: 1px solid #ccc;
   border-radius: 4px;

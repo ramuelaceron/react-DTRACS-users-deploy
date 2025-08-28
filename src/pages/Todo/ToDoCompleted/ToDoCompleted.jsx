@@ -26,7 +26,7 @@ const getWeekday = (dateStr) => {
   return date.toLocaleDateString("en-US", { weekday: "long" });
 };
 
-const Completed = () => {
+const ToDoCompleted = () => {
   // ✅ Get pre-filtered completed tasks from ToDoPage layout
   const { completedTasks } = useOutletContext();
 
@@ -135,4 +135,4 @@ const Completed = () => {
   );
 };
 
-export default Completed;
+export default ToDoCompleted;

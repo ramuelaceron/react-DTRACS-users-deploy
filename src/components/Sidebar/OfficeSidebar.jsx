@@ -9,6 +9,13 @@ import { useSidebar } from "../../context/SidebarContext";
 const OfficeSidebar = ({ isExpanded }) => {
   const { isExpanded: expanded } = useSidebar();
 
+const isActive = (path, exact = true) => {
+    if (exact) {
+      return location.pathname === path;
+    }
+    return location.pathname.startsWith(path);
+};
+
   return (
     <aside className={`sidebar ${isExpanded ? "expanded" : ""}`}>
       <nav className="sidebar-nav">
@@ -16,11 +23,8 @@ const OfficeSidebar = ({ isExpanded }) => {
           {/* Task */}
           <li>
             <NavLink
-              to="/task"
-              className={({ isActive }) =>
-                `sidebar-link ${isActive ? "active" : ""}`
-              }
-              end
+              to="/task/ongoing"
+              className={`sidebar-link ${isActive("/task/", false) ? "active" : ""}`}
             >
               <FaTasks className="sidebar-icon" />
               {isExpanded && <span className="sidebar-text">Task</span>}

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import './TaskTabs.css';
+import './ToDoTabs.css';
 
-const TaskTabs = ({ 
+const ToDoTabs = ({ 
   selectedOffice, 
   onOfficeChange, 
   allOffices = [], 
@@ -28,31 +28,31 @@ const TaskTabs = ({
   }, [location.pathname]);
 
   return (
-    <div className="task-tabs-container">
-      <div className="task-tabs">
+    <div className="todo-tabs-container">
+      <div className="todo-tabs">
         <Link
-          ref={(el) => (tabsRef.current['/task/ongoing'] = el)}
-          to="/task/ongoing"
-          className={`task-tab ${isActive('/task/ongoing') ? 'active' : ''}`}
+          ref={(el) => (tabsRef.current['/to-do/upcoming'] = el)}
+          to="/to-do/upcoming"
+          className={`todo-tab ${isActive('/to-do/upcoming') ? 'active' : ''}`}
         >
-          Ongoing
-          {showUpcomingIndicator && <span className="task-indicator task-blue"></span>}
+          Upcoming
+          {showUpcomingIndicator && <span className="todo-indicator todo-blue"></span>}
         </Link>
         <Link
-          ref={(el) => (tabsRef.current['/task/incomplete'] = el)}
-          to="/task/incomplete"
-          className={`task-tab ${isActive('/task/incomplete') ? 'active' : ''}`}
+          ref={(el) => (tabsRef.current['/to-do/past-due'] = el)}
+          to="/to-do/past-due"
+          className={`todo-tab ${isActive('/to-do/past-due') ? 'active' : ''}`}
         >
-          Incomplete
-          {showPastDueIndicator && <span className="task-indicator task-red"></span>}
+          Past due
+          {showPastDueIndicator && <span className="todo-indicator todo-red"></span>}
         </Link>
         <Link
-          ref={(el) => (tabsRef.current['/task/history'] = el)}
-          to="/task/history"
-          className={`task-tab ${isActive('/task/history') ? 'active' : ''}`}
+          ref={(el) => (tabsRef.current['/to-do/completed'] = el)}
+          to="/to-do/completed"
+          className={`todo-tab ${isActive('/to-do/completed') ? 'active' : ''}`}
         >
-          History
-          {showCompletedIndicator && <span className="task-indicator task-green"></span>}
+          Completed
+          {showCompletedIndicator && <span className="todo-indicator todo-green"></span>}
         </Link>
 
         {/* Sliding underline that persists */}
@@ -60,7 +60,7 @@ const TaskTabs = ({
       </div>
 
       <select
-        className="task-dropdown"
+        className="todo-dropdown"
         value={selectedOffice}
         onChange={(e) => onOfficeChange(e.target.value)}
       >
@@ -75,4 +75,4 @@ const TaskTabs = ({
   );
 };
 
-export default TaskTabs;
+export default ToDoTabs;

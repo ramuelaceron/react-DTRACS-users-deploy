@@ -1,7 +1,7 @@
 // src/layouts/ToDoLayout.jsx
 import React, { useMemo, useState } from "react";
 import { Outlet } from "react-router-dom";
-import TaskTabs from "../../../components/TaskTabs/TaskTabs";
+import ToDoTabs from "../../../components/ToDoTabs/ToDoTabs";
 import { sectionData } from "../../../data/focals";
 import { createSlug } from "../../../utils/idGenerator";
 import "./ToDoPage.css"; // <-- Add this
@@ -57,7 +57,7 @@ const ToDoPage = () => {
 
   return (
     <div className="todo-layout">
-      <TaskTabs
+      <ToDoTabs
         selectedOffice={selectedOffice}
         onOfficeChange={setSelectedOffice}
         allOffices={allOffices}

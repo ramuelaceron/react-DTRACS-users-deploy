@@ -1,0 +1,207 @@
+/* Main App Container - Upcoming */
+.ongoing-app {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+}
+
+/* Main Content - Upcoming */
+.ongoing-main {
+  flex: 1;
+  padding: 0;
+  background-color: #ffffff;
+  border: none;
+  overflow-y: auto;
+  padding-top: 30px;
+}
+
+/* Date Header - Upcoming */
+.ongoing-date-header {
+  font-size: 16px;
+  color: #000;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ongoing-weekday{
+  color: #999;
+  font-weight: normal;
+}
+
+/* Make the date bold */
+.ongoing-date-bold {
+  font-weight: bold;
+}
+
+/* Task Link - Upcoming */
+.ongoing-task-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* Task Card - Upcoming (with hover effect) */
+.ongoing-card {
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.ongoing-card:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Flex container to vertically align content */
+.ongoing-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  gap: 12px;
+}
+
+/* Task title and meta */
+.ongoing-card-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Due Date & Time - Vertically centered, aligned right */
+.ongoing-card-deadline {
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 12px;
+  color: #555;
+  white-space: nowrap;
+}
+
+.ongoing-card-deadline .time {
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 12px;
+  color: #555;
+  white-space: nowrap;
+}
+
+/* Task Title - Upcoming */
+.ongoing-card-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+/* Optional: Office label below title */
+.ongoing-card-meta {
+  font-size: 14px;
+  color: #555;
+  margin-top: 4px;
+}
+
+.ongoing-office {
+  font-weight: 500;
+  color: #203061;
+}
+
+/* No tasks message */
+.ongoing-no-tasks {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  margin-top: 20px;
+}
+
+/* Header Actions - Right side */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+/* Task Count - Blue number */
+.ongoing-task-count {
+  font-size: 12px;
+  margin-right: 10px;
+  color: #2196f3;
+  font-weight: bold;
+}
+/* Dropdown Arrow - With hover circle */
+.ongoing-dropdown-arrow {
+  font-size: 20px;
+  color: #2196f3;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  position: relative;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+/* Hover Circle */
+.ongoing-dropdown-arrow::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: -1;
+}
+
+.ongoing-dropdown-arrow:hover::after {
+  opacity: 1;
+}
+
+.ongoing-dropdown-arrow:hover {
+  transform: scale(1.2);
+}
+
+.ongoing-dropdown-arrow svg {
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+}
+
+.ongoing-task-icon {
+  background: #2196f3;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.ongoing-task-icon svg {
+  width: 20px;
+  height: 20px;
+}

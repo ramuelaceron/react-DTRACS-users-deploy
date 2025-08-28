@@ -65,17 +65,17 @@ function App() {
 
       {/* Office Protected Routes */}
       <Route element={<OfficeHome />}>
-        <Route path="/task" element={<TaskPage />} >
-          <Route path="ongoing" element={<TaskOngoing />} >
-            <Route path="ongoing/:taskSlug" element={<TaskDetailPage />} />
-          </Route>
-          <Route path="incomplete" element={<TaskIncomplete />} >
-            <Route path="incomplete/:taskSlug" element={<TaskDetailPage />} />
-          </Route>
-          <Route path="history" element={<TaskHistory />} >
-            <Route path="incomplete/:taskSlug" element={<TaskDetailPage />} />
-          </Route>
+      <Route path="/task" element={<TaskPage />}>
+        <Route path="ongoing" element={<TaskOngoing />}>
+          <Route path=":taskSlug" element={<TaskDetailPage />} />
         </Route>
+        <Route path="incomplete" element={<TaskIncomplete />}>
+          <Route path=":taskSlug" element={<TaskDetailPage />} />
+        </Route>
+        <Route path="history" element={<TaskHistory />}>
+          <Route path=":taskSlug" element={<TaskDetailPage />} />
+        </Route>
+      </Route>
         
         <Route path="/schools" element={<Schools />} />
         <Route path="/schools/:schoolSlug" element={<AccountDisplay />} />

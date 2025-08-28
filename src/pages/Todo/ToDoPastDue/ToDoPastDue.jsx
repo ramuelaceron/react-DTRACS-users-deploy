@@ -36,7 +36,7 @@ const getWeekday = (dateStr) => {
   return date.toLocaleDateString("en-US", { weekday: "long" });
 };
 
-const PastDue = () => {
+const ToDoPastDue = () => {
   // ✅ Get pre-filtered past-due tasks from ToDoPage layout
   const { pastDueTasks } = useOutletContext();
 
@@ -145,4 +145,4 @@ const PastDue = () => {
   );
 };
 
-export default PastDue;
+export default ToDoPastDue;

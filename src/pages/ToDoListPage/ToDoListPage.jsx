@@ -5,7 +5,7 @@ import { sectionData } from '../../data/focals';
 import { createSlug } from '../../utils/idGenerator';
 import './ToDoListPage.css';
 
-const TaskListPage = () => {
+const ToDoListPage = () => {
   const { sectionId } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -92,4 +92,4 @@ const TaskListPage = () => {
   );
 };
 
-export default TaskListPage;
+export default ToDoListPage;

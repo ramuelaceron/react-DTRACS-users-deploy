@@ -17,7 +17,7 @@ import useClickOutside from "../../hooks/useClickOutside";
 import { sectionData } from "../../data/focals";
 import { createSlug } from "../../utils/idGenerator";
 
-const TaskDetailPage = () => {
+const ToDoDetailPage = () => {
   const navigate = useNavigate();
   const { sectionId, taskSlug } = useParams();
 
@@ -348,4 +348,4 @@ const TaskDetailPage = () => {
   );
 };
 
-export default TaskDetailPage;
+export default ToDoDetailPage;

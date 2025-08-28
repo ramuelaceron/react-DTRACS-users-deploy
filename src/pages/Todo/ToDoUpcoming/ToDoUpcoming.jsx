@@ -36,7 +36,7 @@ const getWeekday = (dateStr) => {
   return date.toLocaleDateString("en-US", { weekday: "long" });
 };
 
-const Upcoming = () => {
+const ToDoUpcoming = () => {
   // ✅ Get pre-filtered upcoming tasks from ToDoPage layout
   const { upcomingTasks } = useOutletContext();
 
@@ -69,9 +69,6 @@ const Upcoming = () => {
   return (
     <div className="upcoming-app">
       <main className="upcoming-main">
-        {/* ✅ TaskTabs is rendered in ToDoPage, so no need to include it here */}
-        {/* ❌ Remove: <TaskTabs /> — it's already in the layout above */}
-
         {/* Task List Grouped by postDate */}
         {sortedDates.length > 0 ? (
           sortedDates.map((date) => {
@@ -151,4 +148,4 @@ const Upcoming = () => {
   );
 };
 
-export default Upcoming;
+export default ToDoUpcoming;

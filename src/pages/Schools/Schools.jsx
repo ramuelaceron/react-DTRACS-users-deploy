@@ -6,7 +6,7 @@ import { FaRegUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 
-const School = () => {
+const Schools = () => {
   return (
     <div className="admin-section">
       {/* Header */}
@@ -45,4 +45,4 @@ const School = () => {
   );
 };
 
-export default School;
+export default Schools;
