@@ -22,12 +22,12 @@ const Schools = () => {
             <div className="school-info">
               <img
                 src={school.logo}
-                alt={`${school.name} logo`}
+                alt={`${school.school_name} logo`}
                 className="school-logo"
               />
               <div className="school-text">
-                <span className="schoolname">{school.name}</span>
-                <p className="school-address">{school.schoolAddress}</p>
+                <span className="schoolname">{school.school_name}</span>
+                <p className="school-address">{school.school_address}</p>
               </div>
             </div>
 

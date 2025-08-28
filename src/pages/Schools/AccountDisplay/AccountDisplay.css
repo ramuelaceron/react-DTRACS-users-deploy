@@ -112,3 +112,10 @@
   text-align: right;
   margin-top: 15px;
 }
+
+.no-accounts{
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  margin-top: 20px;
+}

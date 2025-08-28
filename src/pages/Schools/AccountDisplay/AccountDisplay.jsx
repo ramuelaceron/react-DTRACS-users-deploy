@@ -8,15 +8,6 @@ const AccountDisplay = () => {
   const { schoolSlug } = useParams();
   const school = schoolAccounts.find(s => s.slug === schoolSlug);
 
-  if (!school) {
-    return (
-      <div className="account-section">
-        <h2>School Not Found</h2>
-        <p>The school you're looking for doesn't exist.</p>
-      </div>
-    );
-  }
-
   const hasAccounts = school.accounts && school.accounts.length > 0;
 
   return (
@@ -24,10 +15,10 @@ const AccountDisplay = () => {
       {/* Header */}
       <div className="account-header">
         <div className="account-header-info">
-          <img src={school.logo} alt={`${school.name} logo`} className="account-header-logo" />
+          <img src={school.logo} alt={`${school.school_name} logo`} className="account-header-logo" />
           <div>
-            <h2 className="account-title">{school.name}</h2>
-            <p className="account-subtitle">{school.schoolAddress}</p>
+            <h2 className="account-title">{school.school_name}</h2>
+            <p className="account-subtitle">{school.school_address}</p>
           </div>
         </div>
       </div>
@@ -41,7 +32,7 @@ const AccountDisplay = () => {
                 <img src={account.avatar} alt="" className="account-logo" />
                 <div className="account-text">
                   <span className="accountname">
-                    {account.firstName} {account.middleName ? `${account.middleName} ` : ""}{account.lastName}
+                    {account.first_name} {account.middle_name ? `${account.middle_name} ` : ""}{account.last_name}
                   </span>
                   <p className="account-address">{account.position}</p>
                 </div>
