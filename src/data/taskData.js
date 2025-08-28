@@ -1,4 +1,4 @@
-import { idFromName } from "../utils/idGenerator";
+
 import avatar2 from '../assets/images/avatar2.png';
 
 export const taskData = {
