@@ -8,11 +8,12 @@ const ProfileInfoCard = ({ userData, isEditing, toggleEditMode }) => {
   const fields = [
     { key: 'position', label: 'Position', value: userData.position },
     { key: 'office', label: 'Office', value: userData.office },
+    { key: 'Section', label: 'Section', value: userData.section_designation },
     { key: 'email', label: 'Email', value: userData.email },
-    { key: 'contactNumber', label: 'Contact Number', value: userData.contactNumber },
-    { key: 'school', label: 'School', value: userData.school },
-    { key: 'Address', label: 'Address', value: userData.Address }, // Note: capital "A"
-    { key: 'schoolAddress', label: 'School Address', value: userData.schoolAddress },
+    { key: 'contactNumber', label: 'Contact Number', value: userData.contact_number },
+    { key: 'school', label: 'School', value: userData.school_name },
+    { key: 'Address', label: 'Address', value: userData.address }, // Note: capital "A"
+    { key: 'schoolAddress', label: 'School Address', value: userData.school_address },
   ].filter(field => field.value); // ✅ Only show fields with a value
   return (
     <div className="profile-info-card">
@@ -26,7 +27,7 @@ const ProfileInfoCard = ({ userData, isEditing, toggleEditMode }) => {
         <div className="profile-row">
           <span className="label">Name:</span>
           <span className="value">
-            {userData.firstName} {userData.middleName} {userData.lastName}
+            {userData.first_name} {userData.middle_name} {userData.last_name}
           </span>
         </div>
 

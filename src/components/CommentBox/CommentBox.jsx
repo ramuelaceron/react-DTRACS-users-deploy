@@ -31,6 +31,7 @@ const CommentBox = ({ onSubmit, disabled }) => {
 
     const content = quillRef.current.getHTML();
     onSubmit(content);
+    
 
     // Reset editor
     setHtmlContent('');
@@ -40,7 +41,7 @@ const CommentBox = ({ onSubmit, disabled }) => {
   return (
     <div className="comment-box">
       <div className="comment-input-container">
-        {/* ✅ Show user avatar or fallback */}
+        {/* Avatar */}
         <div className="comment-avatar">
           {currentUser?.avatar ? (
             <img
@@ -54,6 +55,13 @@ const CommentBox = ({ onSubmit, disabled }) => {
         </div>
 
         <div className="comment-input-wrapper">
+          {/* ✅ Show Full Name */}
+          {currentUser?.fullName && (
+            <div className="comment-user-name">
+              {currentUser.fullName}
+            </div>
+          )}
+
           <div className="comment-editor-container">
             <RichTextEditor
               ref={quillRef}

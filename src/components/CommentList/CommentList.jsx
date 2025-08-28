@@ -1,10 +1,10 @@
-
+import React from 'react';
 import './CommentList.css';
 import RichTextEditor from '../RichTextEditor/RichTextEditor';
 import { FaEdit, FaTrash, FaSave, FaEllipsisV } from "react-icons/fa";
 import useClickOutside from '../../hooks/useClickOutside';
 import DOMPurify from 'dompurify';
-import { userAvatars } from '../../data/account'; // ✅ Import map
+import { userAvatars } from '../../data/accountData'; // ✅ Import map
 
 const CommentList = ({
   comments,
@@ -29,8 +29,8 @@ const CommentList = ({
         // ✅ Normalize lookup keys
         const author = c.author?.trim();
         const email = c.email?.trim();
-        const firstName = c.firstName?.trim();
-        const lastName = c.lastName?.trim();
+        const firstName = c.first_name?.trim();
+        const lastName = c.last_name?.trim();
 
         let avatar = null;
 

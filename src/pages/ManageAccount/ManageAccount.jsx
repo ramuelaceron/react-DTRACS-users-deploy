@@ -12,7 +12,7 @@ import ProfileInfoCard from '../../components/ProfileInfoCard/ProfileInfoCard';
 import ProfileAvatar from '../../components/ProfileAvatar/ProfileAvatar';
 
 // 🔽 Import both account templates (for fallback structure)
-import { schoolAccountData, officeAccountData } from '../../data/account';
+import { schoolAccountData, focalAccountData } from '../../data/accountData';
 
 const ManageAccount = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -46,16 +46,16 @@ const ManageAccount = () => {
 
     // 🔍 Determine which template to use
     const accountData =
-      user.role === "school" ? { ...schoolAccountData } : { ...officeAccountData };
+      user.role === "school" ? { ...schoolAccountData } : { ...focalAccountData };
 
     // Merge session data with template
     const mergedData = {
       ...accountData,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      middleName: user.middleName || "",
+      first_name: user.first_name,
+      last_name: user.last_name,
+      middle_name: user.middle_name || "",
       email: user.email,
-      contactNumber: user.contactNumber || accountData.contactNumber,
+      contact_number: user.contact_number || accountData.contact_number,
       avatar: user.avatar,
     };
 
@@ -79,7 +79,7 @@ const ManageAccount = () => {
   };
 
   const openContactForm = () => {
-    setTempContact(userData.contactNumber);
+    setTempContact(userData.contact_number);
     setShowContactForm(true);
   };
 
@@ -87,9 +87,9 @@ const ManageAccount = () => {
   const hasNameChanges = () => {
     if (!tempName) return false;
     return (
-      tempName.firstName.trim() !== userData.firstName.trim() ||
-      tempName.middleName.trim() !== userData.middleName.trim() ||
-      tempName.lastName.trim() !== userData.lastName.trim()
+      tempName.first_name.trim() !== userData.first_name.trim() ||
+      tempName.middle_name.trim() !== userData.middle_name.trim() ||
+      tempName.last_name.trim() !== userData.last_name.trim()
     );
   };
 
@@ -100,7 +100,7 @@ const ManageAccount = () => {
 
   const hasContactChanges = () => {
     if (!tempContact) return false;
-    return tempContact.trim() !== userData.contactNumber.trim();
+    return tempContact.trim() !== userData.contact_number.trim();
   };
 
   // Confirm discard
@@ -120,12 +120,12 @@ const ManageAccount = () => {
 
   // Save handlers
   const handleSaveName = () => {
-    if (tempName.firstName.trim() && tempName.lastName.trim()) {
+    if (tempName.first_name.trim() && tempName.last_name.trim()) {
       const updated = {
         ...userData,
-        firstName: tempName.firstName.trim(),
-        middleName: tempName.middleName?.trim() || '',
-        lastName: tempName.lastName.trim(),
+        first_name: tempName.first_name.trim(),
+        middle_name: tempName.middle_name?.trim() || '',
+        last_name: tempName.last_name.trim(),
       };
       setUserData(updated);
       // Update session
@@ -162,7 +162,7 @@ const ManageAccount = () => {
 
   const handleSaveContact = () => {
     if (tempContact.trim()) {
-      const updated = { ...userData, contactNumber: tempContact.trim() };
+      const updated = { ...userData, contact_number: tempContact.trim() };
       setUserData(updated);
       // No need to update session for contact only (unless used elsewhere)
       toast.success("Contact number updated successfully!");

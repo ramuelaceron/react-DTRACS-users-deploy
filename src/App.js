@@ -30,7 +30,7 @@ import TaskPage from "./pages/Task/TaskPage/TaskPage"
 import TaskOngoing from "./pages/Task/TaskOngoing/TaskOngoing"
 import TaskIncomplete from "./pages/Task/TaskIncomplete/TaskIncomplete"
 import TaskHistory from "./pages/Task/TaskHistory/TaskHistory"
-import TaskDetailPage from "./pages/TaskDetailPage/TaskdetailPage"
+import TaskDetailPage from "./pages/TaskDetailPage/TaskDetailPage"
 
 
 function App() {

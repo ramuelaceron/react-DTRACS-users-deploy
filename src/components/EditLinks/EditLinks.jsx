@@ -49,27 +49,27 @@ const EditLinks = ({
 								<label>First Name:</label>
 								<input
 									type="text"
-									value={tempName?.firstName || ''}
-									onChange={(e) => setTempName(prev => ({ ...prev, firstName: e.target.value }))}
-									placeholder="Juan"
+									value={tempName?.first_name || ''}
+									onChange={(e) => setTempName(prev => ({ ...prev, first_name: e.target.value }))}
+									placeholder="First Name"
 								/>
 							</div>
 							<div className="form-group">
 								<label>Middle Name:</label>
 								<input
 									type="text"
-									value={tempName?.middleName || ''}
-									onChange={(e) => setTempName(prev => ({ ...prev, middleName: e.target.value }))}
-									placeholder="Ponce"
+									value={tempName?.middle_name || ''}
+									onChange={(e) => setTempName(prev => ({ ...prev, middle_name: e.target.value }))}
+									placeholder="Middle Name "
 								/>
 							</div>
 							<div className="form-group">
 								<label>Last Name:</label>
 								<input
 									type="text"
-									value={tempName?.lastName || ''}
-									onChange={(e) => setTempName(prev => ({ ...prev, lastName: e.target.value }))}
-									placeholder="Dela Cruz"
+									value={tempName?.last_name || ''}
+									onChange={(e) => setTempName(prev => ({ ...prev, last_name: e.target.value }))}
+									placeholder="Last Name"
 								/>
 							</div>
 						</div>

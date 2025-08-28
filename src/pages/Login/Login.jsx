@@ -7,7 +7,7 @@ import ParticleBackground from "../../components/ParticleBackground/Particle2.js
 import logo from "../../assets/images/logo-w-text.png";
 
 // 🔽 Import account data
-import { loginAccounts, schoolAccountData, officeAccountData } from "../../data/account";
+import { loginAccounts, schoolAccountData, focalAccountData } from "../../data/accountData";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -47,7 +47,7 @@ const Login = () => {
       return;
     }
 
-    if (isOfficePath && user.email !== officeAccountData.email) {
+    if (isOfficePath && user.email !== focalAccountData.email) {
       setError("This account is not authorized for Office access.");
       return;
     }
@@ -58,10 +58,10 @@ const Login = () => {
     // Store user in session (optional)
     sessionStorage.setItem("currentUser", JSON.stringify({
       email: user.email,
-      firstName: user.firstName,
-      middleName: user.middleName,
-      lastName: user.lastName,
-      contactNumber: user.contactNumber,
+      first_name: user.first_name,
+      middle_name: user.middle_name,
+      last_name: user.last_name,
+      contact_number: user.contact_number,
       avatar: user.avatar,
       role: isSchoolPath ? "school" : "office", // ✅ This is critical
     }));

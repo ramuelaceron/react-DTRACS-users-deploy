@@ -30,7 +30,7 @@ const RichTextEditor = React.forwardRef(({ value, onChange, placeholder, readOnl
               handler: (range, context) => {
                 // Allow shift+enter for newline, or prevent if needed
                 if (!context.collapsed) {
-                  const delta = new Delta().del(context.length);
+                  const delta = new delta().del(context.length);
                   editor.updateContents(delta, 'user');
                 }
                 const line = editor.getLine(range.index);

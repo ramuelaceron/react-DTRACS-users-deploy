@@ -136,9 +136,9 @@ const ToDoDetailPage = () => {
   const savedUser = sessionStorage.getItem("currentUser");
   const currentUser = savedUser
     ? JSON.parse(savedUser)
-    : { firstName: "Unknown", lastName: "User", middleName: "", email: "unknown@deped.gov.ph" };
+    : { first_name: "Unknown", last_Name: "User", middle_name: "", email: "unknown@deped.gov.ph" };
 
-  const fullName = `${currentUser.firstName} ${currentUser.middleName ? currentUser.middleName + " " : ""}${currentUser.lastName}`.trim();
+  const fullName = `${currentUser.first_name} ${currentUser.middle_name ? currentUser.middle_name + " " : ""}${currentUser.last_name}`.trim();
 
   const handleCommentSubmit = (html) => {
     if (!html || !html.trim() || html === "<p><br></p>") {
@@ -150,8 +150,8 @@ const ToDoDetailPage = () => {
       id: Date.now(),
       author: fullName,
       email: currentUser.email,
-      firstName: currentUser.firstName,
-      lastName: currentUser.lastName,
+      first_name: currentUser.first_name,
+      last_name: currentUser.last_name,
       time: new Date().toLocaleString("en-US", {
         month: "numeric",
         day: "numeric",
