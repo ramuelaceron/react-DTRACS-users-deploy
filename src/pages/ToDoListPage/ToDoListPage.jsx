@@ -1,7 +1,6 @@
-// src/pages/TaskList/TaskListPage.js
 import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { sectionData } from '../../data/focals';
+import { taskData } from '../../data/taskData';
 import { createSlug } from '../../utils/idGenerator';
 import './ToDoListPage.css';
 
@@ -11,42 +10,56 @@ const ToDoListPage = () => {
   const navigate = useNavigate();
 
   // Fallback values
-  const { title: focalTitle, focalPerson } = state || {};
-  const pageTitle = focalTitle || 'Task List';
-  const person = focalPerson || 'Unknown Focal';
+  const { section_designation, full_name } = state || {};
+  const pageTitle = section_designation || 'Task List';
+  const person = full_name || 'Unknown Focal';
 
   // 🔍 Find the section and the correct focal entry
-  const section = sectionData[sectionId];
+  const section = taskData[sectionId]; 
   let tasks = [];
   let avatar = null;
 
   if (section && Array.isArray(section)) {
     const focalEntry = section.find(
-      (item) => item.title === focalTitle && item.focalPerson === focalPerson
+      (item) => item.section_designation === section_designation && item.full_name === full_name
     );
 
     if (focalEntry) {
       tasks = focalEntry.tasklist || [];
-      avatar = focalEntry.avatar; // ✅ Use the real avatar
+      avatar = focalEntry.avatar;
     }
   }
 
   // Fallback avatar if not found
   if (!avatar) {
-    console.warn(`Avatar not found for ${focalTitle} - ${focalPerson}`);
+    console.warn(`Avatar not found for ${section_designation} - ${full_name}`);
     avatar = "https://via.placeholder.com/40"; // fallback
   }
 
+  // Function to extract time from ISO date string
+  const extractTimeFromDate = (dateString) => {
+    if (!dateString) return 'No deadline';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch (error) {
+      console.error('Error parsing date:', error);
+      return 'Invalid date';
+    }
+  };
+
   const handleViewTask = (task) => {
-    const slug = createSlug(task.title);
+    // Use the section_designation from state instead of task.section_designation
+    const slug = createSlug(section_designation);
     navigate(`${slug}`, {
       state: {
         ...state,
         taskTitle: task.title,
-        dueTime: task.dueTime,
-        dueDate: task.dueDate,
-        postDate: task.postDate,
+        deadline: task.deadline,
+        creation_date: task.creation_date,
         taskDescription: task.description,
+        taskId: task.task_id, // Include the task ID
       },
     });
   };
@@ -72,10 +85,10 @@ const ToDoListPage = () => {
       ) : (
         <div className="task-list">
           {tasks.map((task) => (
-            <div key={task.id} className="task-item">
+            <div key={task.task_id} className="task-item">
               <div className="task-content">
                 <h3>{task.title}</h3>
-                <p className="due-time">Due at {task.dueTime}</p>
+                <p className="due-time">Due at {extractTimeFromDate(task.deadline)}</p>
               </div>
               <button
                 className="view-task-btn"

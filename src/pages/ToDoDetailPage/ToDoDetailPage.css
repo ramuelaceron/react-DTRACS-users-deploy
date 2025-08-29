@@ -1,3 +1,5 @@
+/* ToDoDetailPage.css */
+
 /* Main App Container */
 .task-detail-app {
   font-family: Arial, sans-serif;
@@ -34,8 +36,8 @@
   gap: 8px;
   font-family: inherit;
   line-height: 1;
-  text-decoration: none; /* Ensures no unexpected underline from anchor-like behavior */
-  transition: text-decoration 0.2s ease; /* Smooth underline on hover */
+  text-decoration: none;
+  transition: text-decoration 0.2s ease;
 }
 
 .back-button:hover {
@@ -113,7 +115,7 @@
 .divider {
   height: 1px;
   background-color: #ddd;
-  margin: 8px 0; /* Adjust spacing as needed */
+  margin: 8px 0;
   border: none;
 }
 
@@ -155,3 +157,42 @@
   height: 25px;
 }
 
+/* Error Container */
+.error-container {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.error-container p {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.error-container small {
+  font-size: 14px;
+  color: #999;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .task-detail-main {
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  .task-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .task-meta {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .task-title {
+    font-size: 20px;
+  }
+}

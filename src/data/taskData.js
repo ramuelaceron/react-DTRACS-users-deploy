@@ -15,12 +15,12 @@ export const taskData = {
           creator_id: "FOCAL-0001",
           creator_name: "Isidra L. Galman",
           office: "School Governance and Operations Division",
-          section: "School Management Monitoring and Evaluation",
+          task_section: "School Management Monitoring and Evaluation",
           creation_date: "2025-08-22T16:12:10.573513",
           title: "Finalize quarterly school performance report",
           description:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
+          deadline: "2025-08-30T10:59:59",
           task_status: "Ongoing",
           schools_required: [
             "string"
@@ -64,7 +64,7 @@ export const taskData = {
           description:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
           deadline: "2025-08-30T11:59:59",
-          task_status: "Ongoing",
+          task_status: "Incomplete",
           schools_required: [
             "string"
           ],
@@ -147,7 +147,7 @@ export const taskData = {
           description:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
           deadline: "2025-08-30T11:59:59",
-          task_status: "Ongoing",
+          task_status: "Completed",
           schools_required: [
             "string"
           ],
@@ -550,7 +550,7 @@ export const taskData = {
     {
       office: "School Governance and Operations Division",
       section_designation: "Reproductive Health",
-      full_name: "Teacher Marry L. Perez",
+      full_name: "Teacher Mynel L. Perez",
       avatar: avatar2,
       path: "task-list",
       tasklist: [

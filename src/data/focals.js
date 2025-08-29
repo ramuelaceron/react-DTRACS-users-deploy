@@ -9,7 +9,7 @@ export const sectionData = {
       title: "School Management Monitoring and Evaluation",
       focalPerson: "Isidra L. Galman",
       path: "task-list",
-      tasklist: [
+      tasklist: [ 
         {
           id: 1,
           office: "School Governance and Operations Division",

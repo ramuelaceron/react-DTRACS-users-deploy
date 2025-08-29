@@ -1,14 +1,14 @@
 // src/pages/Sections/SectionPage.jsx
 import React from "react";
 import { useParams } from "react-router-dom";
-import { sectionData } from "../../data/focals";
+import { taskData } from "../../data/taskData";
 import FocalTaskCard from "../../components/FocalTaskCard/FocalTaskCard";
 import { Outlet } from 'react-router-dom'; // <-- Add this
 import "./SectionPage.css";
 
 const SectionPage = () => {
   const { sectionId } = useParams();
-  const section = sectionData[sectionId];
+  const section = taskData[sectionId];
 
   // If we are on /SGOD/SMME/task-list, don't show cards
   if (window.location.pathname.includes('task-list')) {
@@ -24,9 +24,9 @@ const SectionPage = () => {
       {section.map((focal) => (
         <FocalTaskCard
           key={focal.id}
-          title={focal.title}
-          focalPerson={focal.focalPerson}
-          path="task-list" // relative path
+          section_designation={focal.section_designation}
+          full_name={focal.full_name}
+          path="task-list" // relative path 
         />
       ))}
       <Outlet /> {/* In case you want to render nested routes below */}

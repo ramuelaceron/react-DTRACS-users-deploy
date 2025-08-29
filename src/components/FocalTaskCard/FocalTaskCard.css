@@ -1,5 +1,7 @@
 /* FocalTaskCard.css */
-
+body{
+  padding-bottom: 50px;
+}
 .focal-task-card {
   width: 450px;
   padding: 20px;

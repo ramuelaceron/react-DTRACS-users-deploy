@@ -1,6 +1,6 @@
 // TaskDetailPage.jsx
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./ToDoDetailPage.css";
 import { FaFilePdf, FaFileWord, FaFileImage, FaFile } from "react-icons/fa";
 import { IoChevronBackOutline } from "react-icons/io5";
@@ -14,16 +14,18 @@ import SharedButton from "../../components/SharedButton/SharedButton";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useClickOutside from "../../hooks/useClickOutside";
-import { sectionData } from "../../data/focals";
+import { taskData } from "../../data/taskData";
 import { createSlug } from "../../utils/idGenerator";
 
 const ToDoDetailPage = () => {
   const navigate = useNavigate();
   const { sectionId, taskSlug } = useParams();
+  const { state } = useLocation(); // Get state from navigation
 
   // State
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isLate, setIsLate] = useState(false); // New state for late tasks
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [comments, setComments] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -38,14 +40,21 @@ const ToDoDetailPage = () => {
     if (showCommentBox) setShowCommentBox(false);
   });
 
-  // 🔍 Find the task and focal entry
-  const section = sectionData[sectionId];
+  // Get task data from navigation state or find it in taskData
+  const taskTitle = state?.taskTitle;
+  const taskDeadline = state?.deadline;
+  const taskCreationDate = state?.creation_date;
+  const taskDescription = state?.taskDescription;
+  const taskId = state?.taskId;
+
+  // 🔍 Find the task and focal entry using the task ID from state
+  const section = taskData[sectionId];
   let focalEntry = null;
   let task = null;
 
-  if (section && Array.isArray(section)) {
+  if (section && Array.isArray(section) && taskId) {
     for (const item of section) {
-      const match = item.tasklist?.find(t => createSlug(t.title) === taskSlug);
+      const match = item.tasklist?.find(t => t.task_id === taskId);
       if (match) {
         focalEntry = item;
         task = match;
@@ -54,40 +63,94 @@ const ToDoDetailPage = () => {
     }
   }
 
-  // Handle task not found
-  if (!focalEntry || !task) {
-    return (
-      <div className="task-detail-app">
-        <main className="task-detail-main">
-          <button className="back-button" onClick={() => navigate(-1)}>
-            <IoChevronBackOutline className="icon-md" /> Back
-          </button>
-          <div className="error-container">
-            <p>⚠️ Task not found.</p>
-            <small>Please go back and try again.</small>
-          </div>
-        </main>
-      </div>
-    );
+  // If task not found by ID, try to find it by title (fallback)
+  if (!task && taskTitle && section && Array.isArray(section)) {
+    for (const item of section) {
+      const match = item.tasklist?.find(t => t.title === taskTitle);
+      if (match) {
+        focalEntry = item;
+        task = match;
+        break;
+      }
+    }
   }
 
   // Extract task and focal data
-  const { title: focalTitle, focalPerson } = focalEntry;
-  const {
-    title: taskTitle,
-    dueTime,
-    dueDate = "N/A",
-    postDate = "Today",
-    description: taskDescription,
-    status: taskStatus,
-  } = task;
+  const creator_name = task?.creator_name || state?.creator_name || "Unknown Creator";
+
+  // Format date functions
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return "Invalid date";
+    }
+  };
+
+  const formatTime = (dateString) => {
+    if (!dateString) return 'N/A';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+    } catch (error) {
+      console.error('Error formatting time:', error);
+      return "Invalid time";
+    }
+  };
+
+  // Get status color based on task status
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Incomplete":
+        return "#D32F2F"; // Red for incomplete
+      case "Completed":
+        return "#333"; // Dark gray for completed
+      case "Ongoing":
+        return "#2196F3"; // Blue for ongoing
+      case "Late":
+        return "#FF9800"; // Orange for late
+      default:
+        return "#333"; // Default dark gray
+    }
+  };
+
+  // Get status display text
+  const getStatusText = (status) => {
+    switch (status) {
+      case "Incomplete":
+        return "Past Due";
+      case "Completed":
+        return "Completed";
+      case "Ongoing":
+        return "Assigned";
+      case "Late":
+        return "Late Submission";
+      default:
+        return status || "Assigned";
+    }
+  };
 
   // Sync completion status from data
   useEffect(() => {
-    if (taskStatus === "Completed") {
+    if (task?.task_status === "Completed") {
       setIsCompleted(true);
+    } else if (task?.task_status === "Incomplete") {
+      setIsLate(false);
     }
-  }, [taskStatus]);
+  }, [task?.task_status]);
 
   // Handlers
   const handleBack = () => navigate(-1);
@@ -123,12 +186,22 @@ const ToDoDetailPage = () => {
       );
       if (!confirmed) return;
     }
-    setIsCompleted(true);
-    toast.success("Task marked as completed!");
+    
+    // Check if task was originally incomplete (past due)
+    if (task?.task_status === "Incomplete") {
+      setIsLate(true);
+      setIsCompleted(false);
+      toast.success("Task marked as late submission!");
+    } else {
+      setIsCompleted(true);
+      setIsLate(false);
+      toast.success("Task marked as completed!");
+    }
   };
 
   const handleIncomplete = () => {
     setIsCompleted(false);
+    setIsLate(false);
     toast.info("Task status reverted.");
   };
 
@@ -224,10 +297,31 @@ const ToDoDetailPage = () => {
   const getFileType = (file) => {
     const ext = file?.name.split(".").pop()?.toLowerCase();
     if (ext === "pdf") return "PDF";
-    if (["doc", "docx"].includes(ext)) return "DOC";
+    if ("doc docx".includes(ext)) return "DOC";
     if (["jpg", "jpeg", "png"].includes(ext)) return "Image";
     return ext?.toUpperCase() || "FILE";
   };
+
+  // Handle task not found
+  if (!task) {
+    return (
+      <div className="task-detail-app">
+        <main className="task-detail-main">
+          <button className="back-button" onClick={() => navigate(-1)}>
+            <IoChevronBackOutline className="icon-md" /> Back
+          </button>
+          <div className="error-container">
+            <p>⚠️ Task not found.</p>
+            <small>Please go back and try again.</small>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  const taskStatus = task.task_status || "Ongoing";
+  const statusColor = getStatusColor(isLate ? "Late" : isCompleted ? "Completed" : taskStatus);
+  const statusText = getStatusText(isLate ? "Late" : isCompleted ? "Completed" : taskStatus);
 
   return (
     <div className="task-detail-app">
@@ -242,7 +336,7 @@ const ToDoDetailPage = () => {
           <div 
             className="task-icon" 
             style={{ 
-              background: taskStatus === "Past Due" ? "#D32F2F" : "#333",
+              background: statusColor,
               transition: "background 0.3s ease"
             }}
           >
@@ -253,7 +347,7 @@ const ToDoDetailPage = () => {
               }} 
             />
           </div>
-          <h1 className="task-title">{taskTitle}</h1>
+          <h1 className="task-title">{task.title || taskTitle}</h1>
           <div className="task-status">
             {isCompleted ? (
               // Completed
@@ -263,45 +357,51 @@ const ToDoDetailPage = () => {
                 </svg>
                 Completed
               </span>
-            ) : taskStatus === "Past Due" ? (
-              // Past Due
-              <span style={{ color: "#D32F2F", display: "flex", alignItems: "center", gap: "4px", fontWeight: "bold" }}>
-                ⚠️ Past Due
+            ) : isLate ? (
+              // Late submission
+              <span style={{ color: "#FF9800", display: "flex", alignItems: "center", gap: "4px", fontWeight: "bold" }}>
+                ⚠️ Late Submission
               </span>
             ) : (
-              // Default (Upcoming or Assigned)
-              <span style={{ color: "#2E7D32", fontWeight: "bold" }}>Assigned</span>
+              // Status based on task_status
+              <span style={{ color: statusColor, display: "flex", alignItems: "center", gap: "4px", fontWeight: "bold" }}>
+                {taskStatus === "Incomplete" && "⚠️ "}
+                {statusText}
+              </span>
             )}
           </div>
         </div>
 
         {/* Meta Info */}
         <div className="task-meta">
-          <div className="task-category">{focalTitle}</div>
-          <div className="task-due">Due {dueDate} at {dueTime}</div>
+          <div className="task-category">{creator_name}</div>
+          <div className="task-due">
+            Due {formatDate(task.deadline || taskDeadline)} at {formatTime(task.deadline || taskDeadline)}
+          </div>
         </div>
 
         <div className="divider" />
 
         {/* Author & Date */}
         <div className="task-author">
-          {focalPerson} • Posted on {postDate}
+          {creator_name} • Posted on {formatDate(task.creation_date || taskCreationDate)}
         </div>
 
         {/* Description */}
-        <div className="task-description">{taskDescription}</div>
+        <div className="task-description">{task.description || taskDescription}</div>
 
         {/* Actions */}
         <TaskActions
           onFileChange={handleFileChange}
           onComplete={handleComplete}
           onIncomplete={handleIncomplete}
-          isCompleted={isCompleted}
+          isCompleted={isCompleted || isLate}
+          isLate={isLate}
         />
 
         {/* Attached Files */}
         {attachedFiles.length > 0 && (
-          <AttachedFiles files={attachedFiles} onRemove={handleRemoveFile} isCompleted={isCompleted} />
+          <AttachedFiles files={attachedFiles} onRemove={handleRemoveFile} isCompleted={isCompleted || isLate} />
         )}
 
         {/* Add Comment Button */}
@@ -309,10 +409,10 @@ const ToDoDetailPage = () => {
           <RiAccountPinBoxLine className="icon-md" /> Add comment
         </SharedButton>
 
-        {/* Comment Input */}
+        {/* Comment Input - REMOVED disabled prop to allow commenting anytime */}
         {showCommentBox && (
           <div ref={commentBoxRef}>
-            <CommentBox onSubmit={handleCommentSubmit} disabled={isCompleted} />
+            <CommentBox onSubmit={handleCommentSubmit} />
           </div>
         )}
 

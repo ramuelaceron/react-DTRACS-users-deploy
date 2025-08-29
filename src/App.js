@@ -59,7 +59,8 @@ function App() {
           <Route path="past-due" element={<ToDoPastDue />} />
           <Route path="completed" element={<ToDoCompleted />} />
         </Route>
-
+        
+        <Route path="/todo/:sectionId/:taskSlug" element={<ToDoDetailPage />} />
         <Route path="/s-manage-account" element={<ManageAccount />} />
       </Route>
 
