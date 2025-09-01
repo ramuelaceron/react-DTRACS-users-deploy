@@ -1,10 +1,9 @@
-// src/layouts/ToDoLayout.jsx
 import React, { useMemo, useState } from "react";
 import { Outlet } from "react-router-dom";
 import TaskTabs from "../../../components/TaskTabs/TaskTabs";
-import { sectionData } from "../../../data/focals";
+import { taskData } from "../../../data/taskData";
 import { createSlug } from "../../../utils/idGenerator";
-import "./TaskPage.css"; 
+import "./TaskPage.css";
 
 const TaskPage = () => {
   const [selectedOffice, setSelectedOffice] = useState("All Offices");
@@ -12,43 +11,60 @@ const TaskPage = () => {
   // Extract all offices
   const allOffices = useMemo(() => (
     [...new Set(
-      Object.values(sectionData)
+      Object.values(taskData)
         .flat()
         .flatMap(section => section.tasklist.map(task => task.office))
     )].sort()
   ), []);
 
-  // Flatten and categorize tasks
+  // Flatten and categorize tasks based on deadline
   const { upcomingTasks, pastDueTasks, completedTasks } = useMemo(() => {
     const upcoming = [];
     const pastDue = [];
     const completed = [];
 
-    Object.entries(sectionData).forEach(([sectionId, sections]) => {
+    const now = new Date();
+
+    Object.entries(taskData).forEach(([sectionId, sections]) => {
       sections.forEach(section => {
         section.tasklist.forEach(task => {
+          const taskDeadline = new Date(task.deadline);
+          const taskStatus = task.task_status || "Ongoing";
+
           const taskData = {
-            id: task.id,
+            id: task.task_id,
             title: task.title,
-            dueDate: task.dueDate,
-            dueTime: task.dueTime,
+            deadline: task.deadline,
             office: task.office,
-            postDate: task.postDate,
+            creation_date: task.creation_date,
             sectionId,
             taskSlug: createSlug(task.title),
+            creator_name: task.creator_name,
+            description: task.description,
+            task_status: taskStatus,
+            section_designation: section.section_designation
           };
 
-          if (task.status === "Upcoming") upcoming.push(taskData);
-          if (task.status === "Past Due") pastDue.push(taskData);
-          if (task.status === "Completed") completed.push({
-            ...taskData,
-            completedTime: task.dueTime
-          });
+          // Categorize based on task_status
+          if (taskStatus === "Completed") {
+            completed.push({
+              ...taskData,
+              completedTime: task.modified_date || task.creation_date // Use modified_date if available, otherwise creation_date
+            });
+          } else if (taskStatus === "Incomplete" || (taskDeadline < now && taskStatus !== "Completed")) {
+            pastDue.push(taskData);
+          } else {
+            upcoming.push(taskData);
+          }
         });
       });
     });
 
-    return { upcomingTasks: upcoming, pastDueTasks: pastDue, completedTasks: completed };
+    return { 
+      upcomingTasks: upcoming, 
+      pastDueTasks: pastDue, 
+      completedTasks: completed 
+    };
   }, []);
 
   // Apply office filter

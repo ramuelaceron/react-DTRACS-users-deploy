@@ -54,7 +54,7 @@ function App() {
           <Route path="task-list/:taskSlug" element={<ToDoDetailPage />} />
         </Route>
         
-        <Route path="/to-do" element={<ToDoPage />}>
+        <Route path="/to-do" element={<ToDoPage />} >
           <Route path="upcoming" element={<ToDoUpcoming />} />
           <Route path="past-due" element={<ToDoPastDue />} />
           <Route path="completed" element={<ToDoCompleted />} />
@@ -65,19 +65,14 @@ function App() {
       </Route>
 
       {/* Office Protected Routes */}
-      <Route element={<OfficeHome />}>
-      <Route path="/task" element={<TaskPage />}>
-        <Route path="ongoing" element={<TaskOngoing />}>
-          <Route path=":taskSlug" element={<TaskDetailPage />} />
+      <Route element={<OfficeHome />} >
+        <Route path="/task" element={<TaskPage />} >
+          <Route path="ongoing" element={<TaskOngoing />} />
+          <Route path="incomplete" element={<TaskIncomplete />} />
+          <Route path="history" element={<TaskHistory />} /> 
         </Route>
-        <Route path="incomplete" element={<TaskIncomplete />}>
-          <Route path=":taskSlug" element={<TaskDetailPage />} />
-        </Route>
-        <Route path="history" element={<TaskHistory />}>
-          <Route path=":taskSlug" element={<TaskDetailPage />} />
-        </Route>
-      </Route>
         
+        <Route path="/task/:sectionId/:taskSlug" element={<TaskDetailPage />} />
         <Route path="/schools" element={<Schools />} />
         <Route path="/schools/:schoolSlug" element={<AccountDisplay />} />
         <Route path="/o-manage-account" element={<ManageAccount />} />

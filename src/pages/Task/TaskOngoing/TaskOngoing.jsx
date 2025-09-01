@@ -1,58 +1,81 @@
-// src/pages/Todo/Upcoming/Upcoming.jsx
 import React, { useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import { createSlug } from "../../../utils/idGenerator";
+import CreateTask from '../../../components/CreateTask/CreateTask';
 import "./TaskOngoing.css";
 
-// Helper: Convert date string to Date object for sorting
-const parseDate = (dateStr) => {
-  const [month, day, year] = dateStr.split(" ");
-  const monthNames = {
-    January: 0,
-    February: 1,
-    March: 2,
-    April: 3,
-    May: 4,
-    June: 5,
-    July: 6,
-    August: 7,
-    September: 8,
-    October: 9,
-    November: 10,
-    December: 11,
-  };
-  return new Date(
-    parseInt(year),
-    monthNames[month],
-    parseInt(day.replace(",", ""))
-  );
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// Helper: Format date from ISO string to readable format
+const formatDate = (dateString) => {
+  if (!dateString) return "No date";
+  
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return "Invalid date";
+  }
+};
+
+// Helper: Format time from ISO string
+const formatTime = (dateString) => {
+  if (!dateString) return 'No time';
+  
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  } catch (error) {
+    console.error('Error formatting time:', error);
+    return "Invalid time";
+  }
 };
 
 // Helper: Get weekday from date string
 const getWeekday = (dateStr) => {
-  const date = parseDate(dateStr);
-  if (isNaN(date)) return "";
-  return date.toLocaleDateString("en-US", { weekday: "long" });
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date)) return "";
+    return date.toLocaleDateString("en-US", { weekday: "long" });
+  } catch (error) {
+    console.error('Error getting weekday:', error);
+    return "";
+  }
 };
 
 const TaskOngoing = () => {
   // ✅ Get pre-filtered upcoming tasks from ToDoPage layout
   const { upcomingTasks } = useOutletContext();
 
-  // ✅ No local state for filtering — it's already done in ToDoPage
-  const hasUpcomingTasks = upcomingTasks.length > 0;
-
-  // Group tasks by postDate
+  // Group tasks by formatted deadline date
   const groupedByDate = upcomingTasks.reduce((groups, task) => {
-    const date = task.postDate;
-    if (!groups[date]) groups[date] = [];
-    groups[date].push(task);
+    const formattedDate = formatDate(task.creation_date);
+    if (!groups[formattedDate]) groups[formattedDate] = [];
+    groups[formattedDate].push(task);
     return groups;
   }, {});
 
-  // Sort dates: newest first
-  const sortedDates = Object.keys(groupedByDate).sort((a, b) => parseDate(b) - parseDate(a));
+  // Sort dates: earliest first (upcoming tasks should show soonest first)
+  const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+    try {
+      return new Date(a) - new Date(b);
+    } catch (error) {
+      return 0;
+    }
+  });
 
   // Track open/closed state for each date group
   const [openGroups, setOpenGroups] = useState(() =>
@@ -66,10 +89,23 @@ const TaskOngoing = () => {
     }));
   };
 
+  // ✅ Add new task with correct date from calendar
+  const handleCreateTask = (newTaskData) => {
+    const newTask = {
+      id: Date.now(),
+      title: newTaskData.title || "Untitled Task",
+      description: newTaskData.description || "No description",
+      time: "TBD", // You can enhance this later
+      date: newTaskData.formattedDate // Comes from TaskForm
+    };
+  };
+
   return (
     <div className="ongoing-app">
       <main className="ongoing-main">
-        {/* Task List Grouped by postDate */}
+         <CreateTask onTaskCreated={(newTask) => {
+          toast.success("Task created!");
+        }} />
         {sortedDates.length > 0 ? (
           sortedDates.map((date) => {
             const tasks = groupedByDate[date];
@@ -101,8 +137,18 @@ const TaskOngoing = () => {
                   <div className="ongoing-task-list">
                     {tasks.map((task) => (
                       <Link
-                        to={`/task/ongoing/${task.taskSlug}`}
-                        className="ongoing-task-link"
+                        to={`/task/${task.sectionId}/${createSlug(task.title)}`}
+                        state={{
+                          taskTitle: task.title,
+                          deadline: task.deadline,
+                          creation_date: task.creation_date,
+                          taskDescription: task.description,
+                          taskId: task.id,
+                          creator_name: task.creator_name,
+                          section_designation: task.section_designation,
+                          full_name: task.creator_name
+                        }}
+                        className="upcoming-task-link"
                         key={task.id}
                       >
                         <div className="ongoing-card">
@@ -119,14 +165,17 @@ const TaskOngoing = () => {
                                   <span className="ongoing-office">
                                     {task.office}
                                   </span>
+                                  {/* <span className="upcoming-creator">
+                                    • {task.creator_name}
+                                  </span> */}
                                 </div>
                               </div>
                             </div>
 
                             <div className="ongoing-card-deadline">
                               <span className="deadline-text">
-                                Due on {task.dueDate} at{" "}
-                                <span className="time">{task.dueTime}</span>
+                                Due on {formatDate(task.deadline)} at{" "}
+                                <span className="time">{formatTime(task.deadline)}</span>
                               </span>
                             </div>
                           </div>
@@ -144,6 +193,20 @@ const TaskOngoing = () => {
           </div>
         )}
       </main>
+
+       <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+      
     </div>
   );
 };

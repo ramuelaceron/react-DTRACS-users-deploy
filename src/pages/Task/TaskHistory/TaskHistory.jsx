@@ -5,41 +5,72 @@ import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import "./TaskHistory.css";
 
-// Helper: Convert date string to Date object for sorting
-const parseDate = (dateStr) => {
-  const [month, day, year] = dateStr.split(" ");
-  const monthNames = {
-    January: 0, February: 1, March: 2, April: 3, May: 4, June: 5,
-    July: 6, August: 7, September: 8, October: 9, November: 10, December: 11,
-  };
-  return new Date(
-    parseInt(year),
-    monthNames[month],
-    parseInt(day.replace(",", ""))
-  );
+// Helper: Format date from ISO string to readable format
+const formatDate = (dateString) => {
+  if (!dateString) return "No date";
+  
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return "Invalid date";
+  }
+};
+
+// Helper: Format time from ISO string
+const formatTime = (dateString) => {
+  if (!dateString) return 'No time';
+  
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  } catch (error) {
+    console.error('Error formatting time:', error);
+    return "Invalid time";
+  }
 };
 
 // Helper: Get weekday from date string
 const getWeekday = (dateStr) => {
-  const date = parseDate(dateStr);
-  if (isNaN(date)) return "";
-  return date.toLocaleDateString("en-US", { weekday: "long" });
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date)) return "";
+    return date.toLocaleDateString("en-US", { weekday: "long" });
+  } catch (error) {
+    console.error('Error getting weekday:', error);
+    return "";
+  }
 };
 
 const TaskHistory = () => {
   // ✅ Get pre-filtered completed tasks from ToDoPage layout
   const { completedTasks } = useOutletContext();
 
-  // Group tasks by postDate
+  // Group tasks by formatted completion date (using completedTime)
   const groupedByDate = completedTasks.reduce((groups, task) => {
-    const date = task.postDate;
-    if (!groups[date]) groups[date] = [];
-    groups[date].push(task);
+    const formattedDate = formatDate(task.completedTime || task.creation_date);
+    if (!groups[formattedDate]) groups[formattedDate] = [];
+    groups[formattedDate].push(task);
     return groups;
   }, {});
 
   // Sort dates: newest first
-  const sortedDates = Object.keys(groupedByDate).sort((a, b) => parseDate(b) - parseDate(a));
+  const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+    try {
+      return new Date(b) - new Date(a);
+    } catch (error) {
+      return 0;
+    }
+  });
 
   // Track open/closed state for each group
   const [openGroups, setOpenGroups] = useState(() =>
@@ -56,6 +87,7 @@ const TaskHistory = () => {
   return (
     <div className="history-app">
       <main className="history-main">
+        {/* Task List Grouped by completion date */}
         {sortedDates.length > 0 ? (
           sortedDates.map((date) => {
             const tasks = groupedByDate[date];
@@ -87,7 +119,18 @@ const TaskHistory = () => {
                   <div className="history-task-list">
                     {tasks.map((task) => (
                       <Link
-                        to={`/task/history/${task.taskSlug}`}
+                        to={`/task/${task.sectionId}/${task.taskSlug}`}
+                        state={{
+                          taskTitle: task.title,
+                          deadline: task.deadline,
+                          creation_date: task.creation_date,
+                          taskDescription: task.description,
+                          taskId: task.id,
+                          creator_name: task.creator_name,
+                          section_designation: task.section_designation,
+                          full_name: task.creator_name,
+                          task_status: "Completed"
+                        }}
                         className="history-task-link"
                         key={task.id}
                       >
@@ -111,8 +154,8 @@ const TaskHistory = () => {
 
                             <div className="history-card-completion">
                               <span className="history-text">
-                                ✔ Completed at{" "}
-                                <span className="time">{task.completedTime}</span>
+                                ✔ Completed on {formatDate(task.completedTime || task.creation_date)} at{" "}
+                                <span className="time">{formatTime(task.completedTime || task.creation_date)}</span>
                               </span>
                             </div>
                           </div>

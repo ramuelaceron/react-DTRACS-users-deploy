@@ -123,7 +123,7 @@ const Header = ({ toggleSidebar }) => {
                 <FaUserCircle className="header-profile-avatar" />
               )}
               <div className="header-profile-details">
-                <strong>{currentUser.firstName} {currentUser.lastName}</strong>
+                <strong>{currentUser.first_name} {currentUser.middle_name} {currentUser.last_name}</strong>
                 <div className="profile-email">{currentUser.email}</div>
               </div>
             </div>

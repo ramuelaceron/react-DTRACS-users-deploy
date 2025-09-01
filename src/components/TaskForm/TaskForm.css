@@ -1,0 +1,350 @@
+/* src/components/TaskForm/TaskForm.css */
+
+.task-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.task-form-container {
+  background-color: #ffffff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 1000px;
+  padding: 32px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow-y: auto;    /* ✅ Enable vertical scroll */
+  max-height: 100vh;    /* ✅ Prevent full-screen stretch */
+  overflow-x: hidden;  /* ✅ Hide horizontal scroll */
+}
+
+.task-form-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #000;
+  font-weight: bold;
+  transition: transform 0.2s ease;
+  z-index: 10; /* ✅ Ensure it stays visible */
+}
+
+.task-form-close:hover {
+  transform: scale(1.1);
+}
+
+.task-form {
+  margin-top: 20px;
+}
+
+.task-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.task-form-group {
+  display: flex;
+  flex-direction: column;
+  position: relative; /* Added for dropdown icon positioning */
+}
+
+.task-form-group label {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+  font-weight: 500;
+  display: block;
+}
+
+.task-form-group select {
+  padding: 12px 32px 12px 12px; /* Adjusted right padding for icon */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #f8f9fa;
+  color: #333;
+  transition: border-color 0.2s ease;
+  appearance: none; /* Remove default dropdown arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center; /* Adjusted to move icon left */
+  background-size: 16px;
+}
+
+.task-form-group select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.task-form-group input[type="text"] {
+  padding: 12px;
+  max-width: 1000vw;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #f8f9fa;
+  color: #333;
+  transition: border-color 0.2s ease;
+}
+
+.task-form-group input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Description Container - Toolbar + Textarea */
+.description-container {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #f8f9fa;
+  margin-bottom: 15px;
+}
+
+.task-form-text-toolbar {
+  display: flex;
+  gap: 12px;
+  padding: 8px;
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+  align-items: center;
+}
+
+.text-btn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  color: #666;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-btn:hover {
+  background-color: #f0f0f0;
+}
+
+/* ✅ Updated: Matches "Add Comment" input style */
+.description-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  resize: none;
+  background-color: #f8f9fa;
+  color: #333;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  outline: none;
+  min-height: 80px;
+  transition: background-color 0.2s ease;
+}
+
+.description-textarea:focus {
+  background-color: white;
+  border-color: #007bff;
+}
+
+.task-form-attach {
+  padding: 16px;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+}
+
+/* Upload & Link Container - Side by Side */
+.upload-link-container {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Upload and Link Items - Icon + Text */
+.upload-item, .link-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Circle Buttons */
+.upload-circle, .link-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: white;
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 20px;
+}
+
+.upload-circle:hover, .link-circle:hover {
+  background-color: #f0f0f0;
+}
+
+/* Labels below icons */
+.upload-label, .link-label {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+.assign-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 24px;
+  float: right;
+}
+
+.assign-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Link Input Outer Container - Below Attach Section */
+.link-input-outer-container {
+  margin-top: 16px;
+  width: 100%;
+  height: 83px;
+  padding: 10px 16px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  justify-content: left;
+}
+
+.link-input {
+  width: 100%;
+  max-width: 600px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;  
+  color: #333;
+  background-color: white;
+  transition: border-color 0.2s ease;
+  outline: none;
+}
+
+.link-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Uploaded Files List */
+.uploaded-files-list {
+  margin-top: 16px;
+  width: 100%;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+.uploaded-file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.uploaded-file-item:last-child {
+  border-bottom: none;
+}
+
+.file-name {
+  font-size: 13px;
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+}
+
+.remove-file-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #999;
+  cursor: pointer;
+  padding: 2px 6px;
+  transition: color 0.2s ease;
+}
+
+.remove-file-btn:hover {
+  color: #d9534f;
+}
+
+.date-picker-input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #f8f9fa;
+  width: 100%;
+}
+
+.date-picker-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.link-input.invalid {
+  border-color: #dc3545;
+  background-color: #fdf2f2;
+}
+
+.error-text {
+  font-size: 12px;
+  color: #dc3545;
+  margin-top: 6px;
+  padding: 4px 0 0;
+  font-style: italic;
+}
+
+.error-text.link-error-below {
+  font-size: 12px;
+  color: #dc3545;
+  margin: 6px 0 0 0;
+  padding: 0;
+  font-style: italic;
+  text-align: left;
+  width: 100%;
+  display: block;
+}

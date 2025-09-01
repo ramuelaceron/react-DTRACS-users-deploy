@@ -374,7 +374,7 @@ const ToDoDetailPage = () => {
 
         {/* Meta Info */}
         <div className="task-meta">
-          <div className="task-category">{creator_name}</div>
+          <div className="task-category">{task.section}</div>
           <div className="task-due">
             Due {formatDate(task.deadline || taskDeadline)} at {formatTime(task.deadline || taskDeadline)}
           </div>

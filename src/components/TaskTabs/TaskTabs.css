@@ -47,7 +47,6 @@
 
 /* Optional: Keep text bold in active state */
 .task-tab.active {
-  font-weight: bold;
   color: #003366;
 }
 

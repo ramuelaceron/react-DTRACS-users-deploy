@@ -1,18 +1,24 @@
 // src/pages/Schools/AccountDisplay/AccountDisplay.jsx
 import React from "react";
 import "./AccountDisplay.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { schoolAccounts } from "../../../data/schoolAccounts";
+import { IoChevronBackOutline } from "react-icons/io5";
 
 const AccountDisplay = () => {
+  const navigate = useNavigate();
   const { schoolSlug } = useParams();
   const school = schoolAccounts.find(s => s.slug === schoolSlug);
+
+  const handleBack = () => navigate(-1);
 
   const hasAccounts = school.accounts && school.accounts.length > 0;
 
   return (
     <div className="account-section">
-      {/* Header */}
+      <button className="account-back-button" onClick={handleBack}>
+        <IoChevronBackOutline className="icon-md" /> Back
+      </button>
       <div className="account-header">
         <div className="account-header-info">
           <img src={school.logo} alt={`${school.school_name} logo`} className="account-header-logo" />

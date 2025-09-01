@@ -57,7 +57,7 @@ const ToDoUpcoming = () => {
 
   // Group tasks by formatted deadline date
   const groupedByDate = upcomingTasks.reduce((groups, task) => {
-    const formattedDate = formatDate(task.deadline);
+    const formattedDate = formatDate(task.creation_date);
     if (!groups[formattedDate]) groups[formattedDate] = [];
     groups[formattedDate].push(task);
     return groups;
@@ -123,7 +123,7 @@ const ToDoUpcoming = () => {
                         state={{
                           taskTitle: task.title,
                           deadline: task.deadline,
-                          creation_date: task.postDate,
+                          creation_date: task.creation_date,
                           taskDescription: task.description,
                           taskId: task.id,
                           creator_name: task.creator_name,

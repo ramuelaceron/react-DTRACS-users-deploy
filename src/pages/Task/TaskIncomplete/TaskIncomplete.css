@@ -41,7 +41,7 @@
 }
 
 /* Header Actions - Right side */
-.header-actions {
+.incomplete-header-actions {
   display: flex;
   align-items: center;
   gap: 6px;

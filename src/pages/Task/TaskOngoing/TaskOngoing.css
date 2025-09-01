@@ -29,6 +29,7 @@
   gap: 8px;
   cursor: pointer;
   user-select: none;
+  padding-top: 20px;
 }
 
 .ongoing-weekday{
