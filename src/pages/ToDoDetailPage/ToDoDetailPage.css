@@ -1,7 +1,7 @@
 /* ToDoDetailPage.css */
 
 /* Main App Container */
-.task-detail-app {
+.todo-detail-app {
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
   margin: 0;
@@ -12,7 +12,7 @@
 }
 
 /* Main Content */
-.task-detail-main {
+.todo-detail-main {
   flex: 1;
   padding: 40px;
   background-color: #ffffff;
@@ -22,7 +22,7 @@
 }
 
 /* Back Button */
-.back-button {
+.todo-back-btn {
   background: none;
   border: none;
   color: #000;
@@ -40,11 +40,11 @@
   transition: text-decoration 0.2s ease;
 }
 
-.back-button:hover {
+.todo-back-btn:hover {
   text-decoration: underline;
 }
 
-.back-button span {
+.todo-back-btn span {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -52,14 +52,14 @@
 }
 
 /* Header */
-.task-header {
+.todo-header {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
 }
 
-.task-icon {
+.todo-icon {
   background: #333;
   color: white;
   width: 40px;
@@ -71,12 +71,12 @@
   font-size: 20px;
 }
 
-.task-icon svg {
+.todo-icon svg {
   width: 20px;
   height: 20px;
 }
 
-.task-title {
+.todo-title {
   font-size: 24px;
   font-weight: bold;
   color: #000;
@@ -84,7 +84,7 @@
   flex: 1;
 }
 
-.task-status {
+.todo-status {
   font-size: 14px;
   font-weight: bold;
   color: #008000;
@@ -96,7 +96,7 @@
 }
 
 /* Meta Info */
-.task-meta {
+.todo-meta {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
@@ -104,11 +104,11 @@
   font-size: 12px;
 }
 
-.task-category {
+.todo-category {
   font-style: normal;
 }
 
-.task-due {
+.todo-due {
   font-weight: normal;
 }
 
@@ -120,14 +120,14 @@
 }
 
 /* Author */
-.task-author {
+.todo-author {
   color: #666;
   font-size: 12px;
   margin-bottom: 20px;
 }
 
 /* Description */
-.task-description {
+.todo-description {
   color: #333;
   line-height: 1.6;
   margin-bottom: 30px;

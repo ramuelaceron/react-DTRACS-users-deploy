@@ -31,7 +31,7 @@ const TaskPage = () => {
           const taskDeadline = new Date(task.deadline);
           const taskStatus = task.task_status || "Ongoing";
 
-          const taskData = {
+          const taskDataObj = {
             id: task.task_id,
             title: task.title,
             deadline: task.deadline,
@@ -42,22 +42,47 @@ const TaskPage = () => {
             creator_name: task.creator_name,
             description: task.description,
             task_status: taskStatus,
-            section_designation: section.section_designation
+            section_designation: section.section_designation,
+            // Add these properties for the getTaskCompletionStats function
+            schools_required: task.schools_required,
+            accounts_required: task.accounts_required
           };
 
-          // Categorize based on task_status
+          // DEBUG: Log task details to see what's happening
+          console.log('Task:', {
+            title: task.title,
+            status: taskStatus,
+            deadline: task.deadline,
+            isPastDue: taskDeadline < now
+          });
+
+          // Categorize tasks
           if (taskStatus === "Completed") {
             completed.push({
-              ...taskData,
-              completedTime: task.modified_date || task.creation_date // Use modified_date if available, otherwise creation_date
+              ...taskDataObj,
+              completedTime: task.modified_date || task.creation_date
             });
-          } else if (taskStatus === "Incomplete" || (taskDeadline < now && taskStatus !== "Completed")) {
-            pastDue.push(taskData);
+          } 
+          else if (taskStatus === "Incomplete") {
+            // All "Incomplete" status tasks go to past due
+            pastDue.push(taskDataObj);
+          }
+          else if (taskDeadline < now) {
+            // Ongoing tasks that are past their deadline
+            pastDue.push(taskDataObj);
           } else {
-            upcoming.push(taskData);
+            // Ongoing tasks that are not yet due
+            upcoming.push(taskDataObj);
           }
         });
       });
+    });
+
+    // DEBUG: Log counts
+    console.log('Task counts:', {
+      upcoming: upcoming.length,
+      pastDue: pastDue.length,
+      completed: completed.length
     });
 
     return { 

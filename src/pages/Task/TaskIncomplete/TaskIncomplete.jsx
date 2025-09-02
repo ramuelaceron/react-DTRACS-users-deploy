@@ -1,55 +1,14 @@
-// src/pages/Todo/PastDue/PastDue.jsx
 import React, { useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import {
+  formatDate,
+  formatTime,
+  getWeekday,
+  getTaskCompletionStats, // Import the helper function
+} from "../../../utils/taskHelpers";
 import "./TaskIncomplete.css";
-
-// Helper: Format date from ISO string to readable format
-const formatDate = (dateString) => {
-  if (!dateString) return "No date";
-  
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  } catch (error) {
-    console.error('Error formatting date:', error);
-    return "Invalid date";
-  }
-};
-
-// Helper: Format time from ISO string
-const formatTime = (dateString) => {
-  if (!dateString) return 'No time';
-  
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-  } catch (error) {
-    console.error('Error formatting time:', error);
-    return "Invalid time";
-  }
-};
-
-// Helper: Get weekday from date string
-const getWeekday = (dateStr) => {
-  try {
-    const date = new Date(dateStr);
-    if (isNaN(date)) return "";
-    return date.toLocaleDateString("en-US", { weekday: "long" });
-  } catch (error) {
-    console.error('Error getting weekday:', error);
-    return "";
-  }
-};
 
 const TaskIncomplete = () => {
   // ✅ Get pre-filtered past-due tasks from ToDoPage layout
@@ -99,17 +58,13 @@ const TaskIncomplete = () => {
                 <div
                   className="incomplete-date-header"
                   onClick={() => toggleGroup(date)}
-                  style={{ cursor: "pointer", userSelect: "none" }}
                 >
                   <span className="incomplete-date-bold">{date}</span>
                   <span className="incomplete-weekday"> ({weekday})</span>
 
                   <div className="incomplete-header-actions">
                     <span className="incomplete-task-count">{tasks.length}</span>
-                    <span
-                      className="incomplete-dropdown-arrow"
-                      aria-label={isOpen ? "Collapse" : "Expand"}
-                    >
+                    <span className="incomplete-dropdown-arrow">
                       {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
                     </span>
                   </div>
@@ -117,50 +72,65 @@ const TaskIncomplete = () => {
 
                 {isOpen && (
                   <div className="incomplete-task-list">
-                    {tasks.map((task) => (
-                      <Link
-                        to={`/task/${task.sectionId}/${task.taskSlug}`}
-                        state={{
-                          taskTitle: task.title,
-                          deadline: task.deadline,
-                          creation_date: task.creation_date,
-                          taskDescription: task.description,
-                          taskId: task.id,
-                          creator_name: task.creator_name,
-                          section_designation: task.section_designation,
-                          full_name: task.creator_name
-                        }}
-                        className="incomplete-task-link"
-                        key={task.id}
-                      >
-                        <div className="incomplete-card">
-                          <div className="incomplete-card-content">
-                            <div className="incomplete-card-text">
-                              <div className="incomplete-task-icon">
-                                <PiClipboardTextBold className="icon-lg" />
+                    {tasks.map((task) => {
+                      // Calculate completion stats for each task
+                      const { total, completed } = getTaskCompletionStats(task);
+                      
+                      return (
+                        <div className="incomplete-task-item" key={task.id}>
+                          <div className="incomplete-task-header">
+                            <div className="incomplete-task-icon">
+                              <PiClipboardTextBold className="icon-lg" />
+                            </div>
+                            <div className="incomplete-task-info">
+                              <div className="incomplete-task-title">
+                                {task.title}
                               </div>
-                              <div>
-                                <div className="incomplete-card-title">
-                                  {task.title}
-                                </div>
-                                <div className="incomplete-card-meta">
-                                  <span className="incomplete-office">
-                                    {task.office}
-                                  </span>
-                                </div>
+                              <div className="incomplete-task-office">
+                                {task.office}
                               </div>
                             </div>
+                            <div className="incomplete-task-deadline">
+                              Was due on {formatDate(task.deadline)} at{" "}
+                              <span className="incomplete-time">{formatTime(task.deadline)}</span>
+                            </div>
+                          </div>
 
-                            <div className="incomplete-card-deadline">
-                              <span className="deadline-text">
-                                Was due on {formatDate(task.deadline)} at{" "}
-                                <span className="time">{formatTime(task.deadline)}</span>
-                              </span>
+                          <div className="incomplete-task-footer">
+                            <Link
+                              to={`/task/${task.sectionId}/${task.taskSlug}`}
+                              state={{
+                                taskTitle: task.title,
+                                deadline: task.deadline,
+                                creation_date: task.creation_date,
+                                taskDescription: task.description,
+                                taskId: task.id,
+                                creator_name: task.creator_name,
+                                section_designation: task.section_designation,
+                                full_name: task.creator_name
+                              }}
+                              className="incomplete-description-link"
+                            >
+                              View Description
+                            </Link>
+
+                            {/* Added Submitted and Assigned counts */}
+                            <div className="incomplete-assigned-submitted-counts">
+                              <div className="incomplete-count-item">
+                                <span className="incomplete-count-number">
+                                  {completed}
+                                </span>
+                                <span className="incomplete-count-label">Submitted</span>
+                              </div>
+                              <div className="incomplete-count-item">
+                                <span className="incomplete-count-number">{total}</span>
+                                <span className="incomplete-count-label">Assigned</span>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </Link>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>

@@ -15,7 +15,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useClickOutside from "../../hooks/useClickOutside";
 import { taskData } from "../../data/taskData";
-import { createSlug } from "../../utils/idGenerator";
 
 const ToDoDetailPage = () => {
   const navigate = useNavigate();
@@ -324,17 +323,17 @@ const ToDoDetailPage = () => {
   const statusText = getStatusText(isLate ? "Late" : isCompleted ? "Completed" : taskStatus);
 
   return (
-    <div className="task-detail-app">
-      <main className="task-detail-main">
+    <div className="todo-detail-app">
+      <main className="todo-detail-main">
         {/* Back Button */}
-        <button className="back-button" onClick={handleBack}>
+        <button className="todo-back-btn" onClick={handleBack}>
           <IoChevronBackOutline className="icon-md" /> Back
         </button>
 
         {/* Header */}
-        <div className="task-header">
+        <div className="todo-header">
           <div 
-            className="task-icon" 
+            className="todo-icon" 
             style={{ 
               background: statusColor,
               transition: "background 0.3s ease"
@@ -347,8 +346,8 @@ const ToDoDetailPage = () => {
               }} 
             />
           </div>
-          <h1 className="task-title">{task.title || taskTitle}</h1>
-          <div className="task-status">
+          <h1 className="todo-title">{task.title || taskTitle}</h1>
+          <div className="todo-status">
             {isCompleted ? (
               // Completed
               <span style={{ color: "#4CAF50", display: "flex", alignItems: "center", gap: "4px" }}>
@@ -373,9 +372,9 @@ const ToDoDetailPage = () => {
         </div>
 
         {/* Meta Info */}
-        <div className="task-meta">
-          <div className="task-category">{task.section}</div>
-          <div className="task-due">
+        <div className="todo-meta">
+          <div className="todo-category">{task.section}</div>
+          <div className="todo-due">
             Due {formatDate(task.deadline || taskDeadline)} at {formatTime(task.deadline || taskDeadline)}
           </div>
         </div>
@@ -383,12 +382,12 @@ const ToDoDetailPage = () => {
         <div className="divider" />
 
         {/* Author & Date */}
-        <div className="task-author">
+        <div className="todo-author">
           {creator_name} • Posted on {formatDate(task.creation_date || taskCreationDate)}
         </div>
 
         {/* Description */}
-        <div className="task-description">{task.description || taskDescription}</div>
+        <div className="todo-description">{task.description || taskDescription}</div>
 
         {/* Actions */}
         <TaskActions

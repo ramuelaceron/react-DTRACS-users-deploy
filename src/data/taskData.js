@@ -17,22 +17,56 @@ export const taskData = {
           office: "School Governance and Operations Division",
           section: "School Management Monitoring and Evaluation",
           creation_date: "2025-08-22T16:12:10.573513",
-          title: "Finalize quarterly school performance report",
+          title: "Task Title 1",
           description:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
           deadline: "2025-09-30T10:59:59",
           task_status: "Ongoing",
           schools_required: [
-            "string"
+            {
+              school_name: "Biñan City Science & Technology High School",
+            },
+            {
+              school_name: "Biñan City Senior High School-San Antonio Campus",
+            },
+            {
+              school_name: "Biñan City Senior High School-Sto.Tomas Campus",
+            },
           ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
+          accounts_required: [
+            {
+              school_id: "SCHOOL-0001",
+              account_name: "Juan Ponce Dela Cruz",
+              school_name: "Biñan City Science & Technology High School",
+              link: "None",
+              status: "Completed",
+              remarks: "Assigned",
+            },
+            {
+              school_id: "SCHOOL-0001",
+              account_name: "Joshua Crisostomo",
+              school_name: "Biñan City Science & Technology High School",
+              link: "None",
+              status: "Ongoing",
+              remarks: "Assigned",
+            },
+            {
+              school_id: "SCHOOL-0001",
+              account_name: "Jestro Diaz",
+              school_name: "Biñan City Senior High School-San Antonio Campus",
+              link: "None",
+              status: "Incomplete",
+              remarks: "Assigned",
+            },
+            {
+              school_id: "SCHOOL-0001",
+              account_name: "Jestro Diaz",
+              school_name: "Biñan City Senior High School-Sto.Tomas Campus",
+              link: "None",
+              status: "Completed",
+              remarks: "Assigned",
+            },
+          ],
           attachment: [
             "string"
           ],
@@ -54,28 +88,62 @@ export const taskData = {
       path: "task-list",
       tasklist: [
         {
-          task_id: "TASK-0002",
-          creator_id: "FOCAL-0002",
-          creator_name: "Edward R. Manuel",
+          task_id: "TASK-0001",
+          creator_id: "FOCAL-0001",
+          creator_name: "Isidra L. Galman",
           office: "School Governance and Operations Division",
-          section: "Research",
+          section: "School Management Monitoring and Evaluation",
           creation_date: "2025-08-22T16:12:10.573513",
-          title: "Draft survey instrument for reading comprehension study",
+          title: "Task Title 2 ",
           description:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-09-02T11:59:59",
-          task_status: "Ongoing",
+          deadline: "2025-09-30T10:59:59",
+          task_status: "Incomplete",
           schools_required: [
-            "string"
+            {
+              school_name: "Biñan City Science & Technology High School",
+            },
+            {
+              school_name: "Biñan City Senior High School-San Antonio Campus",
+            },
+            {
+              school_name: "Biñan City Senior High School-Sto.Tomas Campus",
+            },
           ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
+          accounts_required: [
+            {
+              school_id: "SCHOOL-0001",
+              account_name: "Juan Ponce Dela Cruz",
+              school_name: "Biñan City Science & Technology High School",
+              link: "None",
+              status: "Incomplete",
+              remarks: "Assigned",
+            },
+            {
+              school_id: "SCHOOL-0001",
+              account_name: "Joshua Crisostomo",
+              school_name: "Biñan City Science & Technology High School",
+              link: "None",
+              status: "Incomplete",
+              remarks: "Assigned",
+            },
+            {
+              school_id: "SCHOOL-0001",
+              account_name: "Jestro Diaz",
+              school_name: "Biñan City Senior High School-San Antonio Campus",
+              link: "None",
+              status: "Completed",
+              remarks: "Assigned",
+            },
+            {
+              school_id: "SCHOOL-0001",
+              account_name: "Jestro Diaz",
+              school_name: "Biñan City Senior High School-Sto.Tomas Campus",
+              link: "None",
+              status: "Completed",
+              remarks: "Assigned",
+            },
+          ],
           attachment: [
             "string"
           ],
@@ -94,28 +162,62 @@ export const taskData = {
       path: "task-list",
       tasklist: [
         {
-          task_id: "TASK-0003",
-          creator_id: "FOCAL-0003",
-          creator_name: "Charles M. Patio",
+          task_id: "TASK-0001",
+          creator_id: "FOCAL-0001",
+          creator_name: "Isidra L. Galman",
           office: "School Governance and Operations Division",
-          section: "Planning",
+          section: "School Management Monitoring and Evaluation",
           creation_date: "2025-08-22T16:12:10.573513",
-          title: "Prepare FY 2025 Annual Implementation Plan",
+          title: "Task Title ",
           description:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
-          task_status: "Ongoing",
+          deadline: "2025-09-30T10:59:59",
+          task_status: "Completed",
           schools_required: [
-            "string"
+            {
+              school_name: "Biñan City Science & Technology High School",
+            },
+            {
+              school_name: "Biñan City Senior High School-San Antonio Campus",
+            },
+            {
+              school_name: "Biñan City Senior High School-Sto.Tomas Campus",
+            },
           ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Enrile",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
+          accounts_required: [
+            {
+              school_id: "SCHOOL-0001",
+              account_name: "Juan Ponce Dela Cruz",
+              school_name: "Biñan City Science & Technology High School",
+              link: "None",
+              status: "Completed",
+              remarks: "Assigned",
+            },
+            {
+              school_id: "SCHOOL-0001",
+              account_name: "Joshua Crisostomo",
+              school_name: "Biñan City Science & Technology High School",
+              link: "None",
+              status: "Completed",
+              remarks: "Assigned",
+            },
+            {
+              school_id: "SCHOOL-0001",
+              account_name: "Jestro Diaz",
+              school_name: "Biñan City Senior High School-San Antonio Campus",
+              link: "None",
+              status: "Completed",
+              remarks: "Assigned",
+            },
+            {
+              school_id: "SCHOOL-0001",
+              account_name: "Jestro Diaz",
+              school_name: "Biñan City Senior High School-Sto.Tomas Campus",
+              link: "None",
+              status: "Completed",
+              remarks: "Assigned",
+            },
+          ],
           attachment: [
             "string"
           ],
@@ -136,37 +238,7 @@ export const taskData = {
       avatar: avatar2,
       path: "task-list",
       tasklist: [
-        {
-          task_id: "TASK-0004",
-          creator_id: "FOCAL-0001",
-          creator_name: "Arlene P. Alora",
-          office: "School Governance and Operations Division",
-          section: "Human Resource Development",
-          creation_date: "2025-08-22T16:12:10.573513",
-          title: "Organize teacher upskilling training on ICT integration",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
-          task_status: "Completed",
-          schools_required: [
-            "string"
-          ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
-          attachment: [
-            "string"
-          ],
-          comments: [{
-
-          }],
-          modified_date: "", 
-        },
+        
       ],
     },
   ],
@@ -179,37 +251,7 @@ export const taskData = {
       avatar: avatar2,
       path: "task-list",
       tasklist: [
-        {
-          task_id: "TASK-0005",
-          creator_id: "FOCAL-0001",
-          creator_name: "Donna Jane M. Alfonso",
-          office: "School Governance and Operations Division",
-          section: "Social Mobilization and Networking",
-          creation_date: "2025-08-22T16:12:10.573513",
-          title: "Finalize MOA with community stakeholders",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
-          task_status: "Incomplete",
-          schools_required: [
-            "string"
-          ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
-          attachment: [
-            "string"
-          ],
-          comments: [{
-
-          }],
-          modified_date: "", 
-        },
+        
       ],
     },
   ],
@@ -222,37 +264,7 @@ export const taskData = {
       avatar: avatar2,
       path: "task-list",
       tasklist: [
-        {
-          task_id: "TASK-0006",
-          creator_id: "FOCAL-0001",
-          creator_name: "Precious Joy A. Coronado",
-          office: "School Governance and Operations Division",
-          section: "Education Facilities",
-          creation_date: "2025-08-22T16:12:10.573513",
-          title: "Inspect ongoing classroom repair projects",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
-          task_status: "Ongoing",
-          schools_required: [
-            "string"
-          ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
-          attachment: [
-            "string"
-          ],
-          comments: [{
-
-          }],
-          modified_date: "", 
-        },
+        
       ],
     },
   ],
@@ -265,37 +277,7 @@ export const taskData = {
       avatar: avatar2,
       path: "task-list",
       tasklist: [
-        {
-          task_id: "TASK-0007",
-          creator_id: "FOCAL-0001",
-          creator_name: "Ernane S. Escuvania",
-          office: "School Governance and Operations Division",
-          section: "Disaster Risk Reduction and Management",
-          creation_date: "2025-08-22T16:12:10.573513",
-          title: "Update school disaster contingency plan",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
-          task_status: "Ongoing",
-          schools_required: [
-            "string"
-          ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
-          attachment: [
-            "string"
-          ],
-          comments: [{
-
-          }],
-          modified_date: "", 
-        },
+        
       ],
     },
   ],
@@ -308,37 +290,7 @@ export const taskData = {
       avatar: avatar2,
       path: "task-list",
       tasklist: [
-        {
-          task_id: "TASK-0008",
-          creator_id: "FOCAL-0001",
-          creator_name: "Dr. Liza M. Cruz",
-          office: "School Governance and Operations Division",
-          section: "Dental",
-          creation_date: "2025-08-22T16:12:10.573513",
-          title: "Schedule dental check-up for Grade 1 pupils",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
-          task_status: "Ongoing",
-          schools_required: [
-            "string"
-          ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
-          attachment: [
-            "string"
-          ],
-          comments: [{
-
-          }],
-          modified_date: "", 
-        },
+        
       ],
     },
 
@@ -349,37 +301,7 @@ export const taskData = {
       avatar: avatar2,
       path: "task-list",
       tasklist: [
-        {
-          task_id: "TASK-0009",
-          creator_id: "FOCAL-0001",
-          creator_name: "Nurse Juan P. Dela Cruz",
-          office: "School Governance and Operations Division",
-          section: "Medical",
-          creation_date: "2025-08-22T16:12:10.573513",
-          title: "Administer annual health screening for students",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
-          task_status: "Ongoing",
-          schools_required: [
-            "string"
-          ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
-          attachment: [
-            "string"
-          ],
-          comments: [{
-
-          }],
-          modified_date: "", 
-        },
+        
       ],
     },
 
@@ -390,37 +312,7 @@ export const taskData = {
       avatar: avatar2,
       path: "task-list",
       tasklist: [
-        {
-          task_id: "TASK-0010",
-          creator_id: "FOCAL-0001",
-          creator_name: "Nurse Anna L. Perez",
-          office: "School Governance and Operations Division",
-          section: "School-Based Feeding Program",
-          creation_date: "2025-08-22T16:12:10.573513",
-          title: "Administer annual health screening for students",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
-          task_status: "Ongoing",
-          schools_required: [
-            "string"
-          ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
-          attachment: [
-            "string"
-          ],
-          comments: [{
-
-          }],
-          modified_date: "", 
-        },
+        
       ],
     },
 
@@ -431,37 +323,7 @@ export const taskData = {
       avatar: avatar2,
       path: "task-list",
       tasklist: [
-        {
-          task_id: "TASK-0011",
-          creator_id: "FOCAL-0001",
-          creator_name: "Teacher Joy L. Perez",
-          office: "School Governance and Operations Division",
-          section: "Gulayan sa Paaralan Program",
-          creation_date: "2025-08-22T16:12:10.573513",
-          title: "Administer annual health screening for students",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
-          task_status: "Ongoing",
-          schools_required: [
-            "string"
-          ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
-          attachment: [
-            "string"
-          ],
-          comments: [{
-
-          }],
-          modified_date: "", 
-        },
+        
       ],
     },
 
@@ -472,37 +334,7 @@ export const taskData = {
       avatar: avatar2,
       path: "task-list",
       tasklist: [
-        {
-          task_id: "TASK-0012",
-          creator_id: "FOCAL-0001",
-          creator_name: "Teacher Joy L. Perez",
-          office: "School Governance and Operations Division",
-          section: "Water, Sanitation, and Hygiene in Schools",
-          creation_date: "2025-08-22T16:12:10.573513",
-          title: "Administer annual health screening for students",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
-          task_status: "Ongoing",
-          schools_required: [
-            "string"
-          ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
-          attachment: [
-            "string"
-          ],
-          comments: [{
-
-          }],
-          modified_date: "", 
-        },
+        
       ],
     },
 
@@ -513,37 +345,7 @@ export const taskData = {
       avatar: avatar2,
       path: "task-list",
       tasklist: [
-        {
-          task_id: "TASK-0013",
-          creator_id: "FOCAL-0001",
-          creator_name: "Teacher Marry L. Perez",
-          office: "School Governance and Operations Division",
-          section: "National Drug Education Program",
-          creation_date: "2025-08-22T16:12:10.573513",
-          title: "Administer annual health screening for students",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
-          task_status: "Ongoing",
-          schools_required: [
-            "string"
-          ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
-          attachment: [
-            "string"
-          ],
-          comments: [{
-
-          }],
-          modified_date: "", 
-        },
+        
       ],
     },
 
@@ -554,37 +356,7 @@ export const taskData = {
       avatar: avatar2,
       path: "task-list",
       tasklist: [
-        {
-          task_id: "TASK-0014",
-          creator_id: "FOCAL-0001",
-          creator_name: "Teacher Mynel L. Perez",
-          office: "School Governance and Operations Division",
-          section: "Reproductive Health",
-          creation_date: "2025-08-22T16:12:10.573513",
-          title: "Administer annual health screening for students",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
-          task_status: "Ongoing",
-          schools_required: [
-            "string"
-          ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
-          attachment: [
-            "string"
-          ],
-          comments: [{
-
-          }],
-          modified_date: "", 
-        },
+        
       ],
     },
   ],
@@ -597,37 +369,7 @@ export const taskData = {
       avatar: avatar2,
       path: "task-list",
       tasklist: [
-        {
-          task_id: "TASK-0015",
-          creator_id: "FOCAL-0001",
-          creator_name: "Maureen Jane Q. Alangco",
-          office: "School Governance and Operations Division",
-          section: "Youth Formation",
-          creation_date: "2025-08-22T16:12:10.573513",
-          title: "Coordinate youth volunteer clean-up drive",
-          description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          deadline: "2025-08-30T11:59:59",
-          task_status: "Ongoing",
-          schools_required: [
-            "string"
-          ],
-          accounts_required: [{
-            school_id: "SCHOOL-0001",
-            account_name: "Juan Ponce Dela Cruz",
-            school: "Binan Integrated National High School",
-            link: "None",
-            status: "Ongoing",
-            remarks: "Assigned",
-          }],
-          attachment: [
-            "string"
-          ],
-          comments: [{
-
-          }],
-          modified_date: "", 
-        },
+        
       ],
     },
   ],
