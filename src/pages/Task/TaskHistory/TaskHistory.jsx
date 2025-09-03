@@ -11,24 +11,27 @@ import {
 import "./TaskHistory.css";
 
 const TaskHistory = () => {
-  // ✅ Get pre-filtered completed tasks from ToDoPage layout
-  const { completedTasks } = useOutletContext();
+  // ✅ Get pre-filtered completed tasks and selected sort from ToDoPage layout
+  const { completedTasks, selectedSort } = useOutletContext();
 
-  // Group tasks by formatted completion date (using completion_date)
+  // Group tasks by formatted completion date
   const groupedByDate = completedTasks.reduce((groups, task) => {
-    // Use completion_date if available, otherwise fall back to creation_date
     const completionDate = task.completion_date || task.creation_date;
-    const formattedDate = formatDate(task.creation_date);
+    const formattedDate = formatDate(completionDate);
     
     if (!groups[formattedDate]) groups[formattedDate] = [];
     groups[formattedDate].push(task);
     return groups;
   }, {});
 
-  // Sort dates: newest first
+  // Sort dates based on selected sort option
   const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
     try {
-      return new Date(b) - new Date(a);
+      if (selectedSort === "oldest") {
+        return new Date(a) - new Date(b);
+      } else {
+        return new Date(b) - new Date(a); // Default: newest first
+      }
     } catch (error) {
       return 0;
     }
@@ -44,6 +47,20 @@ const TaskHistory = () => {
       ...prev,
       [date]: !prev[date],
     }));
+  };
+
+  // Get appropriate empty message based on filter
+  const getEmptyMessage = () => {
+    switch (selectedSort) {
+      case "today":
+        return "No completed tasks due today.";
+      case "week":
+        return "No completed tasks due this week.";
+      case "month":
+        return "No completed tasks due this month.";
+      default:
+        return "No completed tasks.";
+    }
   };
 
   return (
@@ -77,7 +94,6 @@ const TaskHistory = () => {
                   <div className="history-task-list">
                     {tasks.map((task) => {
                       const { total, completed } = getTaskCompletionStats(task);
-                      // Use completion_date if available, otherwise fall back to creation_date
                       const completionDate = task.completion_date || task.creation_date;
                       
                       return (
@@ -104,17 +120,16 @@ const TaskHistory = () => {
                             <Link
                               to={`/task/${task.sectionId}/${task.taskSlug}`}
                               state={{
-                                // Pass the complete task object
                                 taskData: task,
                                 taskTitle: task.title,
                                 deadline: task.deadline,
                                 creation_date: task.creation_date,
-                                completion_date: task.completion_date, // Pass completion_date
+                                completion_date: task.completion_date,
                                 taskDescription: task.description,
                                 taskId: task.id,
                                 creator_name: task.creator_name,
                                 section_designation: task.section_designation,
-                                section_name: task.sectionName, // Pass section name
+                                section_name: task.sectionName,
                                 full_name: task.creator_name,
                                 task_status: "Completed"
                               }}
@@ -123,7 +138,6 @@ const TaskHistory = () => {
                               View Description
                             </Link>
 
-                            {/* Added Submitted and Assigned counts */}
                             <div className="history-assigned-submitted-counts">
                               <div className="history-count-item">
                                 <span className="history-count-number">
@@ -146,7 +160,9 @@ const TaskHistory = () => {
             );
           })
         ) : (
-          <div className="history-no-tasks">No completed tasks.</div>
+          <div className="history-no-tasks">
+            {getEmptyMessage()}
+          </div>
         )}
       </main>
     </div>

@@ -1,33 +1,43 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { createSlug } from "../../../utils/idGenerator";
 import CreateTask from "../../../components/CreateTask/CreateTask";
 import { ToastContainer, toast } from "react-toastify";
-import { taskData } from "../../../data/taskData";
 import {
   formatDate,
   formatTime,
   getWeekday,
   getTaskCompletionStats,
-  getAllOngoingTasks,
 } from "../../../utils/taskHelpers";
 import "react-toastify/dist/ReactToastify.css";
 import "./TaskOngoing.css";
 
 const TaskOngoing = () => {
-  const ongoingTasks = getAllOngoingTasks(taskData);
-  const groupedByDate = ongoingTasks.reduce((groups, task) => {
+  // Get sorted tasks from context
+  const { upcomingTasks, selectedSort } = useOutletContext();
+  
+  // Group tasks by formatted creation date
+  const groupedByDate = upcomingTasks.reduce((groups, task) => {
     const formattedDate = formatDate(task.creation_date);
     if (!groups[formattedDate]) groups[formattedDate] = [];
     groups[formattedDate].push(task);
     return groups;
   }, {});
 
-  const sortedDates = Object.keys(groupedByDate).sort(
-    (a, b) => new Date(a) - new Date(b)
-  );
+  // Sort dates based on selected sort option
+  const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+    try {
+      if (selectedSort === "oldest") {
+        return new Date(a) - new Date(b);
+      } else {
+        return new Date(b) - new Date(a); // Default: newest first
+      }
+    } catch (error) {
+      return 0;
+    }
+  });
 
   const [openGroups, setOpenGroups] = useState(() =>
     sortedDates.reduce((acc, date) => ({ ...acc, [date]: true }), {})
@@ -38,6 +48,20 @@ const TaskOngoing = () => {
       ...prev,
       [date]: !prev[date],
     }));
+  };
+
+  // Get appropriate empty message based on filter
+  const getEmptyMessage = () => {
+    switch (selectedSort) {
+      case "today":
+        return "No tasks due today.";
+      case "week":
+        return "No tasks due this week.";
+      case "month":
+        return "No tasks due this month.";
+      default:
+        return "No ongoing tasks at the moment.";
+    }
   };
 
   return (
@@ -76,8 +100,9 @@ const TaskOngoing = () => {
                   <div className="ongoing-task-list">
                     {tasks.map((task) => {
                       const { total, completed } = getTaskCompletionStats(task);
+                      
                       return (
-                        <div className="ongoing-task-item" key={task.task_id}>
+                        <div className="ongoing-task-item" key={task.id}>
                           <div className="ongoing-task-header">
                             <div className="ongoing-task-icon">
                               <PiClipboardTextBold className="icon-lg" />
@@ -90,24 +115,25 @@ const TaskOngoing = () => {
                             </div>
                             <div className="ongoing-task-deadline">
                               Due on {formatDate(task.deadline)} at{" "}
-                              {formatTime(task.deadline)}
+                              <span className="ongoing-time">{formatTime(task.deadline)}</span>
                             </div>
                           </div>
 
                           <div className="ongoing-task-footer">
                             <Link
-                              to={`/task/${task.sectionId}/${createSlug(
-                                task.title
-                              )}`}
+                              to={`/task/${task.sectionId}/${createSlug(task.title)}`}
                               state={{
+                                taskData: task,
                                 taskTitle: task.title,
                                 deadline: task.deadline,
                                 creation_date: task.creation_date,
                                 taskDescription: task.description,
-                                taskId: task.task_id,
+                                taskId: task.id,
                                 creator_name: task.creator_name,
                                 section_designation: task.section_designation,
+                                section_name: task.sectionName,
                                 full_name: task.creator_name,
+                                task_status: task.task_status || "Ongoing"
                               }}
                               className="ongoing-description-link"
                             >
@@ -137,7 +163,7 @@ const TaskOngoing = () => {
           })
         ) : (
           <div className="ongoing-no-tasks">
-            No ongoing tasks at the moment.
+            {getEmptyMessage()}
           </div>
         )}
       </main>

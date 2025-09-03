@@ -32,8 +32,8 @@ const TaskPage = () => {
           const taskStatus = task.task_status || "Ongoing";
 
           const taskDataObj = {
-            id: task.creator_id, // Use creator_id as the unique identifier
-            task_id: task.task_id, // Keep original task_id for reference
+            id: task.creator_id,
+            task_id: task.task_id,
             title: task.title,
             deadline: task.deadline,
             office: task.office,
@@ -46,10 +46,8 @@ const TaskPage = () => {
             description: task.description,
             task_status: taskStatus,
             section_designation: section.section_designation,
-            // Add these properties for the getTaskCompletionStats function
             schools_required: task.schools_required,
             accounts_required: task.accounts_required,
-            // Include the complete task object for reference
             originalTask: task
           };
 
@@ -61,14 +59,11 @@ const TaskPage = () => {
             });
           } 
           else if (taskStatus === "Incomplete") {
-            // All "Incomplete" status tasks go to past due
             pastDue.push(taskDataObj);
           }
           else if (taskDeadline < now) {
-            // Ongoing tasks that are past their deadline
             pastDue.push(taskDataObj);
           } else {
-            // Ongoing tasks that are not yet due
             upcoming.push(taskDataObj);
           }
         });
@@ -83,13 +78,13 @@ const TaskPage = () => {
   }, []);
 
   // Sort tasks based on selected option
-  const sortTasks = (tasks) => {
+  const sortTasks = (tasks, sortOption) => {
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     
-    switch(selectedSort) {
+    switch(sortOption) {
       case "newest":
         return [...tasks].sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
       case "oldest":
@@ -126,11 +121,12 @@ const TaskPage = () => {
         showCompletedIndicator={completedTasks.length > 0}
       />
 
-      {/* Pass sorted tasks down via Outlet context */}
+      {/* Pass sorted tasks and sorting function down via Outlet context */}
       <Outlet context={{
-        upcomingTasks: sortTasks(upcomingTasks),
-        pastDueTasks: sortTasks(pastDueTasks),
-        completedTasks: sortTasks(completedTasks)
+        upcomingTasks: sortTasks(upcomingTasks, selectedSort),
+        pastDueTasks: sortTasks(pastDueTasks, selectedSort),
+        completedTasks: sortTasks(completedTasks, selectedSort),
+        selectedSort // Pass the current sort option
       }} />
     </div>
   );

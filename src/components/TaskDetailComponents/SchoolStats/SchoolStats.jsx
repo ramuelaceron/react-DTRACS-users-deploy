@@ -192,7 +192,7 @@ const SchoolStats = ({ task: propTask, taskId: propTaskId, sectionId: propSectio
             />
           ))
         ) : (
-          <div className="no-schools">No schools assigned for this task.</div>
+          <div className="no-schools">No schools Available.</div>
         )}
       </div>
     </div>

@@ -6,13 +6,13 @@ import {
   formatDate,
   formatTime,
   getWeekday,
-  getTaskCompletionStats, // Import the helper function
+  getTaskCompletionStats,
 } from "../../../utils/taskHelpers";
 import "./TaskIncomplete.css";
 
 const TaskIncomplete = () => {
-  // ✅ Get pre-filtered past-due tasks from ToDoPage layout
-  const { pastDueTasks } = useOutletContext();
+  // ✅ Get pre-filtered past-due tasks and selected sort from ToDoPage layout
+  const { pastDueTasks, selectedSort } = useOutletContext();
 
   // Group tasks by formatted creation date
   const groupedByDate = pastDueTasks.reduce((groups, task) => {
@@ -22,10 +22,14 @@ const TaskIncomplete = () => {
     return groups;
   }, {});
 
-  // Sort dates: newest first
+  // Sort dates based on selected sort option
   const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
     try {
-      return new Date(b) - new Date(a);
+      if (selectedSort === "oldest") {
+        return new Date(a) - new Date(b);
+      } else {
+        return new Date(b) - new Date(a); // Default: newest first
+      }
     } catch (error) {
       return 0;
     }
@@ -41,6 +45,20 @@ const TaskIncomplete = () => {
       ...prev,
       [date]: !prev[date],
     }));
+  };
+
+  // Get appropriate empty message based on filter
+  const getEmptyMessage = () => {
+    switch (selectedSort) {
+      case "today":
+        return "No past-due tasks due today.";
+      case "week":
+        return "No past-due tasks due this week.";
+      case "month":
+        return "No past-due tasks due this month.";
+      default:
+        return "No past-due tasks.";
+    }
   };
 
   return (
@@ -62,7 +80,7 @@ const TaskIncomplete = () => {
                   <span className="incomplete-date-bold">{date}</span>
                   <span className="incomplete-weekday"> ({weekday})</span>
 
-                  <div className="incomplete-header-actions">
+                  <div className="header-actions">
                     <span className="incomplete-task-count">{tasks.length}</span>
                     <span className="incomplete-dropdown-arrow">
                       {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
@@ -73,7 +91,6 @@ const TaskIncomplete = () => {
                 {isOpen && (
                   <div className="incomplete-task-list">
                     {tasks.map((task) => {
-                      // Calculate completion stats for each task
                       const { total, completed } = getTaskCompletionStats(task);
                       
                       return (
@@ -100,6 +117,7 @@ const TaskIncomplete = () => {
                             <Link
                               to={`/task/${task.sectionId}/${task.taskSlug}`}
                               state={{
+                                taskData: task,
                                 taskTitle: task.title,
                                 deadline: task.deadline,
                                 creation_date: task.creation_date,
@@ -107,14 +125,15 @@ const TaskIncomplete = () => {
                                 taskId: task.id,
                                 creator_name: task.creator_name,
                                 section_designation: task.section_designation,
-                                full_name: task.creator_name
+                                section_name: task.sectionName,
+                                full_name: task.creator_name,
+                                task_status: task.task_status || "Incomplete"
                               }}
                               className="incomplete-description-link"
                             >
                               View Description
                             </Link>
 
-                            {/* Added Submitted and Assigned counts */}
                             <div className="incomplete-assigned-submitted-counts">
                               <div className="incomplete-count-item">
                                 <span className="incomplete-count-number">
@@ -137,7 +156,9 @@ const TaskIncomplete = () => {
             );
           })
         ) : (
-          <div className="incomplete-no-tasks">No past-due tasks.</div>
+          <div className="incomplete-no-tasks">
+            {getEmptyMessage()}
+          </div>
         )}
       </main>
     </div>

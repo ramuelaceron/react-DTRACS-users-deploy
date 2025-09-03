@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .task-icon {
@@ -29,7 +29,7 @@
 }
 
 .task-title {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   color: #000;
   margin: 0;
