@@ -32,12 +32,13 @@ const TaskPage = () => {
           const taskStatus = task.task_status || "Ongoing";
 
           const taskDataObj = {
-            id: task.task_id,
+            id: task.creator_id, // Use creator_id as the unique identifier
+            task_id: task.task_id, // Keep original task_id for reference
             title: task.title,
             deadline: task.deadline,
             office: task.office,
             creation_date: task.creation_date,
-            completion_date: task.completion_date, // Include completion_date
+            completion_date: task.completion_date,
             sectionId,
             sectionName: section.section_name || section.section_designation || "General",
             taskSlug: createSlug(task.title),
