@@ -2,11 +2,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FiUpload } from "react-icons/fi";
 import { IoMdLink } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { useQuill } from 'react-quilljs';
 import AttachedFiles from '../AttachedFiles/AttachedFiles';
 import 'quill/dist/quill.snow.css';
 import './TaskForm.css';
-import { schoolAccounts } from '../../data/schoolAccounts'; // Import your school accounts data
+import { schoolAccounts } from '../../data/schoolAccounts';
 
 // ✅ Rich Text Editor Component using useQuill
 const RichTextEditor = ({ value, onChange }) => {
@@ -53,10 +54,106 @@ const RichTextEditor = ({ value, onChange }) => {
   );
 };
 
+// Custom Dropdown Component for Multiple Selection
+const MultiSelectDropdown = ({ 
+  label, 
+  options, 
+  selectedValues, 
+  onSelectionChange, 
+  placeholder = "Select options",
+  disabled = false,
+  isAccountDropdown = false
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    if (!disabled) {
+      setIsOpen(!isOpen);
+    }
+  };
+
+  const handleCheckboxChange = (value) => {
+    const newSelection = selectedValues.includes(value)
+      ? selectedValues.filter(v => v !== value)
+      : [...selectedValues, value];
+    
+    onSelectionChange(newSelection);
+  };
+
+  const selectAll = () => {
+    onSelectionChange(options.map(opt => opt.value));
+  };
+
+  const clearAll = () => {
+    onSelectionChange([]);
+  };
+
+  const getDisplayText = () => {
+    if (selectedValues.length === 0) return placeholder;
+    if (selectedValues.length === options.length) return "All selected";
+    if (selectedValues.length === 1) {
+      const selectedOption = options.find(opt => opt.value === selectedValues[0]);
+      return selectedOption ? selectedOption.label : selectedValues[0];
+    }
+    return `${selectedValues.length} selected`;
+  };
+
+  return (
+    <div className="multi-select-dropdown">
+      <label>{label}</label>
+      <div 
+        className={`dropdown-toggle ${disabled ? 'disabled' : ''} ${isOpen ? 'open' : ''}`}
+        onClick={toggleDropdown}
+      >
+        <span className="dropdown-selected-text">{getDisplayText()}</span>
+        {!disabled && (
+          <span className="dropdown-arrow">
+            {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
+          </span>
+        )}
+      </div>
+      
+      {isOpen && !disabled && (
+        <div className="dropdown-menu">
+          <div className="dropdown-actions">
+            <button type="button" onClick={selectAll} className="dropdown-action-btn">
+              Select All
+            </button>
+            <button type="button" onClick={clearAll} className="dropdown-action-btn">
+              Clear All
+            </button>
+          </div>
+          
+          <div className="dropdown-options">
+            {options.map((option) => (
+              <label key={option.value} className="dropdown-option">
+                <input
+                  type="checkbox"
+                  checked={selectedValues.includes(option.value)}
+                  onChange={() => handleCheckboxChange(option.value)}
+                />
+                <span className="checkbox-label">
+                  {isAccountDropdown ? (
+                    <>
+                      {option.label} {option.position && `(${option.position})`}
+                    </>
+                  ) : (
+                    option.label
+                  )}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
   const [formData, setFormData] = useState({
-    for: 'All schools',
-    assignedTo: 'All accounts',
+    for: [], // Changed to array for multiple selection
+    assignedTo: [], // Changed to array for multiple selection
     dueDate: '', 
     title: '',
     description: '',
@@ -68,41 +165,67 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
   const [isLinkValid, setIsLinkValid] = useState(true);
   const [availableUsers, setAvailableUsers] = useState([]);
 
-  // Update available users when selected school changes
+  // Prepare school options - REMOVED "All schools" option
+  const schoolOptions = schoolAccounts.map(school => ({
+    value: school.school_name,
+    label: school.school_name
+  }));
+
+  // Update available users when selected schools change
   useEffect(() => {
-    if (formData.for === 'All schools') {
+    if (formData.for.length === 0) {
       setAvailableUsers([]);
-      setFormData(prev => ({ ...prev, assignedTo: 'All accounts' }));
+      setFormData(prev => ({ ...prev, assignedTo: [] }));
     } else {
-      const selectedSchool = schoolAccounts.find(school => 
-        school.school_name === formData.for
+      const users = [];
+      
+      formData.for.forEach(schoolName => {
+        const selectedSchool = schoolAccounts.find(school => 
+          school.school_name === schoolName
+        );
+        
+        if (selectedSchool && selectedSchool.accounts) {
+          selectedSchool.accounts.forEach(account => {
+            users.push({
+              id: account.user_id,
+              value: `${account.first_name} ${account.middle_name} ${account.last_name}`.trim(),
+              label: `${account.first_name} ${account.middle_name} ${account.last_name}`.trim(),
+              position: account.position
+            });
+          });
+        }
+      });
+      
+      // Remove duplicates by user id
+      const uniqueUsers = users.filter((user, index, self) => 
+        index === self.findIndex(u => u.id === user.id)
       );
       
-      if (selectedSchool) {
-        const users = selectedSchool.accounts.map(account => ({
-          id: account.user_id,
-          name: `${account.first_name} ${account.middle_name} ${account.last_name}`.trim(),
-          position: account.position
-        }));
-        setAvailableUsers(users);
-        
-        // Reset assignedTo if the previous selection is not in the new list
-        if (formData.assignedTo !== 'All accounts' && 
-            !users.some(user => user.name === formData.assignedTo)) {
-          setFormData(prev => ({ ...prev, assignedTo: 'All accounts' }));
-        }
-      } else {
-        setAvailableUsers([]);
-        setFormData(prev => ({ ...prev, assignedTo: 'All accounts' }));
+      setAvailableUsers(uniqueUsers);
+      
+      // Filter out assigned users that are no longer available
+      const validAssignedUsers = formData.assignedTo.filter(assignedUser => 
+        uniqueUsers.some(user => user.value === assignedUser)
+      );
+      
+      if (validAssignedUsers.length !== formData.assignedTo.length) {
+        setFormData(prev => ({ ...prev, assignedTo: validAssignedUsers }));
       }
     }
   }, [formData.for]);
+
+  const handleSchoolSelection = (selectedSchools) => {
+    setFormData(prev => ({ ...prev, for: selectedSchools }));
+  };
+
+  const handleUserSelection = (selectedUsers) => {
+    setFormData(prev => ({ ...prev, assignedTo: selectedUsers }));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     
     if (name === 'linkUrl') {
-      // ✅ Validate: empty or starts with http:// or https://
       const isValid = value === '' || /^(https?:\/\/)/i.test(value.trim());
       setIsLinkValid(isValid);
     }
@@ -158,6 +281,11 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
       return;
     }
 
+    if (formData.for.length === 0) {
+      console.warn("Please select at least one school.");
+      return;
+    }
+
     const selectedDate = new Date(formData.dueDate);
     const formattedDate = selectedDate.toLocaleDateString('en-US', {
       month: 'long',
@@ -171,8 +299,8 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
       description: formData.description,
       dueDate: formData.dueDate,
       formattedDate,
-      office: formData.for,
-      assignedTo: formData.assignedTo,
+      office: formData.for.length > 0 ? formData.for.join(', ') : 'All schools',
+      assignedTo: formData.assignedTo.length > 0 ? formData.assignedTo.join(', ') : 'All accounts',
       taskSlug: `task-${Date.now()}`,
       linkUrl: formData.linkUrl,
       attachments: uploadedFiles.map(f => f.name)
@@ -185,11 +313,17 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
 
   const toggleLinkInput = () => {
     setIsLinkInputVisible(prev => !prev);
-    // ✅ Reset validation when toggling
     if (!isLinkInputVisible && formData.linkUrl) {
       setIsLinkValid(/^(https?:\/\/)/i.test(formData.linkUrl.trim()));
     }
   };
+
+  // Prepare user options - REMOVED "All accounts" option
+  const userOptions = availableUsers.map(user => ({
+    value: user.value,
+    label: user.value,
+    position: user.position
+  }));
 
   return (
     <div className="task-form-overlay">
@@ -200,32 +334,24 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
           {/* Row 1 */}
           <div className="task-form-row">
             <div className="task-form-group">
-              <label htmlFor="for">For</label>
-              <select id="for" name="for" value={formData.for} onChange={handleChange}>
-                <option value="All schools">All schools</option>
-                {schoolAccounts.map(school => (
-                  <option key={school.slug} value={school.school_name}>
-                    {school.school_name}
-                  </option>
-                ))}
-              </select>
+              <MultiSelectDropdown
+                label="For"
+                options={schoolOptions}
+                selectedValues={formData.for}
+                onSelectionChange={handleSchoolSelection}
+                placeholder="Select schools"
+              />
             </div>
             <div className="task-form-group">
-              <label htmlFor="assignedTo">Assigned to</label>
-              <select 
-                id="assignedTo" 
-                name="assignedTo" 
-                value={formData.assignedTo} 
-                onChange={handleChange}
-                disabled={formData.for === 'All schools' && availableUsers.length === 0}
-              >
-                <option value="All accounts">All accounts</option>
-                {availableUsers.map(user => (
-                  <option key={user.id} value={user.name}>
-                    {user.name} ({user.position})
-                  </option>
-                ))}
-              </select>
+              <MultiSelectDropdown
+                label="Assigned to"
+                options={userOptions}
+                selectedValues={formData.assignedTo}
+                onSelectionChange={handleUserSelection}
+                placeholder={availableUsers.length > 0 ? "Select accounts" : "Select schools first"}
+                disabled={formData.for.length === 0 || availableUsers.length === 0}
+                isAccountDropdown={true}
+              />
             </div>
             <div className="task-form-group">
               <label htmlFor="dueDate">Due Date</label>
@@ -296,7 +422,6 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
                 </div>
               </div>
 
-              {/* ✅ Use AttachedFiles Component */}
               {uploadedFiles.length > 0 && (
                 <AttachedFiles
                   files={uploadedFiles}
@@ -320,7 +445,7 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
                 </div>
               )}
 
-              {/* 🔽 Error Message Below Input (after container) */}
+              {/* Error Message */}
               {isLinkInputVisible && !isLinkValid && formData.linkUrl && (
                 <p className="error-text link-error-below">
                   Please enter a valid link starting with <strong>http://</strong> or <strong>https://</strong>
