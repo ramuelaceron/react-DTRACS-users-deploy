@@ -18,7 +18,7 @@
   background-color: #ffffff;
   border: none;
   overflow-y: auto;
-  padding-top: 30px;
+  padding-top: 20px;
 }
 
 /* ==================== */
@@ -206,6 +206,7 @@
   font-size: 18px;
   font-weight: bold;
   color: #000;
+  max-width: 600px;
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -333,14 +334,12 @@
 /* ==================== */
 
 .history-no-tasks {
-  text-align: center;
   color: #888;
+  text-align: center;
   font-style: italic;
   margin-top: 40px;
   padding: 20px;
-  background-color: #f9f9f9;
   border-radius: 8px;
-  border: 1px dashed #ddd;
 }
 
 /* ==================== */

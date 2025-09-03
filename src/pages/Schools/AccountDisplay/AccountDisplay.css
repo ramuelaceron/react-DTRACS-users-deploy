@@ -1,8 +1,9 @@
 
 .account-section {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
   padding: 2rem 1rem;
 }
 
@@ -11,6 +12,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
+  margin-left: 20px;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #B7B6B6;
 }
@@ -22,8 +24,8 @@
 }
 
 .account-header-logo {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 8px;
   object-fit: cover;
 }
@@ -46,7 +48,7 @@
 .account-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem; 
+  gap: 2px; 
 }
 
 .account-item {
@@ -69,8 +71,8 @@
 }
 
 .account-logo {
-  width: 50px; 
-  height: 50px; 
+  width: 40px; 
+  height: 40px; 
   border-radius: 50px; 
   object-fit: cover; 
   flex-shrink: 0; 
@@ -119,16 +121,16 @@
   margin-top: 20px;
 }
 
-.account-back-button {
+.account-back-btn {
   background: none;
   border: none;
   color: #000;
   font-size: 16px;
   cursor: pointer;
   padding: 8px;
-  margin-top: 30px;
+  margin-top: 40px;
   margin-bottom: 20px;
-  margin-left: -10px;
+  margin-left: 4px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -138,7 +140,7 @@
   transition: text-decoration 0.2s ease;
 }
 
-.account-back-button:hover {
+.account-back-btn:hover {
   text-decoration: underline;
 }
 

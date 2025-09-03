@@ -16,7 +16,7 @@ const AccountDisplay = () => {
 
   return (
     <div className="account-section">
-      <button className="account-back-button" onClick={handleBack}>
+      <button className="account-back-btn" onClick={handleBack}>
         <IoChevronBackOutline className="icon-md" /> Back
       </button>
       <div className="account-header">

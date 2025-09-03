@@ -31,7 +31,7 @@ import TaskOngoing from "./pages/Task/TaskOngoing/TaskOngoing"
 import TaskIncomplete from "./pages/Task/TaskIncomplete/TaskIncomplete"
 import TaskHistory from "./pages/Task/TaskHistory/TaskHistory"
 import TaskDetailPage from "./pages/TaskDetailPage/TaskDetailPage"
-
+import AttachmentsPage from "./pages/AttachmentsPage/AttachmentsPage"
 
 function App() {
   const location = useLocation();
@@ -73,6 +73,7 @@ function App() {
         </Route>
         
         <Route path="/task/:sectionId/:taskSlug" element={<TaskDetailPage />} />
+        <Route path="/task/:sectionId/:taskSlug/attachments" element={<AttachmentsPage />} /> {/* Updated to use taskSlug */}
         <Route path="/schools" element={<Schools />} />
         <Route path="/schools/:schoolSlug" element={<AccountDisplay />} />
         <Route path="/o-manage-account" element={<ManageAccount />} />

@@ -6,7 +6,7 @@ import { createSlug } from "../../../utils/idGenerator";
 import "./TaskPage.css";
 
 const TaskPage = () => {
-  const [selectedOffice, setSelectedOffice] = useState("All Offices");
+  const [selectedSort, setSelectedSort] = useState("newest");
 
   // Extract all offices
   const allOffices = useMemo(() => (
@@ -37,7 +37,9 @@ const TaskPage = () => {
             deadline: task.deadline,
             office: task.office,
             creation_date: task.creation_date,
+            completion_date: task.completion_date, // Include completion_date
             sectionId,
+            sectionName: section.section_name || section.section_designation || "General",
             taskSlug: createSlug(task.title),
             creator_name: task.creator_name,
             description: task.description,
@@ -45,22 +47,16 @@ const TaskPage = () => {
             section_designation: section.section_designation,
             // Add these properties for the getTaskCompletionStats function
             schools_required: task.schools_required,
-            accounts_required: task.accounts_required
+            accounts_required: task.accounts_required,
+            // Include the complete task object for reference
+            originalTask: task
           };
-
-          // DEBUG: Log task details to see what's happening
-          console.log('Task:', {
-            title: task.title,
-            status: taskStatus,
-            deadline: task.deadline,
-            isPastDue: taskDeadline < now
-          });
 
           // Categorize tasks
           if (taskStatus === "Completed") {
             completed.push({
               ...taskDataObj,
-              completedTime: task.modified_date || task.creation_date
+              completedTime: task.completion_date || task.modified_date || task.creation_date
             });
           } 
           else if (taskStatus === "Incomplete") {
@@ -78,13 +74,6 @@ const TaskPage = () => {
       });
     });
 
-    // DEBUG: Log counts
-    console.log('Task counts:', {
-      upcoming: upcoming.length,
-      pastDue: pastDue.length,
-      completed: completed.length
-    });
-
     return { 
       upcomingTasks: upcoming, 
       pastDueTasks: pastDue, 
@@ -92,26 +81,55 @@ const TaskPage = () => {
     };
   }, []);
 
-  // Apply office filter
-  const filterByOffice = (tasks) =>
-    selectedOffice === "All Offices" ? tasks : tasks.filter(t => t.office === selectedOffice);
+  // Sort tasks based on selected option
+  const sortTasks = (tasks) => {
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    
+    switch(selectedSort) {
+      case "newest":
+        return [...tasks].sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
+      case "oldest":
+        return [...tasks].sort((a, b) => new Date(a.creation_date) - new Date(b.creation_date));
+      case "today":
+        return tasks.filter(task => {
+          const taskDate = new Date(task.deadline);
+          return taskDate >= startOfDay && taskDate < new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000);
+        });
+      case "week":
+        return tasks.filter(task => {
+          const taskDate = new Date(task.deadline);
+          const nextWeek = new Date(startOfWeek.getTime() + 7 * 24 * 60 * 60 * 1000);
+          return taskDate >= startOfWeek && taskDate < nextWeek;
+        });
+      case "month":
+        return tasks.filter(task => {
+          const taskDate = new Date(task.deadline);
+          const nextMonth = new Date(startOfMonth.getFullYear(), startOfMonth.getMonth() + 1, 1);
+          return taskDate >= startOfMonth && taskDate < nextMonth;
+        });
+      default:
+        return tasks;
+    }
+  };
 
   return (
     <div className="task-layout">
       <TaskTabs
-        selectedOffice={selectedOffice}
-        onOfficeChange={setSelectedOffice}
-        allOffices={allOffices}
+        selectedSort={selectedSort}
+        onSortChange={setSelectedSort}
         showUpcomingIndicator={upcomingTasks.length > 0}
         showPastDueIndicator={pastDueTasks.length > 0}
         showCompletedIndicator={completedTasks.length > 0}
       />
 
-      {/* Pass tasks down via Outlet context */}
+      {/* Pass sorted tasks down via Outlet context */}
       <Outlet context={{
-        upcomingTasks: filterByOffice(upcomingTasks),
-        pastDueTasks: filterByOffice(pastDueTasks),
-        completedTasks: filterByOffice(completedTasks)
+        upcomingTasks: sortTasks(upcomingTasks),
+        pastDueTasks: sortTasks(pastDueTasks),
+        completedTasks: sortTasks(completedTasks)
       }} />
     </div>
   );

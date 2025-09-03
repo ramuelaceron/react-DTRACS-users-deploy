@@ -3,9 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import "./TaskTabs.css";
 
 const TaskTabs = ({
-  selectedOffice,
-  onOfficeChange,
-  allOffices = [],
+  selectedSort,
+  onSortChange,
   showUpcomingIndicator = false,
   showPastDueIndicator = false,
   showCompletedIndicator = false,
@@ -70,15 +69,14 @@ const TaskTabs = ({
 
       <select
         className="task-dropdown"
-        value={selectedOffice}
-        onChange={(e) => onOfficeChange(e.target.value)}
+        value={selectedSort}
+        onChange={(e) => onSortChange(e.target.value)}
       >
-        <option>All Offices</option>
-        {allOffices.map((office) => (
-          <option key={office} value={office}>
-            {office}
-          </option>
-        ))}
+        <option value="newest">Newest to Oldest</option>
+        <option value="oldest">Oldest to Newest</option>
+        <option value="today">Due Today</option>
+        <option value="week">Due This Week</option>
+        <option value="month">Due This Month</option>
       </select>
     </div>
   );

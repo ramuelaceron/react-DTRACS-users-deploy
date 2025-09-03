@@ -77,7 +77,6 @@
   border: 1px solid #f0f0f0;
   position: relative;
   overflow: hidden;
-  cursor: pointer;
 }
 
 .school-card:hover {
@@ -189,4 +188,19 @@
 .account-status-badge.small {
   padding: 2px 8px;
   font-size: 0.75rem;
+}
+
+.clickable-account {
+  color: #2196F3;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.clickable-account:hover {
+  color: #1976D2;
+}
+
+.non-clickable-account {
+  color: #6b7280;
+  cursor: default;
 }

@@ -34,7 +34,6 @@ const getDisplayStatus = (status) => {
 
 const SchoolStats = ({ task: propTask, taskId: propTaskId, sectionId: propSectionId }) => {
   const [activeTab, setActiveTab] = useState("assigned");
-  const [hoveredSchool, setHoveredSchool] = useState(null);
   const navigate = useNavigate();
 
   // Get task from props or fallback to taskData
@@ -57,6 +56,27 @@ const SchoolStats = ({ task: propTask, taskId: propTaskId, sectionId: propSectio
   const getSchoolLogo = (schoolName) => {
     const school = schoolAccounts.find(account => account.school_name === schoolName);
     return school ? school.logo : schoolLogo; // Return the school logo or default if not found
+  };
+
+  // Handle account click - navigate to attachments page (only for completed status)
+  const handleAccountClick = (school, account) => {
+    if (account.status !== "Completed") return; // Only allow click for completed tasks
+    
+    // Create a URL-friendly slug from the task title
+    const taskSlug = task?.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+    
+    navigate(`/task/${propSectionId}/${taskSlug}/attachments`, {
+      state: {
+        schoolName: school.name,
+        accountName: account.assignedTo,
+        attachments: account.attachments || [],
+        taskTitle: task?.title,
+        taskId: propTaskId // Still pass taskId in state for data retrieval
+      }
+    });
   };
 
   // Group accounts by school
@@ -83,7 +103,8 @@ const SchoolStats = ({ task: propTask, taskId: propTaskId, sectionId: propSectio
         accountId: account.account_id,
         assignedTo: account.account_name,
         status: account.status,
-        remarks: account.remarks
+        remarks: account.remarks,
+        attachments: account.attachments || [] // Include attachments if available
       });
     });
 
@@ -167,6 +188,7 @@ const SchoolStats = ({ task: propTask, taskId: propTaskId, sectionId: propSectio
               school={school} 
               statusLabels={statusLabels}
               getDisplayStatus={getDisplayStatus}
+              onAccountClick={handleAccountClick}
             />
           ))
         ) : (
@@ -178,7 +200,7 @@ const SchoolStats = ({ task: propTask, taskId: propTaskId, sectionId: propSectio
 };
 
 // Separate SchoolCard component for individual hover state
-const SchoolCard = ({ school, statusLabels, getDisplayStatus }) => {
+const SchoolCard = ({ school, statusLabels, getDisplayStatus, onAccountClick }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -201,7 +223,16 @@ const SchoolCard = ({ school, statusLabels, getDisplayStatus }) => {
       <div className={`accounts-list ${isHovered ? 'expanded' : ''}`}>
         {school.accounts.map((account) => (
           <div key={account.id} className="account-item">
-            <span className="account-name">Assigned to: <strong>{account.assignedTo}</strong></span>
+            <span className="account-name">
+              Assigned to:{" "}
+              <strong 
+                className={`account-name-text ${account.status === "Completed" ? "clickable-account" : "non-clickable-account"}`}
+                onClick={() => onAccountClick(school, account)}
+                title={account.status === "Completed" ? "View attachments" : "No attachments available"}
+              >
+                {account.assignedTo}
+              </strong>
+            </span>
             <span className={`account-status-badge small ${getDisplayStatus(account.status)}`}>
               {statusLabels[account.status] || "Pending"}
             </span>

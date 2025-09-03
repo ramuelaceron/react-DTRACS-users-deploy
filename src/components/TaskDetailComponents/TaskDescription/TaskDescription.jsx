@@ -1,4 +1,3 @@
-
 import React from "react";
 import { PiClipboardTextBold } from "react-icons/pi";
 import "./TaskDescription.css"
@@ -35,35 +34,30 @@ const formatTime = (dateString) => {
   }
 };
 
-// Get status color and label
-const getStatusConfig = (status, isLate, isCompleted) => {
-  if (isCompleted) {
-    return { color: "#4CAF50", label: "Completed", icon: "✅" };
-  }
-  if (isLate) {
-    return { color: "#FF9800", label: "Late Submission", icon: "⚠️" };
-  }
-
+// Get status color based on task status
+const getStatusColor = (status) => {
   switch (status) {
     case "Completed":
-      return { color: "#333", label: "Completed", icon: "✅" };
+      return "#4CAF50"; // Green for completed
     case "Incomplete":
-      return { color: "#D32F2F", label: "Past Due", icon: "⚠️" };
+      return "#D32F2F"; // Red for incomplete
     case "Ongoing":
     default:
-      return { color: "#2196F3", label: "Assigned", icon: "" };
+      return "#2196F3"; // Blue for ongoing
   }
 };
 
-const TaskDescription = ({ task, creator_name, creation_date, deadline, description, isCompleted, isLate }) => {
-  const statusConfig = getStatusConfig(task?.task_status, isLate, isCompleted);
+const TaskDescription = ({ task, creator_name, creation_date, completion_date, deadline, description, isCompleted }) => {
+  // Determine the actual status (if manually completed, override the task status)
+  const actualStatus = isCompleted ? "Completed" : (task?.task_status || "Ongoing");
+  const statusColor = getStatusColor(actualStatus);
 
   return (
     <div className="task-description">
       <div className="task-header">
         <div
           className="task-icon"
-          style={{ backgroundColor: statusConfig.color }}
+          style={{ backgroundColor: statusColor }}
         >
           <PiClipboardTextBold className="icon-lg" style={{ color: "white" }} />
         </div>
@@ -72,10 +66,16 @@ const TaskDescription = ({ task, creator_name, creation_date, deadline, descript
 
       {/* Meta Info */}
       <div className="task-meta">
-        <div className="task-category">{task?.section || "General"}</div>
-        <div className="task-due">
-          Due {formatDate(deadline || task?.deadline)} at {formatTime(deadline || task?.deadline)}
-        </div>
+        <div className="task-category">{task?.section || task?.sectionName || "Unknown Section"}</div>
+        {actualStatus === "Completed" && completion_date ? (
+          <div className="task-completed">
+            Completed on {formatDate(completion_date)} at {formatTime(completion_date)}
+          </div>
+        ) : (
+          <div className="task-due">
+            Due {formatDate(deadline || task?.deadline)} at {formatTime(deadline || task?.deadline)}
+          </div>
+        )}
       </div>
 
       <div className="divider" />

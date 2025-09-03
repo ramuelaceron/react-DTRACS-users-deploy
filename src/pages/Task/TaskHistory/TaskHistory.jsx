@@ -14,9 +14,12 @@ const TaskHistory = () => {
   // ✅ Get pre-filtered completed tasks from ToDoPage layout
   const { completedTasks } = useOutletContext();
 
-  // Group tasks by formatted completion date (using completedTime)
+  // Group tasks by formatted completion date (using completion_date)
   const groupedByDate = completedTasks.reduce((groups, task) => {
-    const formattedDate = formatDate(task.completedTime || task.creation_date);
+    // Use completion_date if available, otherwise fall back to creation_date
+    const completionDate = task.completion_date || task.creation_date;
+    const formattedDate = formatDate(task.creation_date);
+    
     if (!groups[formattedDate]) groups[formattedDate] = [];
     groups[formattedDate].push(task);
     return groups;
@@ -74,6 +77,8 @@ const TaskHistory = () => {
                   <div className="history-task-list">
                     {tasks.map((task) => {
                       const { total, completed } = getTaskCompletionStats(task);
+                      // Use completion_date if available, otherwise fall back to creation_date
+                      const completionDate = task.completion_date || task.creation_date;
                       
                       return (
                         <div className="history-task-item" key={task.id}>
@@ -90,8 +95,8 @@ const TaskHistory = () => {
                               </div>
                             </div>
                             <div className="history-task-completion">
-                              Completed on {formatDate(task.completedTime || task.creation_date)} at{" "}
-                              <span className="history-time">{formatTime(task.completedTime || task.creation_date)}</span>
+                              Completed on {formatDate(completionDate)} at{" "}
+                              <span className="history-time">{formatTime(completionDate)}</span>
                             </div>
                           </div>
 
@@ -99,13 +104,17 @@ const TaskHistory = () => {
                             <Link
                               to={`/task/${task.sectionId}/${task.taskSlug}`}
                               state={{
+                                // Pass the complete task object
+                                taskData: task,
                                 taskTitle: task.title,
                                 deadline: task.deadline,
                                 creation_date: task.creation_date,
+                                completion_date: task.completion_date, // Pass completion_date
                                 taskDescription: task.description,
                                 taskId: task.id,
                                 creator_name: task.creator_name,
                                 section_designation: task.section_designation,
+                                section_name: task.sectionName, // Pass section name
                                 full_name: task.creator_name,
                                 task_status: "Completed"
                               }}

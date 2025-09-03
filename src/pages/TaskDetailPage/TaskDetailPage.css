@@ -7,7 +7,7 @@
 
 .task-detail-left {
   flex: 1;
-  margin-top: -10px; 
+  margin-top: 2px; 
 }
 
 .task-detail-right {
@@ -41,5 +41,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 18px;
+}
+
+/* Comment Section */
+.comment-section {
+  margin-top: -15px;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.comment-section h3 {
+  margin-bottom: 15px;
+  color: #333;
   font-size: 18px;
 }
