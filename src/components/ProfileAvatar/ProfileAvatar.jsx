@@ -1,14 +1,33 @@
+// src/components/ProfileAvatar/ProfileAvatar.jsx
 import React from 'react';
 import { FaCirclePlus } from "react-icons/fa6";
 import { MdAccountCircle } from "react-icons/md";
+import { generateAvatar } from '../../utils/iconGenerator'; // Import the icon generator
 import './ProfileAvatar.css';
 
-const ProfileAvatar = ({ avatar, isEditing, onButtonClick, fileInputRef, onFileChange }) => {
+const ProfileAvatar = ({ 
+  avatar, 
+  isEditing, 
+  onButtonClick, 
+  fileInputRef, 
+  onFileChange,
+  userName // Add userName prop to generate avatar from name
+}) => {
+  // Generate avatar props if no avatar is provided
+  const avatarProps = !avatar && userName ? generateAvatar(userName) : null;
+
   return (
     <div className="profile-avatar-container">
       <div className="profile-avatar">
         {avatar ? (
           <img src={avatar} alt="Profile" className="avatar-image" />
+        ) : avatarProps ? (
+          <div 
+            className="generated-avatar-large"
+            style={{ backgroundColor: avatarProps.color }}
+          >
+            {avatarProps.initials}
+          </div>
         ) : (
           <MdAccountCircle size={120} />
         )}

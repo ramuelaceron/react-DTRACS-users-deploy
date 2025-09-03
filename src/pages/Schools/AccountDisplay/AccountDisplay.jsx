@@ -4,6 +4,7 @@ import "./AccountDisplay.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { schoolAccounts } from "../../../data/schoolAccounts";
 import { IoChevronBackOutline } from "react-icons/io5";
+import { generateAvatar } from "../../../utils/iconGenerator";
 
 const AccountDisplay = () => {
   const navigate = useNavigate();
@@ -32,22 +33,34 @@ const AccountDisplay = () => {
       {/* Account List */}
       <div className="account-list">
         {hasAccounts ? (
-          school.accounts.map((account) => (
-            <div className="account-item" key={account.id}>
-              <div className="account-info">
-                <img src={account.avatar} alt="" className="account-logo" />
-                <div className="account-text">
-                  <span className="accountname">
-                    {account.first_name} {account.middle_name ? `${account.middle_name} ` : ""}{account.last_name}
-                  </span>
-                  <p className="account-address">{account.position}</p>
+          school.accounts.map((account) => {
+            const fullName = `${account.first_name} ${account.middle_name ? `${account.middle_name} ` : ""}${account.last_name}`;
+            const { initials, color } = generateAvatar(fullName);
+            
+            return (
+              <div className="account-item" key={account.id}>
+                <div className="account-info">
+                  {account.avatar ? (
+                    <img src={account.avatar} alt="" className="account-logo" />
+                  ) : (
+                    <div 
+                      className="account-avatar-placeholder"
+                      style={{ backgroundColor: color }}
+                    >
+                      {initials}
+                    </div>
+                  )}
+                  <div className="account-text">
+                    <span className="accountname">{fullName}</span>
+                    <p className="account-address">{account.position}</p>
+                  </div>
+                </div>
+                <div className="account-email">
+                  <span>{account.email}</span>
                 </div>
               </div>
-              <div className="account-email">
-                <span>{account.email}</span>
-              </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <div className="no-accounts">
             <span>No accounts available for this school.</span>

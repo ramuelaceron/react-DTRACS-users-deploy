@@ -5,6 +5,7 @@ import { FaEdit, FaTrash, FaSave, FaEllipsisV } from "react-icons/fa";
 import useClickOutside from '../../hooks/useClickOutside';
 import DOMPurify from 'dompurify';
 import { userAvatars } from '../../data/accountData'; // ✅ Import map
+import { generateAvatar } from '../../utils/iconGenerator'; // Import the icon generator
 
 const CommentList = ({
   comments,
@@ -33,6 +34,7 @@ const CommentList = ({
         const lastName = c.last_name?.trim();
 
         let avatar = null;
+        let avatarProps = null;
 
         // Try in order of reliability
         if (email && userAvatars[email]) {
@@ -47,11 +49,23 @@ const CommentList = ({
           }
         }
 
+        // Generate avatar props if no avatar is found
+        if (!avatar && author) {
+          avatarProps = generateAvatar(author);
+        }
+
         return (
           <div key={c.id} className="comment-item">
             <div className="comment-avatar">
               {avatar ? (
                 <img src={avatar} alt={author || 'User'} className="comment-avatar-img" />
+              ) : avatarProps ? (
+                <div 
+                  className="generated-avatar-small"
+                  style={{ backgroundColor: avatarProps.color }}
+                >
+                  {avatarProps.initials}
+                </div>
               ) : (
                 <span className="comment-avatar-initial">
                   {author?.charAt(0).toUpperCase() || '?'}

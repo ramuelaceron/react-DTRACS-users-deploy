@@ -6,21 +6,27 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import logo from "../../assets/images/logo-w-text.png";
 import { FaUser, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import { IoChevronDownCircle } from "react-icons/io5";
+import { generateAvatar } from "../../utils/iconGenerator"; // Import the icon generator
 
 const Header = ({ toggleSidebar }) => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null); // ✅ Dynamic user
+  const [currentUser, setCurrentUser] = useState(null);
+  const [avatarProps, setAvatarProps] = useState(null);
   const dropdownRef = useRef(null);
 
   // ✅ Load user from sessionStorage on mount
   useEffect(() => {
     const savedUser = sessionStorage.getItem("currentUser");
     if (savedUser) {
-      setCurrentUser(JSON.parse(savedUser));
-    } else {
-      // Optional: redirect to login if no user
-      // navigate("/");
+      const user = JSON.parse(savedUser);
+      setCurrentUser(user);
+      
+      // Generate avatar props if no avatar is provided
+      if (!user.avatar) {
+        const fullName = `${user.first_name} ${user.middle_name} ${user.last_name}`;
+        setAvatarProps(generateAvatar(fullName));
+      }
     }
   }, []);
 
@@ -51,9 +57,9 @@ const Header = ({ toggleSidebar }) => {
   };
 
   const handleSignOut = () => {
-    // ✅ Clear session and state
     sessionStorage.removeItem("currentUser");
     setCurrentUser(null);
+    setAvatarProps(null);
     console.log("Signing out...");
     navigate("/");
     setIsDropdownOpen(false);
@@ -103,6 +109,13 @@ const Header = ({ toggleSidebar }) => {
                 alt="Profile"
                 className="header-profile-avatar-img"
               />
+            ) : avatarProps ? (
+              <div 
+                className="generated-avatar"
+                style={{ backgroundColor: avatarProps.color }}
+              >
+                {avatarProps.initials}
+              </div>
             ) : (
               <FaUserCircle className="profile-main-icon" />
             )}
@@ -119,6 +132,13 @@ const Header = ({ toggleSidebar }) => {
                   alt="Profile"
                   className="header-profile-avatar-img dropdown-avatar"
                 />
+              ) : avatarProps ? (
+                <div 
+                  className="generated-avatar dropdown-avatar-generated"
+                  style={{ backgroundColor: avatarProps.color }}
+                >
+                  {avatarProps.initials}
+                </div>
               ) : (
                 <FaUserCircle className="header-profile-avatar" />
               )}

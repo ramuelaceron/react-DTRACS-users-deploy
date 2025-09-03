@@ -1,5 +1,4 @@
 import avatarImg1 from '../assets/images/avatar1.png';
-import avatarImg2 from '../assets/images/avatar2.png';
 
 export const schoolAccountData = {
   user_id: "SCHOOL-0001",
@@ -12,7 +11,7 @@ export const schoolAccountData = {
   password: "admin",
   registration_date: "2025-08-28T08:24:58.083191",
   active: true,
-  avatar: avatarImg1,
+  avatar: "",
   school_name: "Binan Integrated National High School",
   school_address: "Nong Sto. Domingo, Biñan City, Laguna, 4024",
 }
@@ -28,7 +27,7 @@ export const focalAccountData = {
   password: "admin",
   registration_date: "2025-08-28T08:24:58.083191",
   active: true,
-  avatar: avatarImg2,
+  avatar: "",
   section_designation: "School Management Monitoring and Evaluation",
   address: "Nong Sto. Domingo, Biñan City, Laguna, 4024",
 }

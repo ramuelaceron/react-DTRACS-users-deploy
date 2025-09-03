@@ -86,11 +86,9 @@ html, body {
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background-color: #203061;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
@@ -210,4 +208,30 @@ hr {
 .dropdown-item svg {
   flex-shrink: 0;
   color: #2196f3;
+}
+
+/* Generated Avatar Styles */
+.generated-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+
+.dropdown-avatar-generated {
+  width: 48px;
+  height: 48px;
+  font-size: 18px;
+}
+
+.profile-icon-wrapper .generated-avatar {
+  width: 45px;
+  height: 45px;
+  font-size: 18px;
 }

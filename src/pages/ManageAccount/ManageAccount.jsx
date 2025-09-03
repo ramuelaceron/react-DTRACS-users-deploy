@@ -231,6 +231,7 @@ const ManageAccount = () => {
             onButtonClick={handleButtonClick}
             fileInputRef={fileInputRef}
             onFileChange={handleFileChange}
+            userName={`${userData.first_name} ${userData.middle_name} ${userData.last_name}`}
           />
 
           <ProfileInfoCard

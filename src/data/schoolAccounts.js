@@ -39,7 +39,6 @@
   import TATMES from "../assets/schoolsImages/TATMES.png";
   import TES2 from "../assets/schoolsImages/TES2.png";
   import ZES from "../assets/schoolsImages/ZES.png";
-  import avatarImg1 from '../assets/images/avatar1.png';
   import { createSlug } from "../utils/idGenerator";
 
   export const rawSchoolAccounts = [
@@ -50,7 +49,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0001",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -61,10 +60,10 @@
         },
         {
           user_id: "SCHOOL-0002",
-          avatar: avatarImg1,
-          first_name: "Juan",
-          middle_name: "Ponce",
-          last_name: "Dela Cruz",
+          avatar: "",
+          first_name: "Jestro",
+          middle_name: "A",
+          last_name: "Diaz",
           email: "juandelacruz@gmail.com",
           position: "Assistant",
           school_name: "Biñan City Science & Technology High School",
@@ -79,7 +78,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0003",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Ramuel",
           middle_name: "Aceron",
           last_name: "Diaz",
@@ -97,7 +96,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0004",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -115,7 +114,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0005",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -133,7 +132,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0006",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -151,7 +150,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0007",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -169,7 +168,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0008",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -187,7 +186,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0009",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -205,7 +204,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0010",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -223,7 +222,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0011",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -241,7 +240,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0012",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -259,7 +258,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0013",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -277,7 +276,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0014",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -295,7 +294,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0015",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -313,7 +312,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0016",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -331,7 +330,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0017",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -349,7 +348,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0018",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -367,7 +366,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0019",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -385,7 +384,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0020",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_Name: "Ponce",
           last_name: "Dela Cruz",
@@ -403,7 +402,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0021",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -421,7 +420,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0022",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -439,7 +438,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0023",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -457,7 +456,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0024",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -475,7 +474,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0025",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -493,7 +492,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0026",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -511,7 +510,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0027",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -529,7 +528,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0028",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -547,7 +546,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0029",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -565,7 +564,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0030",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -583,7 +582,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0031",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -601,7 +600,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0032",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -619,7 +618,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0033",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -636,7 +635,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0034",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -655,7 +654,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0035",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -673,7 +672,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0036",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -691,7 +690,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0037",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -709,7 +708,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0038",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -727,7 +726,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0039",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -745,7 +744,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0040",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
@@ -763,7 +762,7 @@
       accounts: [
         {
           user_id: "SCHOOL-0040",
-          avatar: avatarImg1,
+          avatar: "",
           first_name: "Juan",
           middle_name: "Ponce",
           last_name: "Dela Cruz",
