@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { taskData } from '../../data/taskData';
 import { createSlug } from '../../utils/idGenerator';
+import { generateAvatar } from '../../utils/iconGenerator'; // Import the utility
 import './ToDoListPage.css';
 
 const ToDoListPage = () => {
@@ -30,11 +31,8 @@ const ToDoListPage = () => {
     }
   }
 
-  // Fallback avatar if not found
-  if (!avatar) {
-    console.warn(`Avatar not found for ${section_designation} - ${full_name}`);
-    avatar = "https://via.placeholder.com/40"; // fallback
-  }
+  // Generate avatar data using the utility
+  const { initials, color } = generateAvatar(full_name);
 
   // Function to extract time from ISO date string
   const extractTimeFromDate = (dateString) => {
@@ -66,10 +64,19 @@ const ToDoListPage = () => {
 
   return (
     <div className="task-list-page">
-      {/* ✅ Header with real avatar */}
+      {/* ✅ Header with real avatar or generated one */}
       <div className="header">
         <div className="avatar">
-          <img src={avatar} alt={`${person}'s avatar`} />
+          {avatar ? (
+            <img src={avatar} alt={`${person}'s avatar`} />
+          ) : (
+            <div 
+              className="avatar-fallback" 
+              style={{ backgroundColor: color }}
+            >
+              {initials}
+            </div>
+          )}
         </div>
         <div className="header-info">
           <h1>{pageTitle}</h1>

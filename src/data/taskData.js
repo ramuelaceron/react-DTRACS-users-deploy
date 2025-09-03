@@ -1,5 +1,4 @@
 
-import avatar2 from '../assets/images/avatar2.png';
 
 export const taskData = {
   "SMME": [
@@ -7,7 +6,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "School Management Monitoring and Evaluation",
       full_name: "Isidra L. Galman",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -64,7 +63,7 @@ export const taskData = {
             {
               school_id: "SCHOOL-0001",
               account_name: "Jestro Diaz",
-              avatar: avatar2,
+              avatar: "",
               message: "Ang baho mo"
             },
         ],
@@ -79,7 +78,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "Research",
       full_name: "Edward R. Manuel",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -143,7 +142,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "Planning",
       full_name: "Charles M. Patio",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -210,7 +209,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "Human Resource Development",
       full_name: "Arlene P. Alora",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -277,7 +276,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "Social Mobilization and Networking",
       full_name: "Donna Jane M. Alfonso",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -344,7 +343,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "Education Facilities",
       full_name: "Precious Joy A. Coronado",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -411,7 +410,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "Disaster Risk Reduction and Management",
       full_name: "Ernane S. Escuvania",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -478,7 +477,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "Dental",
       full_name: "Dr. Liza M. Cruz",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -543,7 +542,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "Medical",
       full_name: "Nurse Juan P. Dela Cruz",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -608,7 +607,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "School-Based Feeding Program",
       full_name: "Nurse Anna L. Perez",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -673,7 +672,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "Gulayan sa Paaralan Program",
       full_name: "Teacher Joy L. Perez",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -738,7 +737,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "Water, Sanitation, and Hygiene in Schools",
       full_name: "Teacher Joy L. Perez",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -803,7 +802,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "National Drug Education Program",
       full_name: "Teacher Marry L. Perez",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -868,7 +867,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "Reproductive Health",
       full_name: "Teacher Mynel L. Perez",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {
@@ -935,7 +934,7 @@ export const taskData = {
       office: "School Governance and Operations Division",
       section_designation: "Youth Formation",
       full_name: "Maureen Jane Q. Alangco",
-      avatar: avatar2,
+      avatar: "",
       path: "task-list",
       tasklist: [
         {

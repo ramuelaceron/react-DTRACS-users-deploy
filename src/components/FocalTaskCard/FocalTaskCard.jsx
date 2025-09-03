@@ -1,12 +1,13 @@
 // components/FocalTaskCard/FocalTaskCard.jsx
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { taskData } from '../../data/taskData'; // ✅ Import sectionData
+import { taskData } from '../../data/taskData';
+import { generateAvatar } from '../../utils/iconGenerator'; // Import the utility
 import './FocalTaskCard.css';
 
 const FocalTaskCard = ({ section_designation, full_name, path = 'task-list' }) => {
   const navigate = useNavigate();
-  const { sectionId } = useParams(); // Get sectionId from URL
+  const { sectionId } = useParams();
 
   // 🔍 Find the correct entry in sectionData
   const section = taskData[sectionId];
@@ -19,10 +20,8 @@ const FocalTaskCard = ({ section_designation, full_name, path = 'task-list' }) =
     avatar = entry?.avatar || null;
   }
 
-  // Fallback if avatar not found
-  if (!avatar) {
-    console.warn(`Avatar not found for ${section_designation} - ${full_name}`);
-  }
+  // Generate avatar data using the utility
+  const { initials, color } = generateAvatar(full_name);
 
   const handleClick = () => {
     if (!sectionId) {
@@ -54,7 +53,12 @@ const FocalTaskCard = ({ section_designation, full_name, path = 'task-list' }) =
           {avatar ? (
             <img src={avatar} alt={`${full_name}'s avatar`} className="profile-avatar" />
           ) : (
-            <div className="profile-fallback">?</div>
+            <div 
+              className="profile-fallback" 
+              style={{ backgroundColor: color }}
+            >
+              {initials}
+            </div>
           )}
         </div>
         <div className="text-content">
