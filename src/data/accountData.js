@@ -2,10 +2,10 @@ import avatarImg1 from '../assets/images/avatar1.png';
 
 export const schoolAccountData = {
   user_id: "SCHOOL-0001",
-  first_name: "Juan",
-  middle_name: "Ponce",
-  last_name: "Dela Cruz",
-  email: "juandelacruz@gmail.com",
+  first_name: "Ramuel",
+  middle_name: "B.",
+  last_name: "Aceron",
+  email: "aceronramuel@gmail.com",
   contact_number: "+63 9123456789",
   position: "Principal",
   password: "admin",
