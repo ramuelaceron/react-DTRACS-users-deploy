@@ -180,6 +180,44 @@ const TaskDetailPage = () => {
     setShowCommentBox(!showCommentBox);
   };
 
+  // Task action handlers (to be passed to TaskDescription)
+  const handleEditTask = () => {
+    // This will be handled in the TaskDescription component
+    console.log("Edit task requested");
+  };
+
+  const handleDeleteTask = () => {
+    if (window.confirm("Are you sure you want to delete this task? This action cannot be undone.")) {
+      // Implement task deletion logic here
+      toast.success("Task deleted successfully!");
+      navigate(-1);
+    }
+  };
+
+  const handleCopyLink = () => {
+    const taskUrl = window.location.href;
+    navigator.clipboard.writeText(taskUrl)
+      .then(() => {
+        toast.success("Task link copied to clipboard!");
+      })
+      .catch(() => {
+        toast.error("Failed to copy link to clipboard.");
+      });
+  };
+
+  const handleTaskUpdate = (updatedTask) => {
+  // Handle the updated task data
+  console.log("Task updated:", updatedTask);
+  toast.success("Task updated successfully!");
+  
+  // You might want to update the local state or refetch the task data
+  // For example, if you're using state to manage the task:
+  // setTask(updatedTask);
+  
+  // Or if you need to refetch from the server:
+  // fetchTaskData(); 
+  };
+
   // Handle task not found
   if (!task && !state) {
     return (
@@ -203,71 +241,76 @@ const TaskDetailPage = () => {
         <button className="task-back-btn" onClick={handleBack}>
           <IoChevronBackOutline className="icon-md" /> Back
         </button>
-          <TaskDescription
-            task={task || {
-              title: taskTitle,
-              deadline: taskDeadline,
-              creation_date: taskCreationDate,
-              description: taskDescription,
-              task_id: taskId,
-              creator_name: creator_name,
-              task_status: state?.task_status || "Ongoing",
-              section: section_name // Pass section name
-            }}
-            creator_name={creator_name}
-            creation_date={taskCreationDate}
-            deadline={taskDeadline}
-            description={taskDescription}
-            isCompleted={isCompleted}
-          />
-          
-          {/* Comment Section */}
-          <div className="comment-section">
-            {/* Add Comment Button */}
-            <SharedButton variant="text" size="medium" onClick={toggleCommentBox} aria-label="Add comment">
-              <RiAccountPinBoxLine className="icon-md" /> Add comment
-            </SharedButton>
+        
+        <TaskDescription
+          task={task || {
+            title: taskTitle,
+            deadline: taskDeadline,
+            creation_date: taskCreationDate,
+            description: taskDescription,
+            task_id: taskId,
+            creator_name: creator_name,
+            task_status: state?.task_status || "Ongoing",
+            section: section_name
+          }}
+          creator_name={creator_name}
+          creation_date={taskCreationDate}
+          deadline={taskDeadline}
+          description={taskDescription}
+          isCompleted={isCompleted}
+          onEditTask={handleEditTask}
+          onDeleteTask={handleDeleteTask}
+          onCopyLink={handleCopyLink}
+          onTaskUpdated={handleTaskUpdate} // Add this callback
+        />
+        
+        {/* Comment Section */}
+        <div className="comment-section">
+          {/* Add Comment Button */}
+          <SharedButton variant="text" size="medium" onClick={toggleCommentBox} aria-label="Add comment">
+            <RiAccountPinBoxLine className="icon-md" /> Add comment
+          </SharedButton>
 
-            {/* Comment Input */}
-            {showCommentBox && (
-              <div ref={commentBoxRef}>
-                <CommentBox onSubmit={handleCommentSubmit} />
-              </div>
-            )}
+          {/* Comment Input */}
+          {showCommentBox && (
+            <div ref={commentBoxRef}>
+              <CommentBox onSubmit={handleCommentSubmit} />
+            </div>
+          )}
 
-            {/* Comment List */}
-            {comments.length > 0 && (
-              <CommentList
-                comments={comments}
-                editingId={editingId}
-                editText={editText}
-                setEditText={setEditText}
-                onEdit={handleEditStart}
-                onSaveEdit={handleEditSave}
-                onCancelEdit={handleEditCancel}
-                onDelete={handleDeleteComment}
-                currentUser={currentUser}
-              />
-            )}
-          </div>
+          {/* Comment List */}
+          {comments.length > 0 && (
+            <CommentList
+              comments={comments}
+              editingId={editingId}
+              editText={editText}
+              setEditText={setEditText}
+              onEdit={handleEditStart}
+              onSaveEdit={handleEditSave}
+              onCancelEdit={handleEditCancel}
+              onDelete={handleDeleteComment}
+              currentUser={currentUser}
+            />
+          )}
+        </div>
       </div>
 
       <div className="task-detail-right">
         <SchoolStats task={task} taskId={taskId} sectionId={sectionId} />
       </div>
 
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-        />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

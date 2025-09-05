@@ -19,7 +19,7 @@ const StartUp = () => {
 
         <div className="home-content-container">
           <div className="home-greeting-section">
-            <h1 className="home-greeting-text">Magandang Buhay!</h1>
+            <h1 className="home-greeting-text">Hello Welcome!</h1>
             <p className="home-welcome-text">
               Welcome to DepEd Biñan Record Monitoring System
             </p>
