@@ -1,44 +1,104 @@
-import React from "react";
-import "./RegisterOffice.css";
-import { useState } from "react";
+// src/pages/RegisterOffice.jsx
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./RegisterOffice.css";
+import api from "../../api/axios";
 import background from "../../assets/images/Start-Up.png";
 import ParticleBackground from "../../components/ParticleBackground/Particle2.jsx";
-import "../../components/ParticleBackground/Particle2.css";
-import phflag from "../../assets/images/ph-flag.png";
 import logo from "../../assets/images/logo-w-text.png";
 
 const RegisterOffice = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    middleName: "",
-    email: "",
-    contactNumber: "",
-    school: "",
-    position: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // ✅ Form data matches backend enum keys
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    middle_name: "",
+    office: "", // Will be SGOD, CID, OSDS, etc.
+    email: "",
+    contact_number: "",
+    password: "",
+    confirm_password: "",
+  });
+
+  // ✅ Correct full names for each enum value
+  const officeOptions = [
+    { value: "SGOD", label: "School Governance and Operations Division" },
+    { value: "CID", label: "Curriculum Implementation Division" },
+    { value: "OSDS", label: "Office of the Schools Division Superintendent" },
+  ];
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // For contactNumber field, only allow numbers
-    if (name === "contactNumber") {
-      const numbersOnly = value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
-      setFormData(prev => ({ ...prev, [name]: numbersOnly }));
+
+    if (name === "contact_number") {
+      const numbersOnly = value.replace(/[^0-9]/g, '');
+      if (numbersOnly.length <= 11) {
+        setFormData(prev => ({ ...prev, [name]: numbersOnly }));
+      }
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add form validation and submission logic here
-    console.log("Form submitted:", formData);
+    setError("");
+    setSuccess("");
+
+    // 🔐 Validate passwords
+    if (formData.password !== formData.confirm_password) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    try {
+      console.log("Sending to backend:", formData);
+
+      // ✅ POST to focal registration endpoint
+      const response = await api.post("/focal/account/registration", formData);
+
+      console.log("✅ Success:", response.data);
+      setSuccess("Registration successful! Awaiting verification.");
+
+      // Reset form
+      setFormData({
+        first_name: "",
+        last_name: "",
+        middle_name: "",
+        office: "",
+        email: "",
+        contact_number: "",
+        password: "",
+        confirm_password: "",
+      });
+
+      // Redirect to login
+      setTimeout(() => navigate("/login/office"), 2000);
+
+    } catch (err) {
+      console.error("🚫 Registration failed:", err);
+
+      let errorMsg = "Registration failed. Please try again.";
+
+      if (err.response?.data?.detail) {
+        const d = err.response.data.detail;
+        if (typeof d === 'string') {
+          errorMsg = d;
+        } else if (Array.isArray(d)) {
+          errorMsg = d.map(e => e.msg || "Invalid input").join(" • ");
+        }
+      } else if (!err.response) {
+        errorMsg = "Network error. Check your connection.";
+      }
+
+      setError(errorMsg);
+    }
   };
 
   const handleLoginClick = () => {
@@ -46,7 +106,7 @@ const RegisterOffice = () => {
   };
 
   const handleLogoClick = () => {
-  navigate("/"); // Navigates to the home page
+    navigate("/");
   };
 
   return (
@@ -67,6 +127,20 @@ const RegisterOffice = () => {
             </p>
           </div>
 
+          {/* ✅ Error Message */}
+          {error && (
+            <div className="office-error">
+              <p>{error}</p>
+            </div>
+          )}
+
+          {/* ✅ Success Message */}
+          {success && (
+            <div className="office-success">
+              <p>{success}</p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="office-form">
             {/* Name Fields */}
             <div className="office-form-group">
@@ -74,8 +148,8 @@ const RegisterOffice = () => {
               <div className="office-name-inputs">
                 <input
                   type="text"
-                  name="firstName"
-                  value={formData.firstName}
+                  name="first_name"
+                  value={formData.first_name}
                   onChange={handleChange}
                   placeholder="First name"
                   className="office-name-input"
@@ -83,8 +157,8 @@ const RegisterOffice = () => {
                 />
                 <input
                   type="text"
-                  name="lastName"
-                  value={formData.lastName}
+                  name="last_name"
+                  value={formData.last_name}
                   onChange={handleChange}
                   placeholder="Last name"
                   className="office-name-input"
@@ -92,13 +166,32 @@ const RegisterOffice = () => {
                 />
                 <input
                   type="text"
-                  name="middleName"
-                  value={formData.middleName}
+                  name="middle_name"
+                  value={formData.middle_name}
                   onChange={handleChange}
                   placeholder="Middle name"
                   className="office-name-input"
                 />
               </div>
+            </div>
+
+            {/* Office */}
+            <div className="office-form-group">
+              <label className="office-form-label">Office</label>
+              <select
+                name="office"
+                value={formData.office}
+                onChange={handleChange}
+                className="office-form-input"
+                required
+              >
+                <option value="">Select your office</option>
+                {officeOptions.map((office) => (
+                  <option key={office.value} value={office.value}>
+                    {office.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Email */}
@@ -117,135 +210,22 @@ const RegisterOffice = () => {
 
             {/* Contact Number */}
             <div className="office-form-group">
-              <label className="office-form-label">
-                Contact Number
-              </label>
+              <label className="office-form-label">Contact Number</label>
               <div className="office-phone-input-container">
-                <img src={phflag} className="office-flag-icon" />
-                <span className="office-country-code">+63</span>
                 <input
                   type="tel"
-                  name="contactNumber"
-                  value={formData.contactNumber}
+                  name="contact_number"
+                  value={formData.contact_number}
                   onChange={handleChange}
                   placeholder="Enter your contact number"
                   className="office-phone-input"
                   required
-                  pattern="[0-9]{10}"  // Exactly 10 digits
+                  pattern="[0-9]{11}"
                   inputMode="numeric"
-                  minLength="10"
-                  maxLength="10"
-                  title="Please enter exactly 10 digits (e.g., 9123456789)"
+                  minLength="11"
+                  maxLength="11"
                 />
               </div>
-            </div>
-
-            <div className="office-form-group">
-              <label className="office-form-label">School</label>
-              <select
-                name="school"
-                value={formData.school}
-                onChange={handleChange}
-                className="office-form-input"
-                required
-              >
-                <option value="">Select your school</option>
-                <option value="school1">
-                  Biñan City Science & Technology High School
-                </option>
-                <option value="school2">
-                  Biñan City Senior High School-San Antonio Campus
-                </option>
-                <option value="school3">
-                  Biñan City Senior High School-Sto.Tomas Campus
-                </option>
-                <option value="school4">
-                  Biñan City Senior High School-Timbao Campus
-                </option>
-                <option value="school5">
-                  Biñan City Senior High School-West Campus
-                </option>
-                <option value="school6">Biñan Elementary School</option>
-                <option value="school7">
-                  Biñan Integrated National High School
-                </option>
-                <option value="school8">
-                  Biñan Secondary School of Applied Academics
-                </option>
-                <option value="school9">Canlalay Elementary School</option>
-                <option value="school10">
-                  Dela Paz Main Elementary School
-                </option>
-                <option value="school11">Dela Paz National High School</option>
-                <option value="school12">
-                  Dela Paz West Elementary School
-                </option>
-                <option value="school13">
-                  Dr. Jose G. Tamayo Mem. Elem. School
-                </option>
-                <option value="school14">
-                  Dr. M.Z.Batista Mem. Elem. School
-                </option>
-                <option value="school15">Ganado Elementary School</option>
-                <option value="school16">
-                  Jacobo Z Gonzales Memorial National High School
-                </option>
-                <option value="school17">Langkiwa Elementary School</option>
-                <option value="school18">Loma Elementary School</option>
-                <option value="school19">Malaban East Elementary School</option>
-                <option value="school20">Malaban Elementary School</option>
-                <option value="school21">Mamplasan Elementary School</option>
-                <option value="school22">Mamplasan National High School</option>
-                <option value="school23">
-                  Nereo R. Joaquin National High School
-                </option>
-                <option value="school24">
-                  Our Lady of Lourdes Elementary School
-                </option>
-                <option value="school25">Pagkakaisa Elementary School</option>
-                <option value="school26">
-                  Pedro H. Escueta Mem. Elem. School
-                </option>
-                <option value="school27">Platero Elementary School</option>
-                <option value="school28">
-                  Saint Anthony Integrated School
-                </option>
-                <option value="school29">
-                  Saint Francis Integrated National High School
-                </option>
-                <option value="school30">
-                  San Francisco Elementary School
-                </option>
-                <option value="school31">San Vicente Elementary School</option>
-                <option value="school32">Soro-Soro Elementary School</option>
-                <option value="school33">
-                  Southville 5 Elementary School (Timbao Annex)
-                </option>
-                <option value="school34">Southville 5A ES-Langkiwa</option>
-                <option value="school35">
-                  Southville 5A National High School
-                </option>
-                <option value="school36">Sto.Tomas Elementary School</option>
-                <option value="school37">Timbao Elementary School</option>
-                <option value="school38">Tomas A. Turalba Mes</option>
-                <option value="school39">Tubigan Elementary School</option>
-                <option value="school40">Zapote Elementary School</option>
-              </select>
-            </div>
-
-            <div className="office-form-group">
-              <label className="office-form-label">Position</label>
-              <select
-                name="position"
-                value={formData.position}
-                onChange={handleChange}
-                className="office-form-input"
-                required
-              >
-                <option value="">Select your position</option>
-                <option value="teacher">Teacher</option>
-                <option value="principal">Principal</option>
-              </select>
             </div>
 
             {/* Password */}
@@ -273,14 +253,12 @@ const RegisterOffice = () => {
 
             {/* Confirm Password */}
             <div className="office-form-group">
-              <label className="office-form-label">
-                Confirm Password
-              </label>
+              <label className="office-form-label">Confirm Password</label>
               <div className="office-password-input-container">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
+                  name="confirm_password"
+                  value={formData.confirm_password}
                   onChange={handleChange}
                   placeholder="Confirm password"
                   className="office-form-input"

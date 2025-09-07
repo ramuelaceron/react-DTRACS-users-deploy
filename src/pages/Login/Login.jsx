@@ -1,3 +1,4 @@
+// src/pages/Login.jsx
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Login.css";
@@ -5,74 +6,124 @@ import { FiLogIn } from "react-icons/fi";
 import background from "../../assets/images/Start-Up.png";
 import ParticleBackground from "../../components/ParticleBackground/Particle2.jsx";
 import logo from "../../assets/images/logo-w-text.png";
+import { schoolAddresses } from "../../data/schoolAddresses";
 
-// 🔽 Import account data
-import { loginAccounts, schoolAccountData, focalAccountData } from "../../data/accountData";
+// 🔽 Import Axios instance
+import api from "../../api/axios";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-  const [error, setError] = useState(""); // ✅ Add error state
+  const [error, setError] = useState(""); // Must be string
   const navigate = useNavigate();
   const location = useLocation();
 
   const isSchoolPath = location.pathname.includes("/login/school");
   const isOfficePath = location.pathname.includes("/login/office");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Reset error
+    setError(""); // Clear previous error
 
     const formData = new FormData(e.target);
     const email = formData.get("email").trim();
     const password = formData.get("password");
 
-    // 🔍 Look up user by email
-    const user = loginAccounts[email];
+    // 🔹 DYNAMIC ENDPOINT BASED ON PATH
+    const endpoint = isSchoolPath 
+      ? "/school/account/login" 
+      : isOfficePath 
+        ? "/focal/account/login" 
+        : "/school/account/login";
 
-    if (!user) {
-      setError("Invalid email or password.");
-      return;
-    }
+    try {
+      const response = await api.post(endpoint, { email, password });
 
-    // 🔒 Validate password
-    if (user.password !== password) {
-      setError("Invalid email or password.");
-      return;
-    }
+      console.log("Backend response:", response.data);
 
-    // 🔑 Role-based access control
-    if (isSchoolPath && user.email !== schoolAccountData.email) {
-      setError("This account is not authorized for School access.");
-      return;
-    }
+      // ✅ Extract role from backend response
+      const role = isOfficePath ? "office" : "school";
 
-    if (isOfficePath && user.email !== focalAccountData.email) {
-      setError("This account is not authorized for Office access.");
-      return;
-    }
+      // ✅ Save ALL user data from backend
+      const userData = {
+        user_id: response.data.data.user_id || "",
+        first_name: response.data.data.first_name || "",
+        middle_name: response.data.data.middle_name || "",
+        last_name: response.data.data.last_name || "",
+        // ✅ School fields (for school users)
+        school_name: response.data.data.school_name || "Not specified",
+        school_address: response.data.data.school_address || "Not specified",
+        position: response.data.data.position || "Not specified",
+        // ✅ Office fields (for focal users)
+        office: response.data.data.office || "Not specified",
+        section_designation: response.data.data.section_designation || "Not specified",
+        // ✅ Shared fields
+        email: response.data.data.email || "",
+        contact_number: response.data.data.contact_number || "",
+        registration_date: response.data.data.registration_date || new Date().toISOString(),
+        active: response.data.data.active || true,
+        avatar: response.data.data.avatar || null, // For initials fallback
+        role: role, // ✅ "school" or "office"
+      };
 
-    // ✅ Login successful
-    console.log("Login successful:", user);
+      // ✅ OVERRIDE: If school_address is "N/A" or "Not specified", auto-fill from school name
+      if (role === "school" && (userData.school_address === "N/A" || userData.school_address === "Not specified")) {
+        const correctAddress = schoolAddresses[userData.school_name];
+        if (correctAddress) {
+          userData.school_address = correctAddress;
+        }
+      }
 
-    // Store user in session (optional)
-    sessionStorage.setItem("currentUser", JSON.stringify({
-      email: user.email,
-      first_name: user.first_name,
-      middle_name: user.middle_name,
-      last_name: user.last_name,
-      contact_number: user.contact_number,
-      avatar: user.avatar,
-      role: isSchoolPath ? "school" : "office", // ✅ This is critical
-    }));
+      // ✅ Save to sessionStorage
+      sessionStorage.setItem("currentUser", JSON.stringify(userData));
 
-    // Redirect
-    if (isSchoolPath) {
-      navigate("/home");
-    } else if (isOfficePath) {
-      navigate("/task/ongoing");
-    } else {
-      navigate("/home");
+      // ✅ Redirect based on role
+      if (role === "school") {
+        navigate("/home");
+      } else if (role === "office") {
+        navigate("/task/ongoing");
+      } else {
+        navigate("/home");
+      }
+
+    } catch (err) {
+      console.error("Full error:", err);
+
+      let errorMsg = "Login failed. Please try again.";
+
+      try {
+        if (err && err.response && err.response.data) {
+          const data = err.response.data;
+
+          if (typeof data.detail === 'string') {
+            errorMsg = data.detail;
+          } else if (Array.isArray(data.detail)) {
+            errorMsg = data.detail
+              .map(e => e.msg || e.message || "Invalid input")
+              .filter(Boolean)
+              .join(" • ");
+          } else if (data.message) {
+            errorMsg = data.message;
+          } else {
+            try {
+              errorMsg = JSON.stringify(data);
+            } catch (e) {
+              errorMsg = "An unknown error occurred.";
+            }
+          }
+        } else if (!err.response) {
+          errorMsg = "Network error. Please check your connection.";
+        }
+      } catch (innerErr) {
+        console.error("Error processing error:", innerErr);
+        errorMsg = "An unexpected error occurred.";
+      }
+
+      if (typeof errorMsg !== 'string' || !errorMsg) {
+        errorMsg = "An error occurred during login.";
+      }
+
+      setError(errorMsg);
     }
   };
 
@@ -82,17 +133,13 @@ const Login = () => {
 
   const handleRegisterClick = (e) => {
     e.preventDefault();
-    if (isSchoolPath) {
-      navigate("/register/school");
-    } else if (isOfficePath) {
-      navigate("/register/office");
-    } else {
-      navigate("/register");
-    }
+    if (isSchoolPath) navigate("/register/school");
+    else if (isOfficePath) navigate("/register/office");
+    else navigate("/register");
   };
 
   const handleLogoClick = () => {
-    navigate("/"); // Home
+    navigate("/");
   };
 
   return (
@@ -112,8 +159,8 @@ const Login = () => {
             </p>
           </div>
 
-          {/* ✅ Show error if any */}
-          {error && (
+          {/* ✅ Only render if `error` is a non-empty string */}
+          {error && typeof error === 'string' && error.length > 0 && (
             <div className="login-error">
               <p>{error}</p>
             </div>
@@ -126,7 +173,7 @@ const Login = () => {
                 <input
                   type="email"
                   id="email"
-                  name="email"  // ✅ Required for FormData.get("email")
+                  name="email"
                   className="login-form-input"
                   placeholder="Enter your email"
                   required
@@ -140,7 +187,7 @@ const Login = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
-                  name="password"  // ✅ Required
+                  name="password"
                   className="login-form-input"
                   placeholder="Enter password"
                   required
@@ -153,11 +200,6 @@ const Login = () => {
                   {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
-              <div className="login-forgot-password">
-                <a href="#forgot" className="login-forgot-link">
-                  I forgot my password
-                </a>
-              </div>
             </div>
 
             <button
@@ -165,6 +207,10 @@ const Login = () => {
               className="login-button"
               onMouseEnter={() => setIsHovering(true)}
               onMouseLeave={() => setIsHovering(false)}
+              style={{
+                backgroundColor: isHovering ? '#1e4a76' : '#2563eb',
+                transition: 'background-color 0.2s ease'
+              }}
             >
               <FiLogIn className="login-icon" />
               Log in
@@ -180,20 +226,6 @@ const Login = () => {
                 onClick={handleRegisterClick}
               >
                 Register here
-              </a>
-            </p>
-          </div>
-
-          <div className="login-terms-notice">
-            <p>
-              By using this service, you understand and agree to the DepEd
-              Online Services{" "}
-              <a href="#terms" className="login-terms-link">
-                Terms of Use
-              </a>{" "}
-              and{" "}
-              <a href="#privacy" className="login-terms-link">
-                Privacy Statement
               </a>
             </p>
           </div>

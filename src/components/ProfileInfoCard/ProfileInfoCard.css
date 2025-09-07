@@ -39,3 +39,9 @@
   color: #333;
   font-size: 14px;
 }
+
+/* Optional: Add some styling for the italic text */
+.value em {
+  font-style: italic;
+  color: #666;
+}

@@ -11,8 +11,11 @@ import EditLinks from '../../components/EditLinks/EditLinks';
 import ProfileInfoCard from '../../components/ProfileInfoCard/ProfileInfoCard';
 import ProfileAvatar from '../../components/ProfileAvatar/ProfileAvatar';
 
-// 🔽 Import both account templates (for fallback structure)
-import { schoolAccountData, focalAccountData } from '../../data/accountData';
+// 🔽 Import Axios instance
+import api from '../../api/axios';
+
+// ✅ School addresses list (copied from Login.jsx)
+import { schoolAddresses } from "../../data/schoolAddresses";
 
 const ManageAccount = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -20,9 +23,10 @@ const ManageAccount = () => {
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
 
-  // ✅ State: user data from session or fallback
+  // ✅ State: user data from backend
   const [userData, setUserData] = useState(null);
   const [avatar, setAvatar] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const fileInputRef = useRef(null);
 
@@ -31,40 +35,101 @@ const ManageAccount = () => {
   const [tempEmail, setTempEmail] = useState(null);
   const [tempContact, setTempContact] = useState(null);
 
-  // ✅ Load user on mount
+  // ✅ Load user data from backend on mount
   useEffect(() => {
-    const savedUser = sessionStorage.getItem("currentUser");
-    if (!savedUser) {
-      toast.error("Not logged in. Redirecting...");
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1500);
-      return;
-    }
+    const fetchUserData = async () => {
+      try {
+        const savedUser = sessionStorage.getItem("currentUser");
+        if (!savedUser) {
+          toast.error("Not logged in. Redirecting...");
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 1500);
+          return;
+        }
 
-    const user = JSON.parse(savedUser);
+        const currentUser = JSON.parse(savedUser);
+        const userId = currentUser.user_id;
+        const role = currentUser.role;
 
-    // 🔍 Determine which template to use
-    const accountData =
-      user.role === "school" ? { ...schoolAccountData } : { ...focalAccountData };
+        if (!userId) {
+          throw new Error("User ID not found");
+        }
 
-    // Merge session data with template
-    const mergedData = {
-      ...accountData,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      middle_name: user.middle_name || "",
-      email: user.email,
-      contact_number: user.contact_number || accountData.contact_number,
-      avatar: user.avatar,
+        // 🔹 Fetch user data from backend based on role
+        // Note: Both school and focal routes use the same endpoint pattern
+        const endpoint = `/specific/verified/account/${userId}`;
+        const response = await api.get(endpoint);
+
+        if (!response.data || !response.data.data) {
+          throw new Error("Invalid response from server");
+        }
+
+        const backendData = response.data.data;
+
+        // ✅ Create user data object directly from backend with minimal defaults
+        let mergedData = {
+          // Basic user info
+          user_id: backendData.user_id || userId,
+          first_name: backendData.first_name || "",
+          last_name: backendData.last_name || "",
+          middle_name: backendData.middle_name || "",
+          email: backendData.email || "",
+          contact_number: backendData.contact_number || "",
+          avatar: backendData.avatar || null,
+          role: role,
+          // School-specific fields
+          school_name: backendData.school_name || "Not specified",
+          school_address: backendData.school_address || "Not specified",
+          position: backendData.position || "Not specified",
+          // Office-specific fields
+          office: backendData.office || "Not specified",
+          section_designation: backendData.section_designation || "Not specified",
+        };
+
+        // ✅ OVERRIDE: If school_address is "N/A" or "Not specified", auto-fill from school name
+        if (role === "school" && (mergedData.school_address === "N/A" || mergedData.school_address === "Not specified")) {
+          const correctAddress = schoolAddresses[mergedData.school_name];
+          if (correctAddress) {
+            mergedData.school_address = correctAddress;
+          }
+        }
+
+        // Update session storage with latest data
+        sessionStorage.setItem("currentUser", JSON.stringify(mergedData));
+
+        setUserData(mergedData);
+        setAvatar(mergedData.avatar);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching user ", error);
+        setLoading(false);
+        
+        // Fallback to session storage if API fails
+        const savedUser = sessionStorage.getItem("currentUser");
+        if (savedUser) {
+          const fallbackData = JSON.parse(savedUser);
+          setUserData(fallbackData);
+          setAvatar(fallbackData.avatar || null);
+          toast.warn("Using cached data. Please refresh to get latest information.");
+        } else {
+          toast.error("Failed to load user data. Please login again.");
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 2000);
+        }
+      }
     };
 
-    setUserData(mergedData);
-    setAvatar(user.avatar || accountData.avatar);
+    fetchUserData();
   }, []);
 
-  if (!userData) {
+  if (loading) {
     return <div className="manage-account-app">Loading...</div>;
+  }
+
+  if (!userData) {
+    return <div className="manage-account-app">No user data available</div>;
   }
 
   // Open forms
@@ -119,62 +184,101 @@ const ManageAccount = () => {
   };
 
   // Save handlers
-  const handleSaveName = () => {
+  const handleSaveName = async () => {
     if (tempName.first_name.trim() && tempName.last_name.trim()) {
-      const updated = {
-        ...userData,
-        first_name: tempName.first_name.trim(),
-        middle_name: tempName.middle_name?.trim() || '',
-        last_name: tempName.last_name.trim(),
-      };
-      setUserData(updated);
-      // Update session
-      const savedUser = JSON.parse(sessionStorage.getItem("currentUser"));
-      sessionStorage.setItem(
-        "currentUser",
-        JSON.stringify({ ...savedUser, ...tempName })
-      );
-      toast.success("Name updated successfully!");
-      setShowNameForm(false);
-      setTempName(null);
+      try {
+        const userId = userData.user_id;
+        const role = userData.role;
+        
+        // Prepare update data
+        const updateData = {
+          first_name: tempName.first_name.trim(),
+          middle_name: tempName.middle_name?.trim() || '',
+          last_name: tempName.last_name.trim(),
+        };
+
+        // TODO: Add API call to update name on backend
+        // For now, we'll just update locally and in session storage
+        const updated = {
+          ...userData,
+          ...updateData
+        };
+        setUserData(updated);
+        
+        // Update session
+        sessionStorage.setItem("currentUser", JSON.stringify(updated));
+        toast.success("Name updated successfully!");
+        setShowNameForm(false);
+        setTempName(null);
+      } catch (error) {
+        console.error("Error updating name:", error);
+        toast.error("Failed to update name. Please try again.");
+      }
     } else {
       toast.warn("Please fill in required fields.");
     }
   };
 
-  const handleSaveEmail = () => {
+  const handleSaveEmail = async () => {
     if (tempEmail.includes("@")) {
-      const updated = { ...userData, email: tempEmail.trim() };
-      setUserData(updated);
-      // Update session
-      const savedUser = JSON.parse(sessionStorage.getItem("currentUser"));
-      sessionStorage.setItem(
-        "currentUser",
-        JSON.stringify({ ...savedUser, email: tempEmail.trim() })
-      );
-      toast.success("Email updated successfully!");
-      setShowEmailForm(false);
-      setTempEmail(null);
+      try {
+        const userId = userData.user_id;
+        const role = userData.role;
+        
+        // TODO: Add API call to update email on backend
+        // For now, we'll just update locally and in session storage
+        const updated = { ...userData, email: tempEmail.trim() };
+        setUserData(updated);
+        
+        // Update session
+        const savedUser = JSON.parse(sessionStorage.getItem("currentUser"));
+        sessionStorage.setItem(
+          "currentUser",
+          JSON.stringify({ ...savedUser, email: tempEmail.trim() })
+        );
+        toast.success("Email updated successfully!");
+        setShowEmailForm(false);
+        setTempEmail(null);
+      } catch (error) {
+        console.error("Error updating email:", error);
+        toast.error("Failed to update email. Please try again.");
+      }
     } else {
       toast.warn("Please enter a valid email.");
     }
   };
 
-  const handleSaveContact = () => {
+  const handleSaveContact = async () => {
     if (tempContact.trim()) {
-      const updated = { ...userData, contact_number: tempContact.trim() };
-      setUserData(updated);
-      // No need to update session for contact only (unless used elsewhere)
-      toast.success("Contact number updated successfully!");
-      setShowContactForm(false);
-      setTempContact(null);
+      try {
+        const userId = userData.user_id;
+        const role = userData.role;
+        
+        // TODO: Add API call to update contact on backend
+        // For now, we'll just update locally and in session storage
+        const updated = { ...userData, contact_number: tempContact.trim() };
+        setUserData(updated);
+        
+        // Update session
+        const savedUser = JSON.parse(sessionStorage.getItem("currentUser"));
+        sessionStorage.setItem(
+          "currentUser",
+          JSON.stringify({ ...savedUser, contact_number: tempContact.trim() })
+        );
+        toast.success("Contact number updated successfully!");
+        setShowContactForm(false);
+        setTempContact(null);
+      } catch (error) {
+        console.error("Error updating contact:", error);
+        toast.error("Failed to update contact number. Please try again.");
+      }
     } else {
       toast.warn("Please enter a contact number.");
     }
   };
 
   // Handle image upload
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
@@ -190,18 +294,28 @@ const ManageAccount = () => {
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        setAvatar(reader.result);
-        // Update session
-        const savedUser = JSON.parse(sessionStorage.getItem("currentUser"));
-        sessionStorage.setItem(
-          "currentUser",
-          JSON.stringify({ ...savedUser, avatar: reader.result })
-        );
-        toast.info("Profile picture updated!", { autoClose: 1500 });
-      };
-      reader.readAsDataURL(file);
+      try {
+        const reader = new FileReader();
+        reader.onload = async () => {
+          const base64Image = reader.result;
+          setAvatar(base64Image);
+          
+          // TODO: Add API call to update avatar on backend
+          // For now, we'll just update in session storage
+          const savedUser = JSON.parse(sessionStorage.getItem("currentUser"));
+          const updatedUser = { ...savedUser, avatar: base64Image };
+          sessionStorage.setItem("currentUser", JSON.stringify(updatedUser));
+          
+          // Update local state
+          setUserData(prev => ({ ...prev, avatar: base64Image }));
+          
+          toast.info("Profile picture updated!", { autoClose: 1500 });
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error processing image:", error);
+        toast.error("Failed to process image. Please try again.");
+      }
     }
   };
 
