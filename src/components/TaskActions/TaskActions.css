@@ -1,42 +1,106 @@
+/* TaskActions.css */
+
 /* Main container */
 .task-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   margin-bottom: 20px;
   flex-wrap: wrap;
+  position: relative;
 }
 
-/* === FILE UPLOAD BUTTON / TEXT === */
+/* === ATTACHMENT DROPDOWN === */
 
-/* Label wrapper for clickable file input */
-.task-actions-file-label {
-  cursor: pointer;
+.task-actions-attachment-dropdown {
+  position: relative;
+  display: inline-block;
 }
 
-/* Styled button for adding files (visible when not completed) */
-.task-actions-file-button {
+.task-actions-attachment-toggle {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  width: auto;
   padding: 8px 16px;
-  background: #f9f9f9;
-  border: 1px solid #ccc;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  color: #000;
+  color: #333;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: 140px;
+  justify-content: space-between;
+  box-sizing: border-box;
 }
 
-.task-actions-file-button:hover {
-  background-color: #eee;
+.task-actions-attachment-toggle:hover {
+  background-color: #e9ecef;
+  border-color: #ccc;
+}
+
+.task-actions-attachment-toggle:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dropdown-arrow {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
+}
+
+.task-actions-attachment-toggle[aria-expanded="true"] .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+/* Attachment dropdown menu */
+.attachment-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 100%;
+  padding: 4px 0;
+  margin-top: 4px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* FIXED: Proper left alignment for dropdown items */
+.attach-dropdown-item {
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.12s;
+  box-sizing: border-box;
+}
+
+.attach-dropdown-item:hover {
+  background-color: #f6f6f6;
+}
+
+.dropdown-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.8;
+  flex-shrink: 0;
 }
 
 /* Plain text when task is completed */
-.task-actions-file-plain {
+.task-actions-attachment-plain {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -45,7 +109,130 @@
   padding: 8px 0;
 }
 
-/* Icons inside action elements */
+/* === LINK INPUT SECTION === */
+.link-input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  z-index: 1001;
+}
+
+.link-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.link-input {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 200px;
+  background-color: #f8f9fa;
+  color: #333;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.link-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.link-input.invalid {
+  border-color: #dc3545;
+  background-color: #fdf2f2;
+}
+
+.link-input-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.link-submit-btn,
+.link-cancel-btn {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.link-submit-btn {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.link-submit-btn:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.link-cancel-btn {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.link-cancel-btn:hover {
+  background-color: #e9ecef;
+}
+
+.link-error {
+  color: #dc3545;
+  font-size: 12px;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Link preview */
+.link-preview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #28a745;
+  padding: 6px 10px;
+  background-color: #f8fff9;
+  border: 1px solid #d4edda;
+  border-radius: 4px;
+}
+
+.link-preview-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.link-preview-text {
+  font-weight: 500;
+}
+
+.link-remove-btn {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-left: 4px;
+}
+
+.link-remove-btn:hover {
+  background-color: #f8f9fa;
+  color: #dc3545;
+}
+
+/* Icons */
 .task-actions-icon {
   width: 14px;
   height: 14px;
@@ -54,7 +241,7 @@
 
 /* Specific override for completed state icon */
 .task-actions-status-completed .task-actions-icon,
-.task-actions-file-plain .task-actions-icon {
+.task-actions-attachment-plain .task-actions-icon {
   opacity: 0.7;
 }
 
@@ -67,13 +254,14 @@
   font-size: 14px;
   font-weight: 500;
   border-radius: 4px;
-  background-color: #2196f3;
+  background-color: #007bff;
   color: white;
-  border: none;
+  border: 1px solid #007bff;
 }
 
 .task-actions-complete-btn:hover {
-  background-color: #1976d2;
+  background-color: #0056b3;
+  border-color: #0056b3;
 }
 
 /* === COMPLETED STATE (text) === */
@@ -83,7 +271,7 @@
   gap: 6px;
   font-size: 14px;
   font-weight: 500;
-  color: #4caf50;
+  color: #28a745;
 }
 
 /* === CANCEL BUTTON === */
@@ -95,16 +283,71 @@
   font-size: 14px;
   font-weight: 500;
   border-radius: 4px;
-  background-color: #f44336;
+  background-color: #dc3545;
   color: white;
-  border: none;
+  border: 1px solid #dc3545;
 }
 
 .task-actions-cancel-btn:hover {
-  background-color: #d32f2f;
+  background-color: #c82333;
+  border-color: #c82333;
 }
 
 /* Hidden input */
 input[type="file"] {
   display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .task-actions {
+    gap: 10px;
+  }
+  
+  .task-actions-attachment-toggle,
+  .task-actions-complete-btn,
+  .task-actions-cancel-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .link-input {
+    width: 150px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .task-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .task-actions-attachment-dropdown {
+    width: 100%;
+  }
+  
+  .task-actions-attachment-toggle {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .attachment-dropdown-menu {
+    width: 100%;
+  }
+  
+  .link-input-container {
+    width: 100%;
+  }
+  
+  .link-input {
+    width: 100%;
+    flex: 1;
+  }
+  
+  .task-actions-complete-btn,
+  .task-actions-cancel-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }

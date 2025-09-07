@@ -29,6 +29,7 @@ const ToDoDetailPage = () => {
   const [comments, setComments] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
+  const [linkUrl, setLinkUrl] = useState("");
 
   // Refs
   const commentBoxRef = useRef(null);
@@ -178,10 +179,21 @@ const ToDoDetailPage = () => {
     setAttachedFiles((prev) => prev.filter((f) => f.id !== fileId));
   };
 
+  // Add this function to handle link changes
+  const handleLinkChange = (url) => {
+    setLinkUrl(url);
+  };
+
   const handleComplete = () => {
-    if (attachedFiles.length === 0) {
+    // Validate link if it's provided
+    if (linkUrl && !/^(https?:\/\/)/i.test(linkUrl.trim())) {
+      toast.error("Please enter a valid URL starting with http:// or https://");
+      return;
+    }
+    
+    if (attachedFiles.length === 0 && !linkUrl) {
       const confirmed = window.confirm(
-        "You haven't attached any files. Are you sure you want to mark this task as completed?"
+        "You haven't attached any files or added a link. Are you sure you want to mark this task as completed?"
       );
       if (!confirmed) return;
     }
@@ -196,6 +208,9 @@ const ToDoDetailPage = () => {
       setIsLate(false);
       toast.success("Task marked as completed!");
     }
+    
+    // Here you would typically send the linkUrl along with files to your backend
+    console.log("Submission includes link:", linkUrl);
   };
 
   const handleIncomplete = () => {
@@ -396,6 +411,8 @@ const ToDoDetailPage = () => {
           onIncomplete={handleIncomplete}
           isCompleted={isCompleted || isLate}
           isLate={isLate}
+          onLinkChange={handleLinkChange}
+          linkUrl={linkUrl}
         />
 
         {/* Attached Files */}

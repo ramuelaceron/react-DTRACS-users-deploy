@@ -3,10 +3,11 @@ import "./OfficeSidebar.css";
 import { FaTasks } from "react-icons/fa"; // Task icon
 import { RiSchoolFill } from "react-icons/ri"; // Schools icon
 import { MdManageAccounts } from "react-icons/md"; // Manage Account icon
-import { NavLink } from "react-router-dom";
+import { NavLink , useLocation} from "react-router-dom";
 import { useSidebar } from "../../context/SidebarContext";
 
 const OfficeSidebar = ({ isExpanded }) => {
+  const location = useLocation();
   const { isExpanded: expanded } = useSidebar();
 
 const isActive = (path, exact = true) => {
