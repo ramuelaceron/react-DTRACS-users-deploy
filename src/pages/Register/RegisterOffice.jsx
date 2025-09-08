@@ -1,5 +1,5 @@
 // src/pages/RegisterOffice.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RegisterOffice.css";
 import api from "../../api/axios";
@@ -19,7 +19,7 @@ const RegisterOffice = () => {
     first_name: "",
     last_name: "",
     middle_name: "",
-    office: "", // Will be SGOD, CID, OSDS, etc.
+    office: "", 
     email: "",
     contact_number: "",
     password: "",
@@ -28,9 +28,9 @@ const RegisterOffice = () => {
 
   // ✅ Correct full names for each enum value
   const officeOptions = [
-    { value: "SGOD", label: "School Governance and Operations Division" },
-    { value: "CID", label: "Curriculum Implementation Division" },
-    { value: "OSDS", label: "Office of the Schools Division Superintendent" },
+    { value: "School Governance and Operations Division", label: "School Governance and Operations Division" },
+    { value: "Curriculum Implementation Division", label: "Curriculum Implementation Division" },
+    { value: "Office of the Schools Division Superintendent", label: "Office of the Schools Division Superintendent" },
   ];
 
   const handleChange = (e) => {

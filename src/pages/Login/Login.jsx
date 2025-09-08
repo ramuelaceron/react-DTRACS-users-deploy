@@ -37,54 +37,54 @@ const Login = () => {
         : "/school/account/login";
 
     try {
-      const response = await api.post(endpoint, { email, password });
+    const response = await api.post(endpoint, { email, password });
 
-      console.log("Backend response:", response.data);
+    console.log("Backend response:", response.data);
 
-      // ✅ Extract role from backend response
-      const role = isOfficePath ? "office" : "school";
+    // ✅ Validate response structure
+    if (!response.data || typeof response.data !== 'object') {
+      throw new Error("Invalid server response format");
+    }
 
-      // ✅ Save ALL user data from backend
-      const userData = {
-        user_id: response.data.data.user_id || "",
-        first_name: response.data.data.first_name || "",
-        middle_name: response.data.data.middle_name || "",
-        last_name: response.data.data.last_name || "",
-        // ✅ School fields (for school users)
-        school_name: response.data.data.school_name || "Not specified",
-        school_address: response.data.data.school_address || "Not specified",
-        position: response.data.data.position || "Not specified",
-        // ✅ Office fields (for focal users)
-        office: response.data.data.office || "Not specified",
-        section_designation: response.data.data.section_designation || "Not specified",
-        // ✅ Shared fields
-        email: response.data.data.email || "",
-        contact_number: response.data.data.contact_number || "",
-        registration_date: response.data.data.registration_date || new Date().toISOString(),
-        active: response.data.data.active || true,
-        avatar: response.data.data.avatar || null, // For initials fallback
-        role: role, // ✅ "school" or "office"
-      };
+    // ✅ Extract role
+    const role = isOfficePath ? "office" : "school";
 
-      // ✅ OVERRIDE: If school_address is "N/A" or "Not specified", auto-fill from school name
-      if (role === "school" && (userData.school_address === "N/A" || userData.school_address === "Not specified")) {
-        const correctAddress = schoolAddresses[userData.school_name];
-        if (correctAddress) {
-          userData.school_address = correctAddress;
-        }
+    // ✅ Build userData from response.data (NOT response.data.data)
+    const userData = {
+      user_id: response.data.user_id || "",
+      first_name: response.data.first_name || "",
+      middle_name: response.data.middle_name || "",
+      last_name: response.data.last_name || "",
+      school_name: response.data.school_name || "Not specified",
+      school_address: response.data.school_address || "Not specified",
+      position: response.data.position || "Not specified",
+      office: response.data.office || "Not specified",
+      section_designation: response.data.section_designation || "Not specified",
+      email: response.data.email || "",
+      contact_number: response.data.contact_number || "",
+      registration_date: response.data.registration_date || new Date().toISOString(),
+      active: response.data.active !== undefined ? response.data.active : true,
+      avatar: response.data.avatar || null,
+      role: role,
+    };
+
+    // ✅ Auto-fill school address if needed
+    if (role === "school" && (userData.school_address === "N/A" || userData.school_address === "Not specified")) {
+      const correctAddress = schoolAddresses[userData.school_name];
+      if (correctAddress) {
+        userData.school_address = correctAddress;
       }
+    }
 
-      // ✅ Save to sessionStorage
-      sessionStorage.setItem("currentUser", JSON.stringify(userData));
+    sessionStorage.setItem("currentUser", JSON.stringify(userData));
 
-      // ✅ Redirect based on role
-      if (role === "school") {
-        navigate("/home");
-      } else if (role === "office") {
-        navigate("/task/ongoing");
-      } else {
-        navigate("/home");
-      }
+    if (role === "school") {
+      navigate("/home");
+    } else if (role === "office") {
+      navigate("/task/ongoing");
+    } else {
+      navigate("/home");
+    }
 
     } catch (err) {
       console.error("Full error:", err);
