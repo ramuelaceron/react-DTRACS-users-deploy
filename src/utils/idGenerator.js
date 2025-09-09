@@ -1,6 +1,11 @@
 // src/utils/idGenerator.js
-// This utility function generates a standardized ID from a given name
 
+/**
+ * Generates a standardized ID from a given name
+ * Removes special characters, replaces spaces with dashes
+ * @param {string} name - The name to convert into an ID
+ * @returns {string} - Clean, URL-friendly string
+ */
 export const idFromName = (name) => {
   return name
     .toLowerCase()
@@ -10,14 +15,17 @@ export const idFromName = (name) => {
 };
 
 
-// utils/idGenerator.js
-export const createSlug = (text) => {
-  return text
-    .toString()
+/**
+ * Creates a URL-friendly slug from a string
+ * Replaces hyphens with spaces first, then normalizes
+ * @param {string} str - The string to convert into a slug
+ * @returns {string} - Lowercase, hyphenated slug
+ */
+export const createSlug = (str) => {
+  return str
     .toLowerCase()
-    .replace(/\s+/g, '-')           // Replace spaces with -
-    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-    .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-    .replace(/^-+/, '')             // Trim - from start of text
-    .replace(/-+$/, '');            // Trim - from end of text
+    .replace(/[^a-z0-9ñáéíóúüç&\s]/g, '')  // Keep letters, numbers, and common special chars
+    .replace(/-/g, ' ')                     // ✅ Convert existing hyphens to spaces first
+    .trim()
+    .replace(/\s+/g, '-');                  // Replace spaces with single hyphens
 };

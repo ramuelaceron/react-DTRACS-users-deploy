@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from "react";
-import { Outlet } from "react-router-dom";
+// src/pages/TaskPage.jsx
+import React, { useMemo, useState, useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import TaskTabs from "../../../components/TaskTabs/TaskTabs";
 import { taskData } from "../../../data/taskData";
 import { createSlug } from "../../../utils/idGenerator";
@@ -7,6 +8,49 @@ import "./TaskPage.css";
 
 const TaskPage = () => {
   const [selectedSort, setSelectedSort] = useState("newest");
+  const navigate = useNavigate();
+
+  // ✅ Get currentUser from sessionStorage
+  const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+
+  // ✅ Check if user is office and has no valid section
+  const isOfficeWithoutSection = currentUser?.role === "office" && (
+    !currentUser.section_designation ||
+    currentUser.section_designation === "Not specified" ||
+    currentUser.section_designation === "" ||
+    currentUser.section_designation === "NULL"
+  );
+
+  // ✅ If user has no section, redirect or show blocking page
+  useEffect(() => {
+    if (isOfficeWithoutSection) {
+      // Optional: Redirect to a dedicated "no-section" page
+      // navigate("/no-section");
+      // But we'll render inline for simplicity
+    }
+  }, [isOfficeWithoutSection, navigate]);
+
+  // 🚫 If no section, show blocking notice
+  if (isOfficeWithoutSection) {
+    return (
+      <div className="no-section-page">
+        <div className="no-section-container">
+          <h2>⏳ Section Not Assigned Yet</h2>
+          <p>
+            Your account has not been assigned to a section by the administrator.
+          </p>
+          <p>
+            Please wait for admin approval or contact support for assistance.
+          </p>
+          <p className="note">
+            <strong>Note:</strong> You will not be able to view or manage tasks until your section is assigned.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ✅ Normal behavior for users with section or non-office users
 
   // Extract all offices
   const allOffices = useMemo(() => (
@@ -126,7 +170,7 @@ const TaskPage = () => {
         upcomingTasks: sortTasks(upcomingTasks, selectedSort),
         pastDueTasks: sortTasks(pastDueTasks, selectedSort),
         completedTasks: sortTasks(completedTasks, selectedSort),
-        selectedSort // Pass the current sort option
+        selectedSort
       }} />
     </div>
   );

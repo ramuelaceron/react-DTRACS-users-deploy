@@ -1,20 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./TaskDetailPage.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoChevronBackOutline } from "react-icons/io5";
-import { RiAccountPinBoxLine } from "react-icons/ri";
 
 // Components
 import TaskDescription from "../../components/TaskDetailComponents/TaskDescription/TaskDescription";
 import SchoolStats from "../../components/TaskDetailComponents/SchoolStats/SchoolStats";
-import CommentBox from "../../components/CommentBox/CommentBox";
-import CommentList from "../../components/CommentList/CommentList";
-import SharedButton from "../../components/SharedButton/SharedButton";
-
-// Hooks
-import useClickOutside from "../../hooks/useClickOutside";
 
 // Mock Data
 import { taskData } from "../../data/taskData";
@@ -23,21 +16,6 @@ const TaskDetailPage = () => {
   const navigate = useNavigate();
   const { sectionId } = useParams();
   const { state } = useLocation();
-
-  // State for comments
-  const [showCommentBox, setShowCommentBox] = useState(false);
-  const [comments, setComments] = useState([]);
-  const [editingId, setEditingId] = useState(null);
-  const [editText, setEditText] = useState("");
-  
-  // Refs
-  const commentBoxRef = useRef(null);
-  const editTextareaRef = useRef(null);
-
-  // Close comment box when clicking outside
-  useClickOutside(commentBoxRef, () => {
-    if (showCommentBox) setShowCommentBox(false);
-  });
 
   const [isCompleted, setIsCompleted] = useState(false);
   const [isLate, setIsLate] = useState(false);
@@ -107,88 +85,13 @@ const TaskDetailPage = () => {
 
   const handleBack = () => navigate(-1);
 
-  // Comment handlers
-  const handleCommentSubmit = (html) => {
-    if (!html || !html.trim() || html === "<p><br></p>") {
-      toast.warn("Please enter a comment.");
-      return;
-    }
-
-    const newComment = {
-      id: Date.now(),
-      author: fullName,
-      email: currentUser.email,
-      first_name: currentUser.first_name,
-      last_name: currentUser.last_name,
-      time: new Date().toLocaleString("en-US", {
-        month: "numeric",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      }).replace(/,/g, ""),
-      text: html,
-      isEdited: false,
-    };
-
-    setComments((prev) => [...prev, newComment]);
-    setShowCommentBox(false);
-    toast.success("Comment added successfully!");
-  };
-
-  const handleEditStart = (comment) => {
-    setEditingId(comment.id);
-    setEditText(comment.text);
-    setTimeout(() => {
-      if (editTextareaRef.current) {
-        editTextareaRef.current.style.height = "auto";
-        editTextareaRef.current.style.height = `${editTextareaRef.current.scrollHeight}px`;
-        editTextareaRef.current.focus();
-      }
-    }, 0);
-  };
-
-  const handleEditSave = () => {
-    if (!editText.trim()) {
-      toast.warn("Comment cannot be empty.");
-      return;
-    }
-    setComments((prev) =>
-      prev.map((c) =>
-        c.id === editingId ? { ...c, text: editText.trim(), isEdited: true } : c
-      )
-    );
-    setEditingId(null);
-    setEditText("");
-    toast.info("Comment updated!");
-  };
-
-  const handleEditCancel = () => {
-    setEditingId(null);
-    setEditText("");
-  };
-
-  const handleDeleteComment = (id) => {
-    if (window.confirm("Are you sure you want to delete this comment?")) {
-      setComments((prev) => prev.filter((c) => c.id !== id));
-      toast.error("Comment deleted.");
-    }
-  };
-
-  const toggleCommentBox = () => {
-    setShowCommentBox(!showCommentBox);
-  };
-
-  // Task action handlers (to be passed to TaskDescription)
+  // Task action handlers
   const handleEditTask = () => {
-    // This will be handled in the TaskDescription component
     console.log("Edit task requested");
   };
 
   const handleDeleteTask = () => {
     if (window.confirm("Are you sure you want to delete this task? This action cannot be undone.")) {
-      // Implement task deletion logic here
       toast.success("Task deleted successfully!");
       navigate(-1);
     }
@@ -206,16 +109,8 @@ const TaskDetailPage = () => {
   };
 
   const handleTaskUpdate = (updatedTask) => {
-  // Handle the updated task data
-  console.log("Task updated:", updatedTask);
-  toast.success("Task updated successfully!");
-  
-  // You might want to update the local state or refetch the task data
-  // For example, if you're using state to manage the task:
-  // setTask(updatedTask);
-  
-  // Or if you need to refetch from the server:
-  // fetchTaskData(); 
+    console.log("Task updated:", updatedTask);
+    toast.success("Task updated successfully!");
   };
 
   // Handle task not found
@@ -261,38 +156,8 @@ const TaskDetailPage = () => {
           onEditTask={handleEditTask}
           onDeleteTask={handleDeleteTask}
           onCopyLink={handleCopyLink}
-          onTaskUpdated={handleTaskUpdate} // Add this callback
+          onTaskUpdated={handleTaskUpdate}
         />
-        
-        {/* Comment Section */}
-        <div className="comment-section">
-          {/* Add Comment Button */}
-          <SharedButton variant="text" size="medium" onClick={toggleCommentBox} aria-label="Add comment">
-            <RiAccountPinBoxLine className="icon-md" /> Add comment
-          </SharedButton>
-
-          {/* Comment Input */}
-          {showCommentBox && (
-            <div ref={commentBoxRef}>
-              <CommentBox onSubmit={handleCommentSubmit} />
-            </div>
-          )}
-
-          {/* Comment List */}
-          {comments.length > 0 && (
-            <CommentList
-              comments={comments}
-              editingId={editingId}
-              editText={editText}
-              setEditText={setEditText}
-              onEdit={handleEditStart}
-              onSaveEdit={handleEditSave}
-              onCancelEdit={handleEditCancel}
-              onDelete={handleDeleteComment}
-              currentUser={currentUser}
-            />
-          )}
-        </div>
       </div>
 
       <div className="task-detail-right">

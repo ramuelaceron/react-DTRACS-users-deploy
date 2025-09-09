@@ -1,7 +1,6 @@
 // src/components/TaskActions/TaskActions.jsx
 import React, { useState, useRef } from "react";
 import "./TaskActions.css";
-
 // Icons
 import { FaPaperclip } from "react-icons/fa";
 import { MdOutlineDoneOutline, MdCancel } from "react-icons/md";
@@ -10,28 +9,23 @@ import { IoMdLink, IoMdArrowDropdown } from "react-icons/io";
 // Components
 import SharedButton from "../SharedButton/SharedButton";
 import useClickOutside from "../../hooks/useClickOutside";
+import AttachedLinks from "../AttachedFiles/AttachedLinks/AttachedLinks";
 
 const TaskActions = ({
   onFileChange,
   onComplete,
   onIncomplete,
   isCompleted,
-  onLinkChange,
-  linkUrl
+  onLinksChange,
+  links = []
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isLinkInputVisible, setIsLinkInputVisible] = useState(false);
-  const [isLinkValid, setIsLinkValid] = useState(true);
+  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const linkInputRef = useRef(null); // Add ref for link input
 
   // Close dropdown when clicking outside
-  useClickOutside(dropdownRef, (event) => { // Add event parameter
+  useClickOutside(dropdownRef, () => {
     if (isDropdownOpen) setIsDropdownOpen(false);
-    // Check if click is outside both dropdown and link input
-    if (isLinkInputVisible && linkInputRef.current && !linkInputRef.current.contains(event.target)) {
-      setIsLinkInputVisible(false);
-    }
   });
 
   const toggleDropdown = () => {
@@ -45,34 +39,17 @@ const TaskActions = ({
   };
 
   const handleLinkClick = () => {
-    setIsLinkInputVisible(true);
+    setIsLinkModalOpen(true);
     setIsDropdownOpen(false);
   };
 
-  const handleLinkInputChange = (e) => {
-    const value = e.target.value;
-    onLinkChange(value);
-    
-    // Validate URL format (optional, can be empty)
-    if (value && !/^(https?:\/\/)/i.test(value.trim())) {
-      setIsLinkValid(false);
-    } else {
-      setIsLinkValid(true);
-    }
+  const handleAddLink = (newLink) => {
+    const updatedLinks = [...links, newLink];
+    onLinksChange(updatedLinks);
   };
 
-  const handleRemoveLink = () => {
-    onLinkChange("");
-    setIsLinkInputVisible(false);
-    setIsLinkValid(true);
-  };
-
-  const handleLinkSubmit = () => {
-    if (linkUrl && !/^(https?:\/\/)/i.test(linkUrl.trim())) {
-      setIsLinkValid(false);
-      return;
-    }
-    setIsLinkInputVisible(false);
+  const handleCloseModal = () => {
+    setIsLinkModalOpen(false);
   };
 
   return (
@@ -103,7 +80,7 @@ const TaskActions = ({
                 className="attach-dropdown-item"
                 onClick={handleFileClick}
               >
-                <FaPaperclip className="dropdown-icon" />
+                <FaPaperclip className="attach-dropdown-icon" />
                 Upload file
               </button>
               <button
@@ -111,7 +88,7 @@ const TaskActions = ({
                 className="attach-dropdown-item"
                 onClick={handleLinkClick}
               >
-                <IoMdLink className="dropdown-icon" />
+                <IoMdLink className="attach-dropdown-icon" />
                 Add link
               </button>
             </div>
@@ -129,56 +106,12 @@ const TaskActions = ({
         disabled={isCompleted}
       />
 
-      {/* Link Input Section - Add ref here */}
-      {isLinkInputVisible && !isCompleted && (
-        <div className="link-input-section" ref={linkInputRef}>
-          <div className="link-input-container">
-            <input
-              type="text"
-              placeholder="https://example.com"
-              value={linkUrl || ""}
-              onChange={handleLinkInputChange}
-              className={`link-input ${!isLinkValid ? 'invalid' : ''}`}
-            />
-            <div className="link-input-actions">
-              <button
-                type="button"
-                className="link-submit-btn"
-                onClick={handleLinkSubmit}
-              >
-                Add
-              </button>
-              <button
-                type="button"
-                className="link-cancel-btn"
-                onClick={handleRemoveLink}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-          {!isLinkValid && (
-            <p className="link-error">
-              Please enter a valid URL starting with http:// or https://
-            </p>
-          )}
-        </div>
-      )}
-
-      {/* Link Preview (when link is added but input is hidden) */}
-      {linkUrl && !isLinkInputVisible && !isCompleted && (
-        <div className="link-preview">
-          <IoMdLink className="link-preview-icon" />
-          <span className="link-preview-text">Link attached</span>
-          <button
-            type="button"
-            className="link-remove-btn"
-            onClick={handleRemoveLink}
-          >
-            ×
-          </button>
-        </div>
-      )}
+      {/* Link Modal */}
+      <AttachedLinks
+        isOpen={isLinkModalOpen}
+        onClose={handleCloseModal}
+        onAddLink={handleAddLink}
+      />
 
       {/* Complete / Cancel Buttons */}
       {isCompleted ? (

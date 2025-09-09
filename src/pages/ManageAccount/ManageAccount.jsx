@@ -11,15 +11,11 @@ import EditLinks from '../../components/EditLinks/EditLinks';
 import ProfileInfoCard from '../../components/ProfileInfoCard/ProfileInfoCard';
 import ProfileAvatar from '../../components/ProfileAvatar/ProfileAvatar';
 
-// 🔽 Import Axios instance
 import api from '../../api/axios';
-
-// ✅ School addresses list
 import { schoolAddresses } from "../../data/schoolAddresses";
 
 const ManageAccount = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false); // Unified form state
 
   // ✅ State: user data from backend
   const [userData, setUserData] = useState(null);
@@ -120,7 +116,6 @@ const ManageAccount = () => {
             email: fallbackData.email || "",
             contact_number: fallbackData.contact_number || "",
           });
-          toast.warn("Using cached data. Please refresh to get latest information.");
         } else {
           toast.error("Failed to load user data. Please login again.");
           setTimeout(() => {
@@ -133,6 +128,15 @@ const ManageAccount = () => {
     fetchUserData();
   }, []);
 
+  // ✅ Show success toast after reload if flag exists
+  useEffect(() => {
+    const shouldShowToast = sessionStorage.getItem("showProfileUpdateSuccess");
+    if (shouldShowToast === "true") {
+      toast.success("✅ Profile updated successfully!");
+      sessionStorage.removeItem("showProfileUpdateSuccess"); // Clean up
+    }
+  }, []);
+
   if (loading) {
     return <div className="manage-account-app">Loading...</div>;
   }
@@ -141,45 +145,7 @@ const ManageAccount = () => {
     return <div className="manage-account-app">No user data available</div>;
   }
 
-  // Open unified edit form
-  const openEditForm = () => {
-    setTempProfile({
-      first_name: userData.first_name,
-      middle_name: userData.middle_name,
-      last_name: userData.last_name,
-      email: userData.email,
-      contact_number: userData.contact_number,
-    });
-    setShowEditForm(true);
-  };
-
-  // Check if any field has changed
-  const hasChanges = () => {
-    return (
-      tempProfile.first_name.trim() !== userData.first_name.trim() ||
-      tempProfile.middle_name.trim() !== userData.middle_name.trim() ||
-      tempProfile.last_name.trim() !== userData.last_name.trim() ||
-      tempProfile.email.trim() !== userData.email.trim() ||
-      tempProfile.contact_number.trim() !== userData.contact_number.trim()
-    );
-  };
-
-  // Confirm discard
-  const confirmDiscard = () => {
-    if (!hasChanges()) {
-      setShowEditForm(false);
-    } else {
-      const confirmed = window.confirm("You have unsaved changes. Are you sure you want to discard them?");
-      if (confirmed) {
-        toast.info("Changes discarded.", { autoClose: 1500 });
-        setShowEditForm(false);
-      } else {
-        toast.info("Edit cancelled. Your changes are safe.", { autoClose: 1500 });
-      }
-    }
-  };
-
-  // Unified save handler — sends all 3 fields at once
+  // Unified save handler — sends all fields, then reloads
   const handleSaveProfile = async () => {
     // Validate required fields
     if (!tempProfile.first_name.trim() || !tempProfile.last_name.trim()) {
@@ -205,7 +171,7 @@ const ManageAccount = () => {
         throw new Error("User ID not found");
       }
 
-      // ✅ Prepare payload with ALL editable fields
+      // ✅ Prepare payload
       const payload = {
         first_name: tempProfile.first_name.trim(),
         middle_name: tempProfile.middle_name?.trim() || '',
@@ -214,7 +180,7 @@ const ManageAccount = () => {
         contact_number: tempProfile.contact_number.trim(),
       };
 
-      // ✅ Choose endpoint based on role
+      // ✅ Choose endpoint
       const endpoint = role === "school"
         ? `/school/account/update/id/?user_id=${encodeURIComponent(userId)}`
         : `/focal/account/update/id/?user_id=${encodeURIComponent(userId)}`;
@@ -226,22 +192,22 @@ const ManageAccount = () => {
         throw new Error("No data returned from server");
       }
 
-      // ✅ Update local state
-      const updatedData = { ...userData, ...payload };
-      setUserData(updatedData);
-
       // ✅ Update session storage
+      const updatedData = { ...userData, ...payload };
       sessionStorage.setItem("currentUser", JSON.stringify(updatedData));
 
-      toast.success("✅ Profile updated successfully!");
-      setShowEditForm(false);
+      // ✅ SET FLAG TO SHOW TOAST AFTER RELOAD
+      sessionStorage.setItem("showProfileUpdateSuccess", "true");
+
+      // ✅ RELOAD PAGE
+      window.location.reload();
     } catch (error) {
       console.error("Error updating profile:", error);
       toast.error(`❌ Failed to update profile: ${error.response?.data?.detail || error.message}`);
     }
   };
 
-  // Handle image upload (unchanged)
+  // Handle image upload
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -316,14 +282,12 @@ const ManageAccount = () => {
           />
         </div>
 
-        {/* Edit Links — now opens unified form */}
+        {/* Edit Links — only show when editing */}
         {isEditing && (
           <EditLinks
             tempProfile={tempProfile}
             setTempProfile={setTempProfile}
             handleSaveProfile={handleSaveProfile}
-            confirmDiscard={confirmDiscard}
-            hasChanges={hasChanges}
           />
         )}
       </main>

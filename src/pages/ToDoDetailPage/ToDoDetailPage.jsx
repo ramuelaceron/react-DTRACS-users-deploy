@@ -1,44 +1,26 @@
-// TaskDetailPage.jsx
-import React, { useState, useRef, useEffect } from "react";
+// ToDoDetailPage.jsx
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./ToDoDetailPage.css";
 import { FaFilePdf, FaFileWord, FaFileImage, FaFile } from "react-icons/fa";
 import { IoChevronBackOutline } from "react-icons/io5";
-import { RiAccountPinBoxLine } from "react-icons/ri";
 import { PiClipboardTextBold } from "react-icons/pi";
-import CommentBox from "../../components/CommentBox/CommentBox";
 import AttachedFiles from "../../components/AttachedFiles/AttachedFiles";
 import TaskActions from "../../components/TaskActions/TaskActions";
-import CommentList from "../../components/CommentList/CommentList";
-import SharedButton from "../../components/SharedButton/SharedButton";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useClickOutside from "../../hooks/useClickOutside";
 import { taskData } from "../../data/taskData";
 
 const ToDoDetailPage = () => {
   const navigate = useNavigate();
   const { sectionId, taskSlug } = useParams();
-  const { state } = useLocation(); // Get state from navigation
+  const { state } = useLocation();
 
   // State
   const [attachedFiles, setAttachedFiles] = useState([]);
+  const [attachedLinks, setAttachedLinks] = useState([]);
   const [isCompleted, setIsCompleted] = useState(false);
-  const [isLate, setIsLate] = useState(false); // New state for late tasks
-  const [showCommentBox, setShowCommentBox] = useState(false);
-  const [comments, setComments] = useState([]);
-  const [editingId, setEditingId] = useState(null);
-  const [editText, setEditText] = useState("");
-  const [linkUrl, setLinkUrl] = useState("");
-
-  // Refs
-  const commentBoxRef = useRef(null);
-  const editTextareaRef = useRef(null);
-
-  // Close comment box when clicking outside
-  useClickOutside(commentBoxRef, () => {
-    if (showCommentBox) setShowCommentBox(false);
-  });
+  const [isLate, setIsLate] = useState(false);
 
   // Get task data from navigation state or find it in taskData
   const taskTitle = state?.taskTitle;
@@ -81,7 +63,6 @@ const ToDoDetailPage = () => {
   // Format date functions
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
-    
     try {
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US', {
@@ -97,7 +78,6 @@ const ToDoDetailPage = () => {
 
   const formatTime = (dateString) => {
     if (!dateString) return 'N/A';
-    
     try {
       const date = new Date(dateString);
       return date.toLocaleTimeString('en-US', {
@@ -123,7 +103,7 @@ const ToDoDetailPage = () => {
       case "Late":
         return "#FF9800"; // Orange for late
       default:
-        return "#333"; // Default dark gray
+        return "#333";
     }
   };
 
@@ -179,21 +159,30 @@ const ToDoDetailPage = () => {
     setAttachedFiles((prev) => prev.filter((f) => f.id !== fileId));
   };
 
-  // Add this function to handle link changes
-  const handleLinkChange = (url) => {
-    setLinkUrl(url);
+  // Handle link changes as an array
+  const handleLinksChange = (links) => {
+    setAttachedLinks(links);
+  };
+
+  // Handle removing individual links
+  const handleRemoveLink = (index) => {
+    setAttachedLinks(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleComplete = () => {
-    // Validate link if it's provided
-    if (linkUrl && !/^(https?:\/\/)/i.test(linkUrl.trim())) {
-      toast.error("Please enter a valid URL starting with http:// or https://");
+    // Validate all links if any are provided
+    const invalidLinks = attachedLinks.filter(link => 
+      link && link.url && !/^(https?:\/\/)/i.test(link.url.trim())
+    );
+    
+    if (invalidLinks.length > 0) {
+      toast.error("Please enter valid URLs starting with http:// or https://");
       return;
     }
     
-    if (attachedFiles.length === 0 && !linkUrl) {
+    if (attachedFiles.length === 0 && attachedLinks.length === 0) {
       const confirmed = window.confirm(
-        "You haven't attached any files or added a link. Are you sure you want to mark this task as completed?"
+        "You haven't attached any files or added any links. Are you sure you want to mark this task as completed?"
       );
       if (!confirmed) return;
     }
@@ -209,8 +198,11 @@ const ToDoDetailPage = () => {
       toast.success("Task marked as completed!");
     }
     
-    // Here you would typically send the linkUrl along with files to your backend
-    console.log("Submission includes link:", linkUrl);
+    // Log submission details
+    console.log("Submission includes:", {
+      files: attachedFiles.length,
+      links: attachedLinks
+    });
   };
 
   const handleIncomplete = () => {
@@ -226,78 +218,6 @@ const ToDoDetailPage = () => {
     : { first_name: "Unknown", last_Name: "User", middle_name: "", email: "unknown@deped.gov.ph" };
 
   const fullName = `${currentUser.first_name} ${currentUser.middle_name ? currentUser.middle_name + " " : ""}${currentUser.last_name}`.trim();
-
-  const handleCommentSubmit = (html) => {
-    if (!html || !html.trim() || html === "<p><br></p>") {
-      toast.warn("Please enter a comment.");
-      return;
-    }
-
-    const newComment = {
-      id: Date.now(),
-      author: fullName,
-      email: currentUser.email,
-      first_name: currentUser.first_name,
-      last_name: currentUser.last_name,
-      time: new Date().toLocaleString("en-US", {
-        month: "numeric",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      }).replace(/,/g, ""),
-      text: html,
-      isEdited: false,
-    };
-
-    setComments((prev) => [...prev, newComment]);
-    setShowCommentBox(false);
-    toast.success("Comment added successfully!");
-  };
-
-  const handleEditStart = (comment) => {
-    setEditingId(comment.id);
-    setEditText(comment.text);
-    setTimeout(() => {
-      if (editTextareaRef.current) {
-        editTextareaRef.current.style.height = "auto";
-        editTextareaRef.current.style.height = `${editTextareaRef.current.scrollHeight}px`;
-        editTextareaRef.current.focus();
-      }
-    }, 0);
-  };
-
-  const handleEditSave = () => {
-    if (!editText.trim()) {
-      toast.warn("Comment cannot be empty.");
-      return;
-    }
-    setComments((prev) =>
-      prev.map((c) =>
-        c.id === editingId ? { ...c, text: editText.trim(), isEdited: true } : c
-      )
-    );
-    setEditingId(null);
-    setEditText("");
-    toast.info("Comment updated!");
-  };
-
-  const handleEditCancel = () => {
-    setEditingId(null);
-    setEditText("");
-  };
-
-  const handleDeleteComment = (id) => {
-    if (window.confirm("Are you sure you want to delete this comment?")) {
-      setComments((prev) => prev.filter((c) => c.id !== id));
-      toast.error("Comment deleted.");
-    }
-  };
-
-  const toggleCommentBox = () => {
-    setShowCommentBox(!showCommentBox);
-  };
 
   // File helpers
   const getFileIcon = (file) => {
@@ -364,7 +284,6 @@ const ToDoDetailPage = () => {
           <h1 className="todo-title">{task.title || taskTitle}</h1>
           <div className="todo-status">
             {isCompleted ? (
-              // Completed
               <span style={{ color: "#4CAF50", display: "flex", alignItems: "center", gap: "4px" }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
@@ -372,12 +291,10 @@ const ToDoDetailPage = () => {
                 Completed
               </span>
             ) : isLate ? (
-              // Late submission
               <span style={{ color: "#FF9800", display: "flex", alignItems: "center", gap: "4px", fontWeight: "bold" }}>
                 ⚠️ Late Submission
               </span>
             ) : (
-              // Status based on task_status
               <span style={{ color: statusColor, display: "flex", alignItems: "center", gap: "4px", fontWeight: "bold" }}>
                 {taskStatus === "Incomplete" && "⚠️ "}
                 {statusText}
@@ -411,39 +328,18 @@ const ToDoDetailPage = () => {
           onIncomplete={handleIncomplete}
           isCompleted={isCompleted || isLate}
           isLate={isLate}
-          onLinkChange={handleLinkChange}
-          linkUrl={linkUrl}
+          onLinksChange={handleLinksChange}
+          links={attachedLinks}
         />
 
-        {/* Attached Files */}
-        {attachedFiles.length > 0 && (
-          <AttachedFiles files={attachedFiles} onRemove={handleRemoveFile} isCompleted={isCompleted || isLate} />
-        )}
-
-        {/* Add Comment Button */}
-        <SharedButton variant="text" size="medium" onClick={toggleCommentBox} aria-label="Add comment">
-          <RiAccountPinBoxLine className="icon-md" /> Add comment
-        </SharedButton>
-
-        {/* Comment Input - REMOVED disabled prop to allow commenting anytime */}
-        {showCommentBox && (
-          <div ref={commentBoxRef}>
-            <CommentBox onSubmit={handleCommentSubmit} />
-          </div>
-        )}
-
-        {/* Comment List */}
-        {comments.length > 0 && (
-          <CommentList
-            comments={comments}
-            editingId={editingId}
-            editText={editText}
-            setEditText={setEditText}
-            onEdit={handleEditStart}
-            onSaveEdit={handleEditSave}
-            onCancelEdit={handleEditCancel}
-            onDelete={handleDeleteComment}
-            currentUser={currentUser}
+        {/* Attached Files & Links */}
+        {(attachedFiles.length > 0 || attachedLinks.length > 0) && (
+          <AttachedFiles 
+            files={attachedFiles} 
+            links={attachedLinks}
+            onRemoveFile={handleRemoveFile}
+            onRemoveLink={handleRemoveLink}
+            isCompleted={isCompleted || isLate} 
           />
         )}
       </main>

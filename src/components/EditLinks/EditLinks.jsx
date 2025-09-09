@@ -6,7 +6,6 @@ const EditLinks = ({
   tempProfile,
   setTempProfile,
   handleSaveProfile,
-  confirmDiscard,
   hasChanges,
 }) => {
   return (
@@ -86,17 +85,7 @@ const EditLinks = ({
       {/* Unified Save/Cancel Buttons */}
       <div className="form-actions" style={{ marginTop: '24px', display: 'flex', gap: '12px' }}>
         <button className="save-btn" onClick={handleSaveProfile}>
-          💾 Save All Changes
-        </button>
-        <button className="cancel-btn" onClick={confirmDiscard} style={{
-          background: '#f44336',
-          color: 'white',
-          border: 'none',
-          padding: '8px 16px',
-          borderRadius: '4px',
-          cursor: 'pointer',
-        }}>
-          🚫 Discard Changes
+          Save All Changes
         </button>
       </div>
     </div>
