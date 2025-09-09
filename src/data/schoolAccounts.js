@@ -73,12 +73,12 @@
       logo: BES,
     },
     {
-      school_name: "Binan Integrated National High School",
+      school_name: "Biñan Integrated National High School",
       school_address: "Nong Sto. Domingo, Biñan City, Laguna, 4024",
       logo: BINHS,
     },
     {
-      school_name: "Binan Secondary School of Applied Academics",
+      school_name: "Biñan Secondary School of Applied Academics",
       school_address: "Purok 3 Brgy. Sto. Tomas, Biñan City, Laguna, 4024",
       logo: BSSAA,
     },
@@ -140,6 +140,7 @@
     {
       school_name: "Malaban East Elementary School",
       school_address: "Purok 2 Mamplasan, Biñan City, Laguna, 4024",
+      logo: MEES,
     },
     {
       school_name: "Mamplasan Elementary School",

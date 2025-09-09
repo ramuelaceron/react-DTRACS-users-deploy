@@ -2,20 +2,20 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 669px;
+  width: 669px;   /* left container only */
   height: 100vh;
   z-index: -1;
   overflow: hidden;
   isolation: isolate;
   background: linear-gradient(
     135deg, 
-    rgba(26, 26, 46, 0.5) 0%,  /* Changed from 0.8 to 0.5 (50% opacity) */
-    rgba(22, 33, 62, 0.3) 100%  /* Changed from 0.6 to 0.3 (30% opacity) */
+    rgba(26, 26, 46, 0.5) 0%, 
+    rgba(22, 33, 62, 0.3) 100%
   );
 }
 
-/* Fix for particle interactions */
-#tsparticles {
+/* Specific to Particle1 */
+#tsparticles1 {
   position: absolute;
   top: 0;
   left: 0;
