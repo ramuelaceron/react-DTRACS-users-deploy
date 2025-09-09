@@ -14,14 +14,12 @@ import ProfileAvatar from '../../components/ProfileAvatar/ProfileAvatar';
 // 🔽 Import Axios instance
 import api from '../../api/axios';
 
-// ✅ School addresses list (copied from Login.jsx)
+// ✅ School addresses list
 import { schoolAddresses } from "../../data/schoolAddresses";
 
 const ManageAccount = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [showNameForm, setShowNameForm] = useState(false);
-  const [showEmailForm, setShowEmailForm] = useState(false);
-  const [showContactForm, setShowContactForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false); // Unified form state
 
   // ✅ State: user data from backend
   const [userData, setUserData] = useState(null);
@@ -30,10 +28,14 @@ const ManageAccount = () => {
 
   const fileInputRef = useRef(null);
 
-  // ✅ Temp states
-  const [tempName, setTempName] = useState(null);
-  const [tempEmail, setTempEmail] = useState(null);
-  const [tempContact, setTempContact] = useState(null);
+  // ✅ Unified temp state for all editable fields
+  const [tempProfile, setTempProfile] = useState({
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    email: "",
+    contact_number: "",
+  });
 
   // ✅ Load user data from backend on mount
   useEffect(() => {
@@ -56,8 +58,6 @@ const ManageAccount = () => {
           throw new Error("User ID not found");
         }
 
-        // 🔹 Fetch user data from backend based on role
-        // Note: Both school and focal routes use the same endpoint pattern
         const endpoint = `/specific/verified/account/${userId}`;
         const response = await api.get(endpoint);
 
@@ -67,9 +67,7 @@ const ManageAccount = () => {
 
         const backendData = response.data.data;
 
-        // ✅ Create user data object directly from backend with minimal defaults
         let mergedData = {
-          // Basic user info
           user_id: backendData.user_id || userId,
           first_name: backendData.first_name || "",
           last_name: backendData.last_name || "",
@@ -78,16 +76,13 @@ const ManageAccount = () => {
           contact_number: backendData.contact_number || "",
           avatar: backendData.avatar || null,
           role: role,
-          // School-specific fields
           school_name: backendData.school_name || "Not specified",
           school_address: backendData.school_address || "Not specified",
           position: backendData.position || "Not specified",
-          // Office-specific fields
           office: backendData.office || "Not specified",
           section_designation: backendData.section_designation || "Not specified",
         };
 
-        // ✅ OVERRIDE: If school_address is "N/A" or "Not specified", auto-fill from school name
         if (role === "school" && (mergedData.school_address === "N/A" || mergedData.school_address === "Not specified")) {
           const correctAddress = schoolAddresses[mergedData.school_name];
           if (correctAddress) {
@@ -95,22 +90,36 @@ const ManageAccount = () => {
           }
         }
 
-        // Update session storage with latest data
         sessionStorage.setItem("currentUser", JSON.stringify(mergedData));
-
         setUserData(mergedData);
         setAvatar(mergedData.avatar);
+
+        // Initialize tempProfile with current data
+        setTempProfile({
+          first_name: mergedData.first_name,
+          middle_name: mergedData.middle_name,
+          last_name: mergedData.last_name,
+          email: mergedData.email,
+          contact_number: mergedData.contact_number,
+        });
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching user ", error);
         setLoading(false);
         
-        // Fallback to session storage if API fails
         const savedUser = sessionStorage.getItem("currentUser");
         if (savedUser) {
           const fallbackData = JSON.parse(savedUser);
           setUserData(fallbackData);
           setAvatar(fallbackData.avatar || null);
+          setTempProfile({
+            first_name: fallbackData.first_name || "",
+            middle_name: fallbackData.middle_name || "",
+            last_name: fallbackData.last_name || "",
+            email: fallbackData.email || "",
+            contact_number: fallbackData.contact_number || "",
+          });
           toast.warn("Using cached data. Please refresh to get latest information.");
         } else {
           toast.error("Failed to load user data. Please login again.");
@@ -132,152 +141,107 @@ const ManageAccount = () => {
     return <div className="manage-account-app">No user data available</div>;
   }
 
-  // Open forms
-  const openNameForm = () => {
-    setTempName({ ...userData });
-    setShowNameForm(true);
+  // Open unified edit form
+  const openEditForm = () => {
+    setTempProfile({
+      first_name: userData.first_name,
+      middle_name: userData.middle_name,
+      last_name: userData.last_name,
+      email: userData.email,
+      contact_number: userData.contact_number,
+    });
+    setShowEditForm(true);
   };
 
-  const openEmailForm = () => {
-    setTempEmail(userData.email);
-    setShowEmailForm(true);
-  };
-
-  const openContactForm = () => {
-    setTempContact(userData.contact_number);
-    setShowContactForm(true);
-  };
-
-  // Check changes
-  const hasNameChanges = () => {
-    if (!tempName) return false;
+  // Check if any field has changed
+  const hasChanges = () => {
     return (
-      tempName.first_name.trim() !== userData.first_name.trim() ||
-      tempName.middle_name.trim() !== userData.middle_name.trim() ||
-      tempName.last_name.trim() !== userData.last_name.trim()
+      tempProfile.first_name.trim() !== userData.first_name.trim() ||
+      tempProfile.middle_name.trim() !== userData.middle_name.trim() ||
+      tempProfile.last_name.trim() !== userData.last_name.trim() ||
+      tempProfile.email.trim() !== userData.email.trim() ||
+      tempProfile.contact_number.trim() !== userData.contact_number.trim()
     );
   };
 
-  const hasEmailChanges = () => {
-    if (!tempEmail) return false;
-    return tempEmail.trim() !== userData.email.trim();
-  };
-
-  const hasContactChanges = () => {
-    if (!tempContact) return false;
-    return tempContact.trim() !== userData.contact_number.trim();
-  };
-
   // Confirm discard
-  const confirmDiscard = (hasChanges, onClose) => {
-    if (!hasChanges) {
-      onClose();
+  const confirmDiscard = () => {
+    if (!hasChanges()) {
+      setShowEditForm(false);
     } else {
       const confirmed = window.confirm("You have unsaved changes. Are you sure you want to discard them?");
       if (confirmed) {
         toast.info("Changes discarded.", { autoClose: 1500 });
-        onClose();
+        setShowEditForm(false);
       } else {
         toast.info("Edit cancelled. Your changes are safe.", { autoClose: 1500 });
       }
     }
   };
 
-  // Save handlers
-  const handleSaveName = async () => {
-    if (tempName.first_name.trim() && tempName.last_name.trim()) {
-      try {
-        const userId = userData.user_id;
-        const role = userData.role;
-        
-        // Prepare update data
-        const updateData = {
-          first_name: tempName.first_name.trim(),
-          middle_name: tempName.middle_name?.trim() || '',
-          last_name: tempName.last_name.trim(),
-        };
-
-        // TODO: Add API call to update name on backend
-        // For now, we'll just update locally and in session storage
-        const updated = {
-          ...userData,
-          ...updateData
-        };
-        setUserData(updated);
-        
-        // Update session
-        sessionStorage.setItem("currentUser", JSON.stringify(updated));
-        toast.success("Name updated successfully!");
-        setShowNameForm(false);
-        setTempName(null);
-      } catch (error) {
-        console.error("Error updating name:", error);
-        toast.error("Failed to update name. Please try again.");
-      }
-    } else {
-      toast.warn("Please fill in required fields.");
+  // Unified save handler — sends all 3 fields at once
+  const handleSaveProfile = async () => {
+    // Validate required fields
+    if (!tempProfile.first_name.trim() || !tempProfile.last_name.trim()) {
+      toast.warn("First and last name are required.");
+      return;
     }
-  };
 
-  const handleSaveEmail = async () => {
-    if (tempEmail.includes("@")) {
-      try {
-        const userId = userData.user_id;
-        const role = userData.role;
-        
-        // TODO: Add API call to update email on backend
-        // For now, we'll just update locally and in session storage
-        const updated = { ...userData, email: tempEmail.trim() };
-        setUserData(updated);
-        
-        // Update session
-        const savedUser = JSON.parse(sessionStorage.getItem("currentUser"));
-        sessionStorage.setItem(
-          "currentUser",
-          JSON.stringify({ ...savedUser, email: tempEmail.trim() })
-        );
-        toast.success("Email updated successfully!");
-        setShowEmailForm(false);
-        setTempEmail(null);
-      } catch (error) {
-        console.error("Error updating email:", error);
-        toast.error("Failed to update email. Please try again.");
-      }
-    } else {
+    if (!tempProfile.email || !tempProfile.email.includes("@")) {
       toast.warn("Please enter a valid email.");
+      return;
     }
-  };
 
-  const handleSaveContact = async () => {
-    if (tempContact.trim()) {
-      try {
-        const userId = userData.user_id;
-        const role = userData.role;
-        
-        // TODO: Add API call to update contact on backend
-        // For now, we'll just update locally and in session storage
-        const updated = { ...userData, contact_number: tempContact.trim() };
-        setUserData(updated);
-        
-        // Update session
-        const savedUser = JSON.parse(sessionStorage.getItem("currentUser"));
-        sessionStorage.setItem(
-          "currentUser",
-          JSON.stringify({ ...savedUser, contact_number: tempContact.trim() })
-        );
-        toast.success("Contact number updated successfully!");
-        setShowContactForm(false);
-        setTempContact(null);
-      } catch (error) {
-        console.error("Error updating contact:", error);
-        toast.error("Failed to update contact number. Please try again.");
-      }
-    } else {
+    if (!tempProfile.contact_number?.trim()) {
       toast.warn("Please enter a contact number.");
+      return;
+    }
+
+    try {
+      const userId = userData.user_id;
+      const role = userData.role;
+
+      if (!userId) {
+        throw new Error("User ID not found");
+      }
+
+      // ✅ Prepare payload with ALL editable fields
+      const payload = {
+        first_name: tempProfile.first_name.trim(),
+        middle_name: tempProfile.middle_name?.trim() || '',
+        last_name: tempProfile.last_name.trim(),
+        email: tempProfile.email.trim(),
+        contact_number: tempProfile.contact_number.trim(),
+      };
+
+      // ✅ Choose endpoint based on role
+      const endpoint = role === "school"
+        ? `/school/account/update/id/?user_id=${encodeURIComponent(userId)}`
+        : `/focal/account/update/id/?user_id=${encodeURIComponent(userId)}`;
+
+      // ✅ Send PUT request
+      const response = await api.put(endpoint, payload);
+
+      if (!response.data) {
+        throw new Error("No data returned from server");
+      }
+
+      // ✅ Update local state
+      const updatedData = { ...userData, ...payload };
+      setUserData(updatedData);
+
+      // ✅ Update session storage
+      sessionStorage.setItem("currentUser", JSON.stringify(updatedData));
+
+      toast.success("✅ Profile updated successfully!");
+      setShowEditForm(false);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error(`❌ Failed to update profile: ${error.response?.data?.detail || error.message}`);
     }
   };
 
-  // Handle image upload
+  // Handle image upload (unchanged)
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -300,13 +264,10 @@ const ManageAccount = () => {
           const base64Image = reader.result;
           setAvatar(base64Image);
           
-          // TODO: Add API call to update avatar on backend
-          // For now, we'll just update in session storage
           const savedUser = JSON.parse(sessionStorage.getItem("currentUser"));
           const updatedUser = { ...savedUser, avatar: base64Image };
           sessionStorage.setItem("currentUser", JSON.stringify(updatedUser));
           
-          // Update local state
           setUserData(prev => ({ ...prev, avatar: base64Image }));
           
           toast.info("Profile picture updated!", { autoClose: 1500 });
@@ -355,32 +316,14 @@ const ManageAccount = () => {
           />
         </div>
 
-        {/* Edit Links */}
+        {/* Edit Links — now opens unified form */}
         {isEditing && (
           <EditLinks
-            showNameForm={showNameForm}
-            showEmailForm={showEmailForm}
-            showContactForm={showContactForm}
-            tempName={tempName}
-            tempEmail={tempEmail}
-            tempContact={tempContact}
-            userData={userData}
-            setTempName={setTempName}
-            setTempEmail={setTempEmail}
-            setTempContact={setTempContact}
-            openNameForm={openNameForm}
-            openEmailForm={openEmailForm}
-            openContactForm={openContactForm}
+            tempProfile={tempProfile}
+            setTempProfile={setTempProfile}
+            handleSaveProfile={handleSaveProfile}
             confirmDiscard={confirmDiscard}
-            handleSaveName={handleSaveName}
-            handleSaveEmail={handleSaveEmail}
-            handleSaveContact={handleSaveContact}
-            hasNameChanges={hasNameChanges}
-            hasEmailChanges={hasEmailChanges}
-            hasContactChanges={hasContactChanges}
-            setShowNameForm={setShowNameForm}
-            setShowEmailForm={setShowEmailForm}
-            setShowContactForm={setShowContactForm}
+            hasChanges={hasChanges}
           />
         )}
       </main>

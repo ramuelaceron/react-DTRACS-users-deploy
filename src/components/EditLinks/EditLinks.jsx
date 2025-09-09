@@ -3,165 +3,104 @@ import React from 'react';
 import './EditLinks.css';
 
 const EditLinks = ({
-	showNameForm,
-	showEmailForm,
-	showContactForm,
-	setShowNameForm,
-	setShowEmailForm,
-	setShowContactForm,
-	tempName,
-	tempEmail,
-	tempContact,
-	userData,
-	setTempName,
-	setTempEmail,
-	setTempContact,
-	openNameForm,
-	openEmailForm,
-	openContactForm,
-	confirmDiscard,
-	handleSaveName,
-	handleSaveEmail,
-	handleSaveContact,
-	hasNameChanges,
-	hasEmailChanges,
-	hasContactChanges,
+  tempProfile,
+  setTempProfile,
+  handleSaveProfile,
+  confirmDiscard,
+  hasChanges,
 }) => {
-	return (
-		<div className="edit-links">
-			{/* Change Name */}
-			<div className={`edit-link ${showNameForm ? 'show-form' : ''}`}>
-				<button
-					className="edit-link-button"
-					onClick={() => confirmDiscard(hasNameChanges(), () => {
-						setShowNameForm(!showNameForm); // ✅ Now available
-						if (!showNameForm) openNameForm();
-						else setTempName(null);
-					})}
-				>
-					<span>Change your name</span>
-					<span className="arrow">{showNameForm ? '▼' : '▶'}</span>
-				</button>
-				{showNameForm && (
-					<div className="edit-form">
-						<div className="form-row">
-							<div className="form-group">
-								<label>First Name:</label>
-								<input
-									type="text"
-									value={tempName?.first_name || ''}
-									onChange={(e) => setTempName(prev => ({ ...prev, first_name: e.target.value }))}
-									placeholder="First Name"
-								/>
-							</div>
-							<div className="form-group">
-								<label>Middle Name:</label>
-								<input
-									type="text"
-									value={tempName?.middle_name || ''}
-									onChange={(e) => setTempName(prev => ({ ...prev, middle_name: e.target.value }))}
-									placeholder="Middle Name "
-								/>
-							</div>
-							<div className="form-group">
-								<label>Last Name:</label>
-								<input
-									type="text"
-									value={tempName?.last_name || ''}
-									onChange={(e) => setTempName(prev => ({ ...prev, last_name: e.target.value }))}
-									placeholder="Last Name"
-								/>
-							</div>
-						</div>
-						<button className="save-btn" onClick={handleSaveName}>
-							Save
-						</button>
-					</div>
-				)}
-			</div>
+  return (
+    <div className="edit-links">
+      {/* Name Section */}
+      <div className="edit-link show-form">
+        <button className="edit-link-button">
+          Name
+          <span className="arrow">→</span>
+        </button>
+        <div className="edit-form">
+          <div className="form-row">
+            <div className="form-group">
+              <label>First Name</label>
+              <input
+                type="text"
+                value={tempProfile.first_name}
+                onChange={(e) => setTempProfile({ ...tempProfile, first_name: e.target.value })}
+              />
+            </div>
+            <div className="form-group">
+              <label>Middle Name</label>
+              <input
+                type="text"
+                value={tempProfile.middle_name}
+                onChange={(e) => setTempProfile({ ...tempProfile, middle_name: e.target.value })}
+              />
+            </div>
+            <div className="form-group">
+              <label>Last Name</label>
+              <input
+                type="text"
+                value={tempProfile.last_name}
+                onChange={(e) => setTempProfile({ ...tempProfile, last_name: e.target.value })}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
 
-			{/* Change Email */}
-			<div className={`edit-link ${showEmailForm ? 'show-form' : ''}`}>
-				<button
-					className="edit-link-button"
-					onClick={() => confirmDiscard(hasEmailChanges(), () => {
-						setShowEmailForm(!showEmailForm); // ✅ Now available
-						if (!showEmailForm) openEmailForm();
-						else setTempEmail(null);
-					})}
-				>
-					<span>Change your email</span>
-					<span className="arrow">{showEmailForm ? '▼' : '▶'}</span>
-				</button>
-				{showEmailForm && (
-					<div className="edit-form">
-						<div className="form-group">
-							<label>Email Address:</label>
-							<input
-								type="email"
-								value={tempEmail || ''}
-								onChange={(e) => setTempEmail(e.target.value)}
-								placeholder="example@deped.edu.ph"
-							/>
-						</div>
-						<button className="save-btn" onClick={handleSaveEmail}>
-							Save
-						</button>
-					</div>
-				)}
-			</div>
+      {/* Email Section */}
+      <div className="edit-link show-form">
+        <button className="edit-link-button">
+          Email
+          <span className="arrow">→</span>
+        </button>
+        <div className="edit-form">
+          <div className="form-group">
+            <label>Email Address</label>
+            <input
+              type="email"
+              value={tempProfile.email}
+              onChange={(e) => setTempProfile({ ...tempProfile, email: e.target.value })}
+            />
+          </div>
+        </div>
+      </div>
 
-			{/* Change Contact */}
-			<div className={`edit-link ${showContactForm ? 'show-form' : ''}`}>
-				<button
-					className="edit-link-button"
-					onClick={() => confirmDiscard(hasContactChanges(), () => {
-						setShowContactForm(!showContactForm);
-						if (!showContactForm) openContactForm();
-						else setTempContact(null);
-					})}
-				>
-					<span>Change contact no.</span>
-					<span className="arrow">{showContactForm ? '▼' : '▶'}</span>
-				</button>
-				{showContactForm && (
-					<div className="edit-form">
-						<div className="form-group">
-							<label>Contact Number:</label>
-							<input
-								type="tel"
-								value={tempContact || ''}
-								onChange={(e) => {
-									const value = e.target.value;
+      {/* Contact Section */}
+      <div className="edit-link show-form">
+        <button className="edit-link-button">
+          Contact Number
+          <span className="arrow">→</span>
+        </button>
+        <div className="edit-form">
+          <div className="form-group">
+            <label>Contact Number</label>
+            <input
+              type="text"
+              value={tempProfile.contact_number}
+              onChange={(e) => setTempProfile({ ...tempProfile, contact_number: e.target.value })}
+            />
+          </div>
+        </div>
+      </div>
 
-									// Allow empty
-									if (!value) {
-										setTempContact('');
-										return;
-									}
-
-									// Remove all non-digit and non-'+' characters
-									const cleaned = value.replace(/[^+\d]/g, '');
-
-									// Ensure '+' only appears at the beginning
-									const formatted = cleaned.startsWith('+')
-										? '+' + cleaned.slice(1).replace(/\+/g, '') // Keep first '+', remove others
-										: cleaned;
-
-									setTempContact(formatted);
-								}}
-								placeholder="+63 912 345 6789"
-								maxLength="15"
-							/>
-						</div>
-						<button className="save-btn" onClick={handleSaveContact}>
-							Save
-						</button>
-					</div>
-				)}
-			</div>
-		</div>
-	);
+      {/* Unified Save/Cancel Buttons */}
+      <div className="form-actions" style={{ marginTop: '24px', display: 'flex', gap: '12px' }}>
+        <button className="save-btn" onClick={handleSaveProfile}>
+          💾 Save All Changes
+        </button>
+        <button className="cancel-btn" onClick={confirmDiscard} style={{
+          background: '#f44336',
+          color: 'white',
+          border: 'none',
+          padding: '8px 16px',
+          borderRadius: '4px',
+          cursor: 'pointer',
+        }}>
+          🚫 Discard Changes
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default EditLinks;
