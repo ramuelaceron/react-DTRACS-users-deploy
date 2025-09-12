@@ -5,9 +5,10 @@ import { IoMdLink } from "react-icons/io";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { useQuill } from 'react-quilljs';
 import AttachedFiles from '../AttachedFiles/AttachedFiles';
+import { toast } from 'react-toastify'; // ✅ Added for error feedback
 import 'quill/dist/quill.snow.css';
 import './TaskForm.css';
-import { schoolAccounts } from '../../data/schoolAccounts';
+import { API_BASE_URL } from '../../api/api';
 
 // ✅ Rich Text Editor Component using useQuill
 const RichTextEditor = ({ value, onChange }) => {
@@ -25,7 +26,6 @@ const RichTextEditor = ({ value, onChange }) => {
 
   const hasSetContent = useRef(false);
 
-  // ✅ Set initial value
   useEffect(() => {
     if (quill && !hasSetContent.current) {
       quill.clipboard.dangerouslyPasteHTML(value || '');
@@ -33,7 +33,6 @@ const RichTextEditor = ({ value, onChange }) => {
     }
   }, [quill, value]);
 
-  // ✅ Listen for changes
   useEffect(() => {
     if (quill) {
       const handler = () => {
@@ -54,7 +53,7 @@ const RichTextEditor = ({ value, onChange }) => {
   );
 };
 
-// Custom Dropdown Component for Multiple Selection
+// ✅ Custom Dropdown Component for Multiple Selection
 const MultiSelectDropdown = ({ 
   label, 
   options, 
@@ -150,11 +149,13 @@ const MultiSelectDropdown = ({
   );
 };
 
+// ✅ Main TaskForm Component
 const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
   const [formData, setFormData] = useState({
-    for: [], // Changed to array for multiple selection
-    assignedTo: [], // Changed to array for multiple selection
+    for: [], // Selected schools
+    assignedTo: [], // Selected users
     dueDate: '', 
+    dueTime: '17:00',
     title: '',
     description: '',
     linkUrl: ''
@@ -162,66 +163,154 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
 
   const [isLinkInputVisible, setIsLinkInputVisible] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [attachedLinks, setAttachedLinks] = useState([]);
   const [isLinkValid, setIsLinkValid] = useState(true);
   const [availableUsers, setAvailableUsers] = useState([]);
 
-  // Prepare school options - REMOVED "All schools" option
-  const schoolOptions = schoolAccounts.map(school => ({
-    value: school.school_name,
-    label: school.school_name
-  }));
+  // ✅ State for dynamic school account fetching
+  const [schoolNames, setSchoolNames] = useState([]); // List of all school names
+  const [fetchedSchoolAccounts, setFetchedSchoolAccounts] = useState({}); // { schoolName: [accounts] }
+  const [loadingSchools, setLoadingSchools] = useState(new Set()); // Set of schools being fetched
+  const [loadingSchoolNames, setLoadingSchoolNames] = useState(true); // Loading state for school names
 
-  // Update available users when selected schools change
+  const formContainerRef = useRef(null);
+
+  // ✅ Fetch list of school names on mount
+  useEffect(() => {
+    const fetchSchoolNames = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/schools/names`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setSchoolNames(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error fetching school names:", err);
+        toast.error("❌ Failed to load school list.");
+        setSchoolNames([]);
+      } finally {
+        setLoadingSchoolNames(false);
+      }
+    };
+
+    fetchSchoolNames();
+  }, []);
+
+  // ✅ Fetch verified accounts for a specific school
+  const fetchVerifiedAccountsForSchool = async (schoolName) => {
+    if (!schoolName) return [];
+    if (fetchedSchoolAccounts[schoolName]) {
+      return fetchedSchoolAccounts[schoolName]; // Return cached
+    }
+
+    setLoadingSchools(prev => new Set(prev).add(schoolName));
+
+    try {
+      // ✅ ADJUST THIS ENDPOINT BASED ON YOUR BACKEND
+      const response = await fetch(`${API_BASE_URL}/focal/school/verified/accounts?school_name=${encodeURIComponent(schoolName)}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      const accounts = Array.isArray(data) ? data : (data.accounts || []);
+
+      // Cache result
+      setFetchedSchoolAccounts(prev => ({
+        ...prev,
+        [schoolName]: accounts
+      }));
+
+      return accounts;
+    } catch (err) {
+      console.error(`Failed to fetch accounts for ${schoolName}:`, err);
+      toast.error(`❌ Failed to load accounts for ${schoolName}`);
+      return [];
+    } finally {
+      setLoadingSchools(prev => {
+        const next = new Set(prev);
+        next.delete(schoolName);
+        return next;
+      });
+    }
+  };
+
+  // ✅ Update available users when selected schools change
   useEffect(() => {
     if (formData.for.length === 0) {
       setAvailableUsers([]);
       setFormData(prev => ({ ...prev, assignedTo: [] }));
-    } else {
-      const users = [];
-      
-      formData.for.forEach(schoolName => {
-        const selectedSchool = schoolAccounts.find(school => 
-          school.school_name === schoolName
-        );
+      return;
+    }
+
+    const fetchAllSelectedSchools = async () => {
+      const allUsers = [];
+
+      for (const schoolName of formData.for) {
+        const accounts = await fetchVerifiedAccountsForSchool(schoolName);
         
-        if (selectedSchool && selectedSchool.accounts) {
-          selectedSchool.accounts.forEach(account => {
-            users.push({
+        accounts.forEach(account => {
+          const fullName = `${account.first_name || ''} ${account.middle_name || ''} ${account.last_name || ''}`.trim();
+          if (fullName) {
+            allUsers.push({
               id: account.user_id,
-              value: `${account.first_name} ${account.middle_name} ${account.last_name}`.trim(),
-              label: `${account.first_name} ${account.middle_name} ${account.last_name}`.trim(),
-              position: account.position
+              value: fullName,
+              label: fullName,
+              position: account.position || "Staff"
             });
-          });
-        }
-      });
-      
-      // Remove duplicates by user id
-      const uniqueUsers = users.filter((user, index, self) => 
+          }
+        });
+      }
+
+      // Remove duplicate users by ID
+      const uniqueUsers = allUsers.filter((user, index, self) => 
         index === self.findIndex(u => u.id === user.id)
       );
-      
+
       setAvailableUsers(uniqueUsers);
-      
-      // Filter out assigned users that are no longer available
+
+      // Clean up assigned users that are no longer available
       const validAssignedUsers = formData.assignedTo.filter(assignedUser => 
         uniqueUsers.some(user => user.value === assignedUser)
       );
-      
+
       if (validAssignedUsers.length !== formData.assignedTo.length) {
         setFormData(prev => ({ ...prev, assignedTo: validAssignedUsers }));
       }
-    }
+    };
+
+    fetchAllSelectedSchools();
   }, [formData.for]);
 
+  // ✅ Prepare school options for "For" dropdown
+  const schoolOptions = schoolNames.map(name => ({
+    value: name,
+    label: name
+  }));
+
+  // ✅ Handle school selection
   const handleSchoolSelection = (selectedSchools) => {
     setFormData(prev => ({ ...prev, for: selectedSchools }));
   };
 
+  // ✅ Handle user selection
   const handleUserSelection = (selectedUsers) => {
     setFormData(prev => ({ ...prev, assignedTo: selectedUsers }));
   };
 
+  // ✅ Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     
@@ -233,6 +322,7 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // ✅ Handle file upload
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
 
@@ -258,18 +348,43 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
     setUploadedFiles(prev => [...prev, ...newFiles]);
   };
 
+  // ✅ Remove uploaded file
   const removeFile = (id) => {
     setUploadedFiles(prev => prev.filter(file => file.id !== id));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // ✅ Final validation before submit
-    if (formData.linkUrl && !/^(https?:\/\/)/i.test(formData.linkUrl.trim())) {
+  // ✅ Add link
+  const addLink = () => {
+    if (!formData.linkUrl.trim()) {
       setIsLinkValid(false);
       return;
     }
+
+    if (!/^(https?:\/\/)/i.test(formData.linkUrl.trim())) {
+      setIsLinkValid(false);
+      return;
+    }
+
+    const newLink = {
+      id: Date.now(),
+      url: formData.linkUrl.trim(),
+      title: formData.linkUrl.trim().replace(/^(https?:\/\/)?(www\.)?/i, ''),
+      displayText: formData.linkUrl.trim().replace(/^(https?:\/\/)?(www\.)?/i, '')
+    };
+
+    setAttachedLinks(prev => [...prev, newLink]);
+    setFormData(prev => ({ ...prev, linkUrl: '' }));
+    setIsLinkValid(true);
+  };
+
+  // ✅ Remove link
+  const removeLink = (index) => {
+    setAttachedLinks(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // ✅ Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
     if (!formData.title.trim()) {
       console.warn("Task title is required.");
@@ -286,11 +401,18 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
       return;
     }
 
-    const selectedDate = new Date(formData.dueDate);
-    const formattedDate = selectedDate.toLocaleDateString('en-US', {
+    const dueDateTime = new Date(`${formData.dueDate}T${formData.dueTime}`);
+    
+    const formattedDate = dueDateTime.toLocaleDateString('en-US', {
       month: 'long',
       day: 'numeric',
       year: 'numeric'
+    });
+    
+    const formattedTime = dueDateTime.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
     });
 
     onTaskCreated({
@@ -298,19 +420,24 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
       title: formData.title,
       description: formData.description,
       dueDate: formData.dueDate,
+      dueTime: formData.dueTime,
+      dueDateTime: dueDateTime.toISOString(),
       formattedDate,
+      formattedTime,
       office: formData.for.length > 0 ? formData.for.join(', ') : 'All schools',
       assignedTo: formData.assignedTo.length > 0 ? formData.assignedTo.join(', ') : 'All accounts',
       taskSlug: `task-${Date.now()}`,
-      linkUrl: formData.linkUrl,
+      links: attachedLinks,
       attachments: uploadedFiles.map(f => f.name)
     });
 
     setUploadedFiles([]);
+    setAttachedLinks([]);
     setIsLinkInputVisible(false);
     onClose();
   };
 
+  // ✅ Toggle link input visibility
   const toggleLinkInput = () => {
     setIsLinkInputVisible(prev => !prev);
     if (!isLinkInputVisible && formData.linkUrl) {
@@ -318,7 +445,7 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
     }
   };
 
-  // Prepare user options - REMOVED "All accounts" option
+  // ✅ Prepare user options for "Assigned to" dropdown
   const userOptions = availableUsers.map(user => ({
     value: user.value,
     label: user.value,
@@ -326,12 +453,16 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
   }));
 
   return (
-    <div className="task-form-overlay">
-      <div className="task-form-container">
+    <div className="task-form-overlay" onClick={onClose}>
+      <div 
+        className="task-form-container" 
+        ref={formContainerRef}
+        onClick={(e) => e.stopPropagation()}
+      >
         <button className="task-form-close" onClick={onClose}>×</button>
 
         <form onSubmit={handleSubmit} className="task-form">
-          {/* Row 1 */}
+          {/* Row 1: Schools, Users, Date, Time */}
           <div className="task-form-row">
             <div className="task-form-group">
               <MultiSelectDropdown
@@ -339,7 +470,8 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
                 options={schoolOptions}
                 selectedValues={formData.for}
                 onSelectionChange={handleSchoolSelection}
-                placeholder="Select schools"
+                placeholder={loadingSchoolNames ? "Loading schools..." : "Select schools"}
+                disabled={loadingSchoolNames}
               />
             </div>
             <div className="task-form-group">
@@ -348,8 +480,20 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
                 options={userOptions}
                 selectedValues={formData.assignedTo}
                 onSelectionChange={handleUserSelection}
-                placeholder={availableUsers.length > 0 ? "Select accounts" : "Select schools first"}
-                disabled={formData.for.length === 0 || availableUsers.length === 0}
+                placeholder={
+                  formData.for.length === 0
+                    ? "Select schools first"
+                    : loadingSchools.size > 0
+                    ? "Loading accounts..."
+                    : availableUsers.length > 0
+                    ? "Select accounts"
+                    : "No accounts available"
+                }
+                disabled={
+                  formData.for.length === 0 ||
+                  availableUsers.length === 0 ||
+                  loadingSchools.size > 0
+                }
                 isAccountDropdown={true}
               />
             </div>
@@ -363,6 +507,17 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
                 onChange={handleChange}
                 required
                 className="date-picker-input"
+              />
+            </div>
+            <div className="task-form-group">
+              <label htmlFor="dueTime">Due Time</label>
+              <input
+                type="time"
+                id="dueTime"
+                name="dueTime"
+                value={formData.dueTime}
+                onChange={handleChange}
+                className="time-picker-input"
               />
             </div>
           </div>
@@ -390,7 +545,7 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
             />
           </div>
 
-          {/* Attach */}
+          {/* Attach: Files & Links */}
           <div className="task-form-group">
             <label>Attach</label>
             <div className="task-form-attach">
@@ -422,43 +577,66 @@ const TaskForm = ({ onClose, onTaskCreated = () => {} }) => {
                 </div>
               </div>
 
-              {uploadedFiles.length > 0 && (
+              {(uploadedFiles.length > 0 || attachedLinks.length > 0) && (
                 <AttachedFiles
                   files={uploadedFiles}
-                  onRemove={removeFile}
+                  links={attachedLinks}
+                  onRemoveFile={removeFile}
+                  onRemoveLink={removeLink}
                   isCompleted={false}
                 />
               )}
 
-              {/* Link Input */}
               {isLinkInputVisible && (
-                <div className="link-input-outer-container">
-                  <input
-                    type="text"
-                    placeholder="https://example.com"
-                    value={formData.linkUrl}
-                    name="linkUrl"
-                    onChange={handleChange}
-                    className={`link-input ${!isLinkValid ? 'invalid' : ''}`}
-                    aria-invalid={!isLinkValid}
-                  />
+                <div className="link-input-container">
+                  <div className="link-input-group">
+                    <input
+                      type="text"
+                      placeholder="https://example.com"
+                      value={formData.linkUrl}
+                      name="linkUrl"
+                      onChange={handleChange}
+                      className={`link-input ${!isLinkValid ? 'invalid' : ''}`}
+                      aria-invalid={!isLinkValid}
+                    />
+                    <button 
+                      type="button" 
+                      className="add-link-btn"
+                      onClick={addLink}
+                      disabled={!formData.linkUrl.trim() || !isLinkValid}
+                    >
+                      Add Link
+                    </button>
+                    <button 
+                      type="button" 
+                      className="cancel-link-btn"
+                      onClick={() => setIsLinkInputVisible(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                  
+                  {!isLinkValid && formData.linkUrl && (
+                    <p className="error-text link-error-below">
+                      Please enter a valid link starting with <strong>http://</strong> or <strong>https://</strong>
+                    </p>
+                  )}
                 </div>
-              )}
-
-              {/* Error Message */}
-              {isLinkInputVisible && !isLinkValid && formData.linkUrl && (
-                <p className="error-text link-error-below">
-                  Please enter a valid link starting with <strong>http://</strong> or <strong>https://</strong>
-                </p>
               )}
             </div>
           </div>
 
-          <button type="submit" className="assign-btn">Assign</button>
+          {/* Action Buttons */}
+          <div className="form-actions">
+            <button type="button" className="cancel-btn" onClick={onClose}>
+              Cancel
+            </button>
+            <button type="submit" className="assign-btn">Assign Task</button>
+          </div>
         </form>
       </div>
     </div>
-  );
+  );  
 };
 
 export default TaskForm;

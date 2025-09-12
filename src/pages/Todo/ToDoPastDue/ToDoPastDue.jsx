@@ -1,59 +1,19 @@
-// src/pages/Todo/PastDue/PastDue.jsx
-import React, { useState } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useOutletContext, useNavigate } from "react-router-dom"; // 👈 Added useNavigate
 import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import { createSlug } from "../../../utils/idGenerator"; // 👈 Import createSlug
+import {
+  formatDate,
+  formatTime,
+  getWeekday,
+} from "../../../utils/taskHelpers";
 import "./ToDoPastDue.css";
 
-// Helper: Format date from ISO string to readable format
-const formatDate = (dateString) => {
-  if (!dateString) return "No date";
-  
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  } catch (error) {
-    console.error('Error formatting date:', error);
-    return "Invalid date";
-  }
-};
-
-// Helper: Format time from ISO string
-const formatTime = (dateString) => {
-  if (!dateString) return 'No time';
-  
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-  } catch (error) {
-    console.error('Error formatting time:', error);
-    return "Invalid time";
-  }
-};
-
-// Helper: Get weekday from date string
-const getWeekday = (dateStr) => {
-  try {
-    const date = new Date(dateStr);
-    if (isNaN(date)) return "";
-    return date.toLocaleDateString("en-US", { weekday: "long" });
-  } catch (error) {
-    console.error('Error getting weekday:', error);
-    return "";
-  }
-};
-
 const ToDoPastDue = () => {
-  // ✅ Get pre-filtered past-due tasks from ToDoPage layout
-  const { pastDueTasks } = useOutletContext();
+  // ✅ Get pre-filtered past-due tasks and selected sort from ToDoPage layout
+  const { pastDueTasks, selectedSort } = useOutletContext();
+  const navigate = useNavigate(); // 👈 Initialize navigate
 
   // Group tasks by formatted creation date
   const groupedByDate = pastDueTasks.reduce((groups, task) => {
@@ -63,10 +23,14 @@ const ToDoPastDue = () => {
     return groups;
   }, {});
 
-  // Sort dates: newest first
+  // Sort dates based on selected sort option
   const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
     try {
-      return new Date(b) - new Date(a);
+      if (selectedSort === "oldest") {
+        return new Date(a) - new Date(b);
+      } else {
+        return new Date(b) - new Date(a); // Default: newest first
+      }
     } catch (error) {
       return 0;
     }
@@ -77,11 +41,50 @@ const ToDoPastDue = () => {
     sortedDates.reduce((acc, date) => ({ ...acc, [date]: true }), {})
   );
 
+  useEffect(() => {
+    if (sortedDates.length > 0 && Object.keys(openGroups).length === 0) {
+      setOpenGroups(sortedDates.reduce((acc, date) => ({ ...acc, [date]: true }), {}));
+    }
+  }, [sortedDates, openGroups]);
+
   const toggleGroup = (date) => {
     setOpenGroups((prev) => ({
       ...prev,
       [date]: !prev[date],
     }));
+  };
+
+  // Get appropriate empty message based on filter
+  const getEmptyMessage = () => {
+    switch (selectedSort) {
+      case "today":
+        return "No past-due tasks due today.";
+      case "week":
+        return "No past-due tasks due this week.";
+      case "month":
+        return "No past-due tasks due this month.";
+      default:
+        return "No past-due tasks.";
+    }
+  };
+
+  // ✅ Handle click on a task item — navigate to ToDoDetailPage
+  const handleTaskClick = (task) => {
+    const sectionSlug = createSlug(task.section || "Unknown Section");
+    const taskSlug = createSlug(task.title || "Untitled Task");
+
+    navigate(`/todo/${sectionSlug}/${taskSlug}`, {
+      state: {
+        taskId: task.task_id,
+        taskTitle: task.title,
+        deadline: task.deadline,
+        creation_date: task.creation_date,
+        taskDescription: task.description,
+        section_designation: task.section, // 👈 Used in ToDoDetailPage header
+        creator_name: task.creator_name,
+        office: task.office,
+      },
+    });
   };
 
   return (
@@ -99,17 +102,13 @@ const ToDoPastDue = () => {
                 <div
                   className="pastdue-date-header"
                   onClick={() => toggleGroup(date)}
-                  style={{ cursor: "pointer", userSelect: "none" }}
                 >
                   <span className="pastdue-date-bold">{date}</span>
                   <span className="pastdue-weekday"> ({weekday})</span>
 
-                  <div className="header-actions">
+                  <div className="pastdue-header-actions">
                     <span className="pastdue-task-count">{tasks.length}</span>
-                    <span
-                      className="pastdue-dropdown-arrow"
-                      aria-label={isOpen ? "Collapse" : "Expand"}
-                    >
+                    <span className="pastdue-dropdown-arrow">
                       {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
                     </span>
                   </div>
@@ -118,48 +117,30 @@ const ToDoPastDue = () => {
                 {isOpen && (
                   <div className="pastdue-task-list">
                     {tasks.map((task) => (
-                      <Link
-                        to={`/todo/${task.sectionId}/${task.taskSlug}`}
-                        state={{
-                          taskTitle: task.title,
-                          deadline: task.deadline,
-                          creation_date: task.creation_date,
-                          taskDescription: task.description,
-                          taskId: task.id,
-                          creator_name: task.creator_name,
-                          section_designation: task.section_designation,
-                          full_name: task.creator_name
-                        }}
-                        className="pastdue-task-link"
-                        key={task.id}
+                      <div
+                        key={task.task_id}
+                        className="pastdue-task-item"
+                        onClick={() => handleTaskClick(task)} // 👈 Click handler here
+                        style={{ cursor: "pointer", userSelect: "none" }} // 👈 Visual feedback
                       >
-                        <div className="pastdue-card">
-                          <div className="pastdue-card-content">
-                            <div className="pastdue-card-text">
-                              <div className="pastdue-task-icon">
-                                <PiClipboardTextBold className="icon-lg" />
-                              </div>
-                              <div>
-                                <div className="pastdue-card-title">
-                                  {task.title}
-                                </div>
-                                <div className="pastdue-card-meta">
-                                  <span className="pastdue-office">
-                                    {task.office}
-                                  </span>
-                                </div>
-                              </div>
+                        <div className="pastdue-task-header">
+                          <div className="pastdue-task-icon">
+                            <PiClipboardTextBold className="icon-lg" />
+                          </div>
+                          <div className="pastdue-task-info">
+                            <div className="pastdue-task-title">
+                              {task.title}
                             </div>
-
-                            <div className="pastdue-card-deadline">
-                              <span className="deadline-text">
-                                Was due on {formatDate(task.deadline)} at{" "}
-                                <span className="time">{formatTime(task.deadline)}</span>
-                              </span>
+                            <div className="pastdue-task-office">
+                              {task.office}
                             </div>
                           </div>
+                          <div className="pastdue-task-deadline">
+                            Was due on {formatDate(task.deadline)} at{" "}
+                            <span className="pastdue-time">{formatTime(task.deadline)}</span>
+                          </div>
                         </div>
-                      </Link>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -167,7 +148,9 @@ const ToDoPastDue = () => {
             );
           })
         ) : (
-          <div className="pastdue-no-tasks">No past-due tasks.</div>
+          <div className="pastdue-no-tasks">
+            {getEmptyMessage()}
+          </div>
         )}
       </main>
     </div>

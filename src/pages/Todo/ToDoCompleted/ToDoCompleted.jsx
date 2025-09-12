@@ -1,72 +1,38 @@
-// src/pages/Todo/Completed/Completed.jsx
-import React, { useState } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useOutletContext, useNavigate } from "react-router-dom"; // 👈 Added useNavigate
 import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import { createSlug } from "../../../utils/idGenerator"; // 👈 Import createSlug
+import {
+  formatDate,
+  formatTime,
+  getWeekday,
+} from "../../../utils/taskHelpers";
 import "./ToDoCompleted.css";
 
-// Helper: Format date from ISO string to readable format
-const formatDate = (dateString) => {
-  if (!dateString) return "No date";
-  
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  } catch (error) {
-    console.error('Error formatting date:', error);
-    return "Invalid date";
-  }
-};
-
-// Helper: Format time from ISO string
-const formatTime = (dateString) => {
-  if (!dateString) return 'No time';
-  
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-  } catch (error) {
-    console.error('Error formatting time:', error);
-    return "Invalid time";
-  }
-};
-
-// Helper: Get weekday from date string
-const getWeekday = (dateStr) => {
-  try {
-    const date = new Date(dateStr);
-    if (isNaN(date)) return "";
-    return date.toLocaleDateString("en-US", { weekday: "long" });
-  } catch (error) {
-    console.error('Error getting weekday:', error);
-    return "";
-  }
-};
-
 const ToDoCompleted = () => {
-  // ✅ Get pre-filtered completed tasks from ToDoPage layout
-  const { completedTasks } = useOutletContext();
+  // ✅ Get pre-filtered completed tasks and selected sort from ToDoPage layout
+  const { completedTasks, selectedSort } = useOutletContext();
+  const navigate = useNavigate(); // 👈 Initialize navigate
 
-  // Group tasks by formatted completion date (using completedTime)
+  // Group tasks by formatted completion date
   const groupedByDate = completedTasks.reduce((groups, task) => {
-    const formattedDate = formatDate(task.completedTime || task.creation_date);
+    const completionDate = task.completion_date || task.creation_date;
+    const formattedDate = formatDate(completionDate);
+    
     if (!groups[formattedDate]) groups[formattedDate] = [];
     groups[formattedDate].push(task);
     return groups;
   }, {});
 
-  // Sort dates: newest first
+  // Sort dates based on selected sort option
   const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
     try {
-      return new Date(b) - new Date(a);
+      if (selectedSort === "oldest") {
+        return new Date(a) - new Date(b);
+      } else {
+        return new Date(b) - new Date(a); // Default: newest first
+      }
     } catch (error) {
       return 0;
     }
@@ -77,11 +43,52 @@ const ToDoCompleted = () => {
     sortedDates.reduce((acc, date) => ({ ...acc, [date]: true }), {})
   );
 
+  useEffect(() => {
+    if (sortedDates.length > 0 && Object.keys(openGroups).length === 0) {
+      setOpenGroups(sortedDates.reduce((acc, date) => ({ ...acc, [date]: true }), {}));
+    }
+  }, [sortedDates, openGroups]);
+
   const toggleGroup = (date) => {
     setOpenGroups((prev) => ({
       ...prev,
       [date]: !prev[date],
     }));
+  };
+
+  // Get appropriate empty message based on filter
+  const getEmptyMessage = () => {
+    switch (selectedSort) {
+      case "today":
+        return "No completed tasks due today.";
+      case "week":
+        return "No completed tasks due this week.";
+      case "month":
+        return "No completed tasks due this month.";
+      default:
+        return "No completed tasks.";
+    }
+  };
+
+  // ✅ Handle click on a task item — navigate to ToDoDetailPage
+  const handleTaskClick = (task) => {
+    const sectionSlug = createSlug(task.section || "Unknown Section");
+    const taskSlug = createSlug(task.title || "Untitled Task");
+
+    navigate(`/todo/${sectionSlug}/${taskSlug}`, {
+      state: {
+        taskId: task.task_id,
+        taskTitle: task.title,
+        deadline: task.deadline,
+        creation_date: task.creation_date,
+        taskDescription: task.description,
+        section_designation: task.section, // 👈 Used in ToDoDetailPage header
+        creator_name: task.creator_name,
+        office: task.office,
+        completion_date: task.completion_date, // 👈 Optional but useful for context
+        task_status: task.task_status, // 👈 For status display
+      },
+    });
   };
 
   return (
@@ -99,17 +106,13 @@ const ToDoCompleted = () => {
                 <div
                   className="completed-date-header"
                   onClick={() => toggleGroup(date)}
-                  style={{ cursor: "pointer", userSelect: "none" }}
                 >
                   <span className="completed-date-bold">{date}</span>
                   <span className="completed-weekday"> ({weekday})</span>
 
-                  <div className="header-actions">
+                  <div className="completed-header-actions">
                     <span className="completed-task-count">{tasks.length}</span>
-                    <span
-                      className="completed-dropdown-arrow"
-                      aria-label={isOpen ? "Collapse" : "Expand"}
-                    >
+                    <span className="completed-dropdown-arrow">
                       {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
                     </span>
                   </div>
@@ -117,58 +120,45 @@ const ToDoCompleted = () => {
 
                 {isOpen && (
                   <div className="completed-task-list">
-                    {tasks.map((task) => (
-                      <Link
-                        to={`/todo/${task.sectionId}/${task.taskSlug}`}
-                        state={{
-                          taskTitle: task.title,
-                          deadline: task.deadline,
-                          creation_date: task.creation_date,
-                          taskDescription: task.description,
-                          taskId: task.id,
-                          creator_name: task.creator_name,
-                          section_designation: task.section_designation,
-                          full_name: task.creator_name,
-                          task_status: "Completed"
-                        }}
-                        className="completed-task-link"
-                        key={task.id}
-                      >
-                        <div className="completed-card">
-                          <div className="completed-card-content">
-                            <div className="completed-card-text">
-                              <div className="completed-task-icon">
-                                <PiClipboardTextBold className="icon-lg" />
+                    {tasks.map((task) => {
+                      const completionDate = task.completion_date || task.creation_date;
+                      
+                      return (
+                        <div
+                          key={task.task_id}
+                          className="completed-task-item"
+                          onClick={() => handleTaskClick(task)} // 👈 Click handler here
+                          style={{ cursor: "pointer", userSelect: "none" }} // 👈 Visual feedback
+                        >
+                          <div className="completed-task-header">
+                            <div className="completed-task-icon">
+                              <PiClipboardTextBold className="icon-lg" />
+                            </div>
+                            <div className="completed-task-info">
+                              <div className="completed-task-title">
+                                {task.title}
                               </div>
-                              <div>
-                                <div className="completed-card-title">
-                                  {task.title}
-                                </div>
-                                <div className="completed-card-meta">
-                                  <span className="completed-office">
-                                    {task.office}
-                                  </span>
-                                </div>
+                              <div className="completed-task-office">
+                                {task.office}
                               </div>
                             </div>
-
-                            <div className="completed-card-completion">
-                              <span className="completion-text">
-                                ✔ Completed on {formatDate(task.completedTime || task.creation_date)} at{" "}
-                                <span className="time">{formatTime(task.completedTime || task.creation_date)}</span>
-                              </span>
+                            <div className="completed-task-completion">
+                              Completed on {formatDate(completionDate)} at{" "}
+                              <span className="completed-time">{formatTime(completionDate)}</span>
                             </div>
                           </div>
                         </div>
-                      </Link>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
             );
           })
         ) : (
-          <div className="completed-no-tasks">No completed tasks.</div>
+          <div className="completed-no-tasks">
+            {getEmptyMessage()}
+          </div>
         )}
       </main>
     </div>

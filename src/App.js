@@ -79,7 +79,7 @@ function App() {
         </Route>
         
         <Route path="/task/:sectionId/:taskSlug" element={<TaskDetailPage />} />
-        <Route path="/task/:sectionId/:taskSlug/attachments" element={<AttachmentsPage />} /> {/* Updated to use taskSlug */}
+        <Route path="/task/:sectionId/:taskSlug/attachments" element={<AttachmentsPage />} /> 
         <Route path="/schools" element={<Schools />} />
         <Route path="/schools/:schoolSlug" element={<AccountDisplay />} />
         <Route path="/o-manage-account" element={<ManageAccount />} />

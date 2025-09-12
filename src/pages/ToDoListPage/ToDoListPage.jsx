@@ -1,35 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { taskData } from '../../data/taskData';
 import { createSlug } from '../../utils/idGenerator';
 import { generateAvatar } from '../../utils/iconGenerator'; // Import the utility
 import './ToDoListPage.css';
+import { API_BASE_URL } from '../../api/api';
 
 const ToDoListPage = () => {
-  const { sectionId } = useParams();
-  const { state } = useLocation();
+  const { sectionId } = useParams(); // e.g., "grade-7"
+  const location = useLocation();
   const navigate = useNavigate();
 
-  // Fallback values
-  const { section_designation, full_name } = state || {};
+  // Extract state from navigation (passed from ToDoPage)
+  const { state } = location;
+  const { section_designation, full_name, user_id } = state || {};
   const pageTitle = section_designation || 'Task List';
   const person = full_name || 'Unknown Focal';
 
-  // 🔍 Find the section and the correct focal entry
-  const section = taskData[sectionId]; 
-  let tasks = [];
-  let avatar = null;
+  // ✅ Get currentUser's school ID from sessionStorage (fallback if not in state)
+  const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+  const schoolUserId = user_id || currentUser?.user_id;
 
-  if (section && Array.isArray(section)) {
-    const focalEntry = section.find(
-      (item) => item.section_designation === section_designation && item.full_name === full_name
-    );
-
-    if (focalEntry) {
-      tasks = focalEntry.tasklist || [];
-      avatar = focalEntry.avatar;
-    }
-  }
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Generate avatar data using the utility
   const { initials, color } = generateAvatar(full_name);
@@ -47,8 +40,57 @@ const ToDoListPage = () => {
     }
   };
 
+  // ✅ Fetch tasks from backend API (filtered by school_id)
+  useEffect(() => {
+    const fetchTasksBySection = async () => {
+      if (!schoolUserId || !section_designation) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const token = currentUser?.token;
+
+        const response = await fetch(
+          `${API_BASE_URL}/school/all/tasks?user_id=${encodeURIComponent(schoolUserId)}`,
+          {
+            headers: {
+              Authorization: token ? `Bearer ${token}` : "",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to fetch tasks: ${response.status} - ${errorText}`);
+        }
+
+        const allAssignedTasks = await response.json();
+        console.log("📡 All tasks assigned to school:", allAssignedTasks);
+
+        // ✅ FILTER BY SECTION: Only keep tasks where task.section === section_designation
+        const filteredTasks = allAssignedTasks.filter(
+          (task) => task.section === section_designation
+        );
+
+        console.log(`✅ Filtered tasks for section "${section_designation}":`, filteredTasks);
+
+        setTasks(filteredTasks);
+      } catch (err) {
+        console.error("Error fetching tasks:", err);
+        setError(err.message || "Failed to load tasks. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTasksBySection();
+  }, [schoolUserId, section_designation]); // 👈 Depend on section and user_id
+
+  // Handle view task navigation
   const handleViewTask = (task) => {
-    // Use the section_designation from state instead of task.section_designation
     const slug = createSlug(section_designation);
     navigate(`${slug}`, {
       state: {
@@ -57,7 +99,7 @@ const ToDoListPage = () => {
         deadline: task.deadline,
         creation_date: task.creation_date,
         taskDescription: task.description,
-        taskId: task.task_id, // Include the task ID
+        taskId: task.task_id,
       },
     });
   };
@@ -67,8 +109,8 @@ const ToDoListPage = () => {
       {/* ✅ Header with real avatar or generated one */}
       <div className="header">
         <div className="avatar">
-          {avatar ? (
-            <img src={avatar} alt={`${person}'s avatar`} />
+          {currentUser?.avatar ? (
+            <img src={currentUser.avatar} alt={`${person}'s avatar`} />
           ) : (
             <div 
               className="avatar-fallback" 
@@ -85,9 +127,17 @@ const ToDoListPage = () => {
       </div>
 
       {/* Task List or Empty State */}
-      {tasks.length === 0 ? (
+      {loading ? (
         <div className="no-tasks-container">
-          <p className="no-tasks">No tasks assigned for this focal area.</p>
+          <p className="no-tasks">Loading tasks...</p>
+        </div>
+      ) : error ? (
+        <div className="no-tasks-container">
+          <p className="no-tasks" style={{ color: 'red' }}>{error}</p>
+        </div>
+      ) : tasks.length === 0 ? (
+        <div className="no-tasks-container">
+          <p className="no-tasks">No tasks assigned for this section.</p>
         </div>
       ) : (
         <div className="task-list">

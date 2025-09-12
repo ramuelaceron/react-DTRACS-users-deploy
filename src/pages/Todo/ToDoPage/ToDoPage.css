@@ -1,9 +1,55 @@
-/* src/layouts/ToDoPage.css */
 
-.todo-layout {
+.task-layout {
   margin-top: 40px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+/* src/pages/TaskPage.css — ADD THIS AT THE BOTTOM */
+
+.no-section-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 60px); /* Adjust if you have navbar */
+  padding: 20px;
+}
+
+.no-section-container {
+  text-align: center;
+  max-width: 600px;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.no-section-container h2 {
+  color: #1e293b;
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.no-section-container p {
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.no-section-container .note {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px dashed #cbd5e1;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .no-section-container {
+    padding: 20px;
+  }
+  .no-section-container h2 {
+    font-size: 20px;
+  }
 }
 

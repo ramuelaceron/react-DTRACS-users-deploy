@@ -63,7 +63,9 @@ const FocalTaskCard = ({ section_designation, full_name, path = 'task-list' }) =
         </div>
         <div className="text-content">
           <h3 className="focal-title">{section_designation}</h3>
-          <p className="focal-person">{full_name}</p> 
+          <p className={`focal-person ${full_name === "No yet assigned" ? "unassigned" : ""}`}>
+            {full_name}
+          </p>
         </div>
       </div>
     </div>

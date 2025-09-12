@@ -1,4 +1,3 @@
-/* Main App Container */
 .completed-app {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -9,17 +8,23 @@
   margin-left: 20px;
 }
 
-/* Main Content */
 .completed-main {
   flex: 1;
   padding: 0;
   background-color: #ffffff;
   border: none;
   overflow-y: auto;
-  padding-top: 30px;
+  padding-top: 20px;
 }
 
-/* Date Header */
+/* ==================== */
+/*  Date Group Header   */
+/* ==================== */
+
+.completed-date-group {
+  margin-bottom: 20px;
+}
+
 .completed-date-header {
   font-size: 16px;
   color: #000;
@@ -29,10 +34,12 @@
   gap: 8px;
   cursor: pointer;
   user-select: none;
+  padding-top: 20px;
+  transition: color 0.2s ease;
 }
 
-.completed-date-bold {
-  font-weight: bold;
+.completed-date-header:hover {
+  color: #4caf50;
 }
 
 .completed-weekday {
@@ -40,26 +47,30 @@
   font-weight: normal;
 }
 
-/* Header Actions - Right side */
-.header-actions {
+.completed-date-bold {
+  font-weight: bold;
+}
+
+.completed-header-actions {
   display: flex;
   align-items: center;
   gap: 6px;
   margin-left: auto;
 }
 
-/* Task Count - Green number */
 .completed-task-count {
   font-size: 12px;
-  color: #555;
-  font-weight: bold;
   margin-right: 10px;
+  color: #4caf50;
+  font-weight: bold;
+  background-color: rgba(76, 175, 80, 0.1);
+  padding: 4px 8px;
+  border-radius: 12px;
 }
 
-/* Dropdown Arrow - With hover circle */
 .completed-dropdown-arrow {
   font-size: 20px;
-  color: #555;
+  color: #4caf50;
   cursor: pointer;
   transition: transform 0.2s ease;
   position: relative;
@@ -73,14 +84,14 @@
 }
 
 .completed-dropdown-arrow::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: rgba(76, 175, 80, 0.05);
+  background-color: rgba(0, 0, 0, 0.05);
   transform: translate(-50%, -50%);
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -102,105 +113,189 @@
   padding: 0;
 }
 
-/* Task Link */
-.completed-task-link {
-  text-decoration: none;
-  display: block;
-}
+/* ==================== */
+/*  Task List Container */
+/* ==================== */
 
-/* Task Card */
-.completed-card {
-  position: relative;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  background-color: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  transition: box-shadow 0.2s ease, transform 0.1s ease;
-}
-
-.completed-card:hover {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
-}
-
-/* Flex container */
-.completed-card-content {
+.completed-task-list {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 40px;
+  flex-direction: column;
   gap: 12px;
 }
 
-/* Task Icon + Text */
-.completed-card-text {
+/* ==================== */
+/*  Task Item - Card    */
+/* ==================== */
+
+.completed-task-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px; /* Removed padding-bottom since footer is gone */
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.completed-task-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  border-color: #4caf50;
+}
+
+.completed-task-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 0;
+  background-color: #4caf50;
+  transition: height 0.3s ease;
+}
+
+.completed-task-item:hover::before {
+  height: 100%;
+}
+
+/* ==================== */
+/*  Task Header         */
+/* ==================== */
+
+.completed-task-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex: 1;
-  overflow: hidden;
-}
-
-/* Task Title */
-.completed-card-title {
-  font-size: 16px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 8px;
-}
-
-/* Office Meta */
-.completed-card-meta {
-  font-size: 14px;
-  color: #555;
-  margin-top: 4px;
-}
-
-.completed-office {
-  font-weight: 500;
-  color: #555;
-}
-
-/* Completion Time */
-.completed-card-completion {
-  flex-shrink: 0;
-  text-align: right;
-  font-size: 12px;
-  color: #555;
-  white-space: nowrap;
-}
-
-.completed-card-completion .time {
-  flex-shrink: 0;
-  text-align: right;
-  font-size: 12px;
-  color: #555;
-  white-space: nowrap;
-}
-
-/* No tasks message */
-.completed-no-tasks {
-  text-align: center;
-  color: #888;
-  font-style: italic;
-  margin-top: 20px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
 }
 
 .completed-task-icon {
-  background: #555;
-  color: white;
   width: 40px;
   height: 40px;
+  background: #4caf50;
+  color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
+  margin-right: 12px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-.completed-task-icon svg {
-  width: 20px;
-  height: 20px;
+.completed-task-item:hover .completed-task-icon {
+  transform: scale(1.05);
+  background-color: #388e3c;
+}
+
+.completed-task-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.completed-task-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+  max-width: 600px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.completed-task-item:hover .completed-task-title {
+  color: #4caf50;
+}
+
+.completed-task-office {
+  font-size: 12px;
+  color: #555;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.completed-task-completion {
+  font-size: 12px;
+  color: #555;
+  white-space: nowrap;
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.completed-task-item:hover .completed-task-completion {
+  color: #4caf50;
+}
+
+.completed-time {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+/* ==================== */
+/*  No Tasks Message    */
+/* ==================== */
+
+.completed-no-tasks {
+  color: #888;
+  text-align: center;
+  font-style: italic;
+  margin-top: 40px;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+/* ==================== */
+/*  Responsive Design   */
+/* ==================== */
+
+@media (max-width: 768px) {
+  .completed-app {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  
+  .completed-task-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .completed-task-completion {
+    margin-left: 0;
+    margin-top: 8px;
+    padding-left: 0;
+    align-self: flex-end;
+  }
+  
+  .completed-date-header {
+    flex-wrap: wrap;
+  }
+  
+  .completed-header-actions {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .completed-task-item {
+    padding: 12px;
+  }
+  
+  .completed-task-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
 }

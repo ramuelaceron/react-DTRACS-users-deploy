@@ -43,30 +43,26 @@ export const getWeekday = (dateStr) => {
 };
 
 // Helper: Calculate completion stats based on schools_required and accounts_required
+// Helper: Calculate completion stats based on schools_required and accounts_required
+// Helper: Calculate completion stats based on real assignments
 export const getTaskCompletionStats = (task) => {
-  // Extract unique school names from schools_required
   const uniqueSchools = new Set(
-    (task.schools_required || [])
-      .map(school =>
-        typeof school === "string"
-          ? school.trim()
-          : typeof school === "object" && school.school_name
-            ? school.school_name.trim()
-            : ""
-      )
-      .filter(name => name)
+    (task.schools_required || []).map(s => String(s).trim()).filter(Boolean)
   );
   const totalAssigned = uniqueSchools.size;
 
-  // Count unique schools in accounts_required with at least one "Completed" status
+  const accountsRequired = Array.isArray(task.accounts_required)
+    ? task.accounts_required
+    : [];
+
   const schoolsWithCompleted = new Set();
-  task.accounts_required?.forEach(account => {
+  accountsRequired.forEach(assignment => {
     if (
-      account.status === "Completed" &&
-      account.school_name &&
-      uniqueSchools.has(account.school_name.trim())
+      assignment?.status === "COMPLETE" &&
+      assignment?.school_id &&
+      uniqueSchools.has(String(assignment.school_id).trim())
     ) {
-      schoolsWithCompleted.add(account.school_name.trim());
+      schoolsWithCompleted.add(String(assignment.school_id).trim());
     }
   });
 
@@ -85,7 +81,7 @@ export const getAllOngoingTasks = (taskData) => {
     if (Array.isArray(sectionArray)) {
       sectionArray.forEach(focal => {
         focal.tasklist?.forEach(task => {
-          if (task.task_status === "Ongoing") {
+          if (task.task_status === "ONGOING") {
             tasks.push({
               ...task,
               sectionId,

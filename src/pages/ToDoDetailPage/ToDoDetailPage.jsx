@@ -1,4 +1,3 @@
-// ToDoDetailPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./ToDoDetailPage.css";
@@ -9,58 +8,37 @@ import AttachedFiles from "../../components/AttachedFiles/AttachedFiles";
 import TaskActions from "../../components/TaskActions/TaskActions";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { taskData } from "../../data/taskData";
+import { API_BASE_URL } from "../../api/api";
 
 const ToDoDetailPage = () => {
   const navigate = useNavigate();
-  const { sectionId, taskSlug } = useParams();
-  const { state } = useLocation();
+  const { sectionId, taskSlug } = useParams(); // Optional for routing, but not used for data
+  const location = useLocation();
+  const { state } = location;
 
   // State
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [attachedLinks, setAttachedLinks] = useState([]);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isLate, setIsLate] = useState(false);
+  const [task, setTask] = useState(null); // 👈 Now managed from API
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Get task data from navigation state or find it in taskData
+  // Extract task info from state (passed from ToDoListPage)
+  const taskId = state?.taskId;
   const taskTitle = state?.taskTitle;
   const taskDeadline = state?.deadline;
   const taskCreationDate = state?.creation_date;
   const taskDescription = state?.taskDescription;
-  const taskId = state?.taskId;
+  const expectedSection = state?.section_designation; // 👈 What section we expect this task to belong to
 
-  // 🔍 Find the task and focal entry using the task ID from state
-  const section = taskData[sectionId];
-  let focalEntry = null;
-  let task = null;
+  // Get current user from sessionStorage
+  const savedUser = sessionStorage.getItem("currentUser");
+  const currentUser = savedUser ? JSON.parse(savedUser) : null;
+  const schoolUserId = currentUser?.user_id;
 
-  if (section && Array.isArray(section) && taskId) {
-    for (const item of section) {
-      const match = item.tasklist?.find(t => t.task_id === taskId);
-      if (match) {
-        focalEntry = item;
-        task = match;
-        break;
-      }
-    }
-  }
-
-  // If task not found by ID, try to find it by title (fallback)
-  if (!task && taskTitle && section && Array.isArray(section)) {
-    for (const item of section) {
-      const match = item.tasklist?.find(t => t.title === taskTitle);
-      if (match) {
-        focalEntry = item;
-        task = match;
-        break;
-      }
-    }
-  }
-
-  // Extract task and focal data
-  const creator_name = task?.creator_name || state?.creator_name || "Unknown Creator";
-
-  // Format date functions
+  // Format date/time helpers
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     try {
@@ -91,23 +69,22 @@ const ToDoDetailPage = () => {
     }
   };
 
-  // Get status color based on task status
+  // Get status color/text
   const getStatusColor = (status) => {
     switch (status) {
       case "Incomplete":
-        return "#D32F2F"; // Red for incomplete
+        return "#D32F2F";
       case "Completed":
-        return "#333"; // Dark gray for completed
+        return "#333";
       case "Ongoing":
-        return "#2196F3"; // Blue for ongoing
+        return "#2196F3";
       case "Late":
-        return "#FF9800"; // Orange for late
+        return "#FF9800";
       default:
         return "#333";
     }
   };
 
-  // Get status display text
   const getStatusText = (status) => {
     switch (status) {
       case "Incomplete":
@@ -123,14 +100,88 @@ const ToDoDetailPage = () => {
     }
   };
 
-  // Sync completion status from data
+  // File helpers
+  const getFileIcon = (file) => {
+    const ext = file?.name.split(".").pop()?.toLowerCase();
+    if (ext === "pdf") return <FaFilePdf />;
+    if (["doc", "docx"].includes(ext)) return <FaFileWord />;
+    if (["jpg", "jpeg", "png"].includes(ext)) return <FaFileImage />;
+    return <FaFile />;
+  };
+
+  const getFileType = (file) => {
+    const ext = file?.name.split(".").pop()?.toLowerCase();
+    if (ext === "pdf") return "PDF";
+    if (["doc", "docx"].includes(ext)) return "DOC";
+    if (["jpg", "jpeg", "png"].includes(ext)) return "Image";
+    return ext?.toUpperCase() || "FILE";
+  };
+
+  // ✅ Fetch task data from backend
   useEffect(() => {
-    if (task?.task_status === "Completed") {
-      setIsCompleted(true);
-    } else if (task?.task_status === "Incomplete") {
-      setIsLate(false);
-    }
-  }, [task?.task_status]);
+    const fetchTaskById = async () => {
+      if (!schoolUserId || !taskId) {
+        setLoading(false);
+        setError("Task ID is missing.");
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const token = currentUser?.token;
+
+        const response = await fetch(
+          `${API_BASE_URL}/school/all/tasks?user_id=${encodeURIComponent(schoolUserId)}`,
+          {
+            headers: {
+              Authorization: token ? `Bearer ${token}` : "",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to fetch tasks: ${response.status} - ${errorText}`);
+        }
+
+        const allTasks = await response.json();
+        console.log("📡 All tasks assigned to school:", allTasks);
+
+        // ✅ Find task by task_id
+        const foundTask = allTasks.find(t => t.task_id === taskId);
+
+        if (!foundTask) {
+          setError("Task not found. It may have been deleted or reassigned.");
+          return;
+        }
+
+        // ✅ Validate that the task belongs to the expected section (UX safety check)
+        if (expectedSection && foundTask.section !== expectedSection) {
+          console.warn(
+            `⚠️ Task section mismatch: expected "${expectedSection}", got "${foundTask.section}".`,
+            "Allowing display for UX consistency, but alerting."
+          );
+          // Still allow rendering — maybe navigation state is stale, but task is valid
+        }
+
+        setTask(foundTask);
+        // Initialize UI state based on task status
+        if (foundTask.task_status === "Completed") {
+          setIsCompleted(true);
+        } else if (foundTask.task_status === "Incomplete") {
+          setIsLate(false);
+        }
+      } catch (err) {
+        console.error("Error fetching task:", err);
+        setError(err.message || "Failed to load task details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTaskById();
+  }, [schoolUserId, taskId, expectedSection]); // 👈 Depend on these values
 
   // Handlers
   const handleBack = () => navigate(-1);
@@ -159,35 +210,31 @@ const ToDoDetailPage = () => {
     setAttachedFiles((prev) => prev.filter((f) => f.id !== fileId));
   };
 
-  // Handle link changes as an array
   const handleLinksChange = (links) => {
     setAttachedLinks(links);
   };
 
-  // Handle removing individual links
   const handleRemoveLink = (index) => {
     setAttachedLinks(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleComplete = () => {
-    // Validate all links if any are provided
-    const invalidLinks = attachedLinks.filter(link => 
+    const invalidLinks = attachedLinks.filter(link =>
       link && link.url && !/^(https?:\/\/)/i.test(link.url.trim())
     );
-    
+
     if (invalidLinks.length > 0) {
       toast.error("Please enter valid URLs starting with http:// or https://");
       return;
     }
-    
+
     if (attachedFiles.length === 0 && attachedLinks.length === 0) {
       const confirmed = window.confirm(
         "You haven't attached any files or added any links. Are you sure you want to mark this task as completed?"
       );
       if (!confirmed) return;
     }
-    
-    // Check if task was originally incomplete (past due)
+
     if (task?.task_status === "Incomplete") {
       setIsLate(true);
       setIsCompleted(false);
@@ -197,8 +244,7 @@ const ToDoDetailPage = () => {
       setIsLate(false);
       toast.success("Task marked as completed!");
     }
-    
-    // Log submission details
+
     console.log("Submission includes:", {
       files: attachedFiles.length,
       links: attachedLinks
@@ -211,44 +257,59 @@ const ToDoDetailPage = () => {
     toast.info("Task status reverted.");
   };
 
-  // Get current user once
-  const savedUser = sessionStorage.getItem("currentUser");
-  const currentUser = savedUser
-    ? JSON.parse(savedUser)
-    : { first_name: "Unknown", last_Name: "User", middle_name: "", email: "unknown@deped.gov.ph" };
+  // Get full name of current user
+  const fullName = currentUser
+    ? `${currentUser.first_name} ${currentUser.middle_name ? currentUser.middle_name + " " : ""}${currentUser.last_name}`.trim()
+    : "Unknown User";
 
-  const fullName = `${currentUser.first_name} ${currentUser.middle_name ? currentUser.middle_name + " " : ""}${currentUser.last_name}`.trim();
+  // Handle loading/error states
+  if (loading) {
+    return (
+      <div className="todo-detail-app">
+        <main className="todo-detail-main">
+          <button className="todo-back-btn" onClick={handleBack}>
+            <IoChevronBackOutline className="icon-md" /> Back
+          </button>
+          <div className="loading-container">
+            <p>Loading details...</p>
+          </div>
+        </main>
+        <ToastContainer />
+      </div>
+    );
+  }
 
-  // File helpers
-  const getFileIcon = (file) => {
-    const ext = file?.name.split(".").pop()?.toLowerCase();
-    if (ext === "pdf") return <FaFilePdf />;
-    if (["doc", "docx"].includes(ext)) return <FaFileWord />;
-    if (["jpg", "jpeg", "png"].includes(ext)) return <FaFileImage />;
-    return <FaFile />;
-  };
+  if (error) {
+    return (
+      <div className="todo-detail-app">
+        <main className="todo-detail-main">
+          <button className="todo-back-btn" onClick={handleBack}>
+            <IoChevronBackOutline className="icon-md" /> Back
+          </button>
+          <div className="error-container">
+            <p>⚠️ {error}</p>
+            <small>Please go back and try again.</small>
+          </div>
+        </main>
+        <ToastContainer />
+      </div>
+    );
+  }
 
-  const getFileType = (file) => {
-    const ext = file?.name.split(".").pop()?.toLowerCase();
-    if (ext === "pdf") return "PDF";
-    if ("doc docx".includes(ext)) return "DOC";
-    if (["jpg", "jpeg", "png"].includes(ext)) return "Image";
-    return ext?.toUpperCase() || "FILE";
-  };
-
-  // Handle task not found
+  // If no task found after load
   if (!task) {
     return (
-      <div className="task-detail-app">
-        <main className="task-detail-main">
-          <button className="back-button" onClick={() => navigate(-1)}>
+      <div className="todo-detail-app">
+        <main className="todo-detail-main">
+          <button className="todo-back-btn" onClick={handleBack}>
             <IoChevronBackOutline className="icon-md" /> Back
           </button>
           <div className="error-container">
             <p>⚠️ Task not found.</p>
-            <small>Please go back and try again.</small>
+            <small>The task may have been removed or reassigned.</small>
           </div>
         </main>
+        <ToastContainer />
       </div>
     );
   }
@@ -267,18 +328,16 @@ const ToDoDetailPage = () => {
 
         {/* Header */}
         <div className="todo-header">
-          <div 
-            className="todo-icon" 
-            style={{ 
+          <div
+            className="todo-icon"
+            style={{
               background: statusColor,
-              transition: "background 0.3s ease"
+              transition: "background 0.3s ease",
             }}
           >
-            <PiClipboardTextBold 
-              className="icon-lg" 
-              style={{ 
-                color: "white" 
-              }} 
+            <PiClipboardTextBold
+              className="icon-lg"
+              style={{ color: "white" }}
             />
           </div>
           <h1 className="todo-title">{task.title || taskTitle}</h1>
@@ -315,7 +374,7 @@ const ToDoDetailPage = () => {
 
         {/* Author & Date */}
         <div className="todo-author">
-          {creator_name} • Posted on {formatDate(task.creation_date || taskCreationDate)}
+          {task.creator_name || "Unknown Creator"} • Posted on {formatDate(task.creation_date || taskCreationDate)}
         </div>
 
         {/* Description */}
@@ -334,12 +393,12 @@ const ToDoDetailPage = () => {
 
         {/* Attached Files & Links */}
         {(attachedFiles.length > 0 || attachedLinks.length > 0) && (
-          <AttachedFiles 
-            files={attachedFiles} 
+          <AttachedFiles
+            files={attachedFiles}
             links={attachedLinks}
             onRemoveFile={handleRemoveFile}
             onRemoveLink={handleRemoveLink}
-            isCompleted={isCompleted || isLate} 
+            isCompleted={isCompleted || isLate}
           />
         )}
       </main>

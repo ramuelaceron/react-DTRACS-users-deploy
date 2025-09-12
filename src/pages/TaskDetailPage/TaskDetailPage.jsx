@@ -63,10 +63,10 @@ const TaskDetailPage = () => {
 
   useEffect(() => {
     const status = task?.task_status || state?.task_status;
-    if (status === "Completed") {
+    if (status === "COMPLETE") {
       setIsCompleted(true);
       setIsLate(false);
-    } else if (status === "Incomplete") {
+    } else if (status === "INCOMPLETE") {
       setIsCompleted(false);
       setIsLate(true);
     } else {
@@ -145,7 +145,7 @@ const TaskDetailPage = () => {
             description: taskDescription,
             task_id: taskId,
             creator_name: creator_name,
-            task_status: state?.task_status || "Ongoing",
+            task_status: state?.task_status || "ONGOING",
             section: section_name
           }}
           creator_name={creator_name}

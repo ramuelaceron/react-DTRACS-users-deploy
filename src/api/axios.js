@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://cloud-tomato-goal-sick.trycloudflare.com",
+  baseURL: "https://bi-passive-statute-exempt.trycloudflare.com",
   timeout: 5000,
 });
 

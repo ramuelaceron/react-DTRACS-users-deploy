@@ -40,13 +40,13 @@ const formatTime = (dateString) => {
 // Get status color based on task status
 const getStatusColor = (status) => {
   switch (status) {
-    case "Completed":
+    case "COMPLETE":
       return "#4CAF50"; // Green for completed
-    case "Incomplete":
+    case "INCOMPLETE":
       return "#D32F2F"; // Red for incomplete
-    case "Ongoing":
+    case "ONGOING":
     default:
-      return "#2196F3"; // Blue for ongoing
+      return "#2196F3"; // Blue for ongoing 
   }
 };
 
@@ -73,7 +73,7 @@ const TaskDescription = ({
   });
 
   // Determine the actual status (if manually completed, override the task status)
-  const actualStatus = isCompleted ? "Completed" : (task?.task_status || "Ongoing");
+  const actualStatus = isCompleted ? "COMPLETE" : (task?.task_status || "ONGOING");
   const statusColor = getStatusColor(actualStatus);
 
   const toggleOptionsMenu = () => {

@@ -1,5 +1,5 @@
 // src/pages/Sections/SectionPage.jsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { taskData } from "../../data/taskData";
 import FocalTaskCard from "../../components/FocalTaskCard/FocalTaskCard";
@@ -33,8 +33,9 @@ const SectionPage = () => {
           const { section_designation } = item;
 
           const response = await fetch(
-            `${API_BASE_URL}/school/specific/verified/account/section/?section_designation=${encodeURIComponent(section_designation)}`
+            `${API_BASE_URL}/school/office/section?section_designation=${encodeURIComponent(section_designation)}`
           );
+
 
           if (!response.ok) {
             console.warn(`Failed to fetch focal for: ${section_designation}`);
