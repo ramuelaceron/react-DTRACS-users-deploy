@@ -51,7 +51,7 @@ function App() {
       {/* School Protected Routes */}
       <Route element={<SchoolHome />}>
         <Route path="/home" element={<SchoolDashboard />} />
-        <Route path="/SGOD" element={<SGOD />} />
+        <Route path="/SGOD" element={<SGOD />} /> 
         <Route path="/SGOD/:sectionId" element={<SectionPage />}>
           <Route path="task-list" element={<ToDoListPage />} />
           <Route path="task-list/:taskSlug" element={<ToDoDetailPage />} />

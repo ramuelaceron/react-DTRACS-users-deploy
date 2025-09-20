@@ -18,7 +18,7 @@
 
 .task-form-container {
   background-color: #ffffff;
-  border-radius: 12px;
+  border-radius: 5px;
   width: 90%;
   max-width: 1000px;
   padding: 32px;
@@ -482,6 +482,99 @@
   animation: dropdownFadeIn 0.2s ease;
 }
 
+/* Added Links Display Styles */
+.attached-links-display {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+}
+
+.attached-links-display h4 {
+  font-size: 14px;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-weight: 600;
+  display: block;
+}
+
+.links-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.link-item-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.link-item-display:last-child {
+  border-bottom: none;
+}
+
+.link-item-display a {
+  color: #007bff;
+  text-decoration: underline;
+  font-size: 14px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.link-item-display a:hover {
+  text-decoration: none;
+  color: #0056b3;
+}
+
+.remove-link-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 20px;
+}
+
+.remove-link-btn:hover {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+}
+
+/* .loading-spinner {
+  display: inline-block;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+/* Optional: Add a spinning animation */
+/* .loading-spinner::after {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+  border: 2px solid #ccc;
+  border-top-color: #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+} */
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 @keyframes dropdownFadeIn {
   from {
     opacity: 0;
@@ -519,6 +612,7 @@
 
 .dropdown-options {
   padding: 8px 0;
+  margin-top: -20px;
 }
 
 .dropdown-option {
@@ -534,7 +628,7 @@
 }
 
 .dropdown-option input[type="checkbox"] {
-  margin-right: 12px;
+  margin-right: 10px;
   accent-color: #007bff;
 }
 

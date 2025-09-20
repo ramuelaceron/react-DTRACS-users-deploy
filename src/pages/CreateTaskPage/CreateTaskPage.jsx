@@ -1,10 +1,11 @@
 // src/components/CreateTask/CreateTask.jsx
 import React from 'react';
 import { FaPlus } from "react-icons/fa6";
-import './CreateTask.css';
-import TaskForm from '../TaskForm/TaskForm'; // Import modal
+import './CreateTaskPage.css';
+import TaskForm from '../../components/TaskForm/TaskForm'; // Import modal
+import {API_BASE_URL} from '../../api/api'
 
-const CreateTask = ({ onTaskCreated }) => {
+const CreateTaskPage = ({ onTaskCreated, focalId }) => { // 👈 Add focalId to props
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const handleCreateClick = () => {
@@ -27,11 +28,12 @@ const CreateTask = ({ onTaskCreated }) => {
       {isModalOpen && (
         <TaskForm 
           onClose={closeModal} 
-          onTaskCreated={onTaskCreated} 
+          onTaskCreated={onTaskCreated}
+          creatorId={focalId} // 👈 Pass it to TaskForm if needed
         />
       )}
     </>
   );
 };
 
-export default CreateTask;
+export default CreateTaskPage;

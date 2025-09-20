@@ -3,7 +3,7 @@ import { Link, useOutletContext } from "react-router-dom";
 import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { createSlug } from "../../../utils/idGenerator";
-import CreateTask from "../../../components/CreateTask/CreateTask";
+import CreateTaskPage from "../../../pages/CreateTaskPage/CreateTaskPage";
 import { ToastContainer, toast } from "react-toastify";
 import {
   formatDate,
@@ -16,7 +16,7 @@ import "./TaskOngoing.css";
 
 const TaskOngoing = () => {
   // Get sorted tasks from context
-  const { upcomingTasks, selectedSort } = useOutletContext();
+  const { upcomingTasks, selectedSort, focalId, loading, hasLoaded } = useOutletContext(); // 👈 Add focalId here
   
   // Group tasks by formatted creation date
   const groupedByDate = upcomingTasks.reduce((groups, task) => {
@@ -74,13 +74,23 @@ const TaskOngoing = () => {
   return (
     <div className="ongoing-app">
       <main className="ongoing-main">
-        <CreateTask
+        <CreateTaskPage
           onTaskCreated={() => {
             toast.success("Task created!");
           }}
+          focalId={focalId} // 👈 Pass user_id as a prop
         />
 
-        {sortedDates.length > 0 ? (
+        {loading ? (
+          <div className="ongoing-loading">
+            <div className="ongoing-spinner"></div>
+            <p>Loading tasks...</p>
+          </div>
+        ) : hasLoaded && sortedDates.length === 0 ? ( // 👈 Only show empty message if loaded AND no tasks
+          <div className="ongoing-no-tasks">
+            {getEmptyMessage()}
+          </div>
+        ) : (
           sortedDates.map((date) => {
             const tasks = groupedByDate[date];
             const weekday = getWeekday(date);
@@ -168,10 +178,6 @@ const TaskOngoing = () => {
               </div>
             );
           })
-        ) : (
-          <div className="ongoing-no-tasks">
-            {getEmptyMessage()}
-          </div>
         )}
       </main>
 

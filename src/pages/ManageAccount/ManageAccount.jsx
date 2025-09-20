@@ -1,5 +1,5 @@
 // src/pages/ManageAccount/ManageAccount.jsx
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './ManageAccount.css';
 
 // Toastify
@@ -11,7 +11,10 @@ import EditLinks from '../../components/EditLinks/EditLinks';
 import ProfileInfoCard from '../../components/ProfileInfoCard/ProfileInfoCard';
 import ProfileAvatar from '../../components/ProfileAvatar/ProfileAvatar';
 
-import api from '../../api/axios';
+// API Base URL
+import { API_BASE_URL } from "../../api/api";
+
+// Data
 import { schoolAddresses } from "../../data/schoolAddresses";
 
 const ManageAccount = () => {
@@ -36,6 +39,7 @@ const ManageAccount = () => {
   // ✅ Load user data from backend on mount
   useEffect(() => {
     const fetchUserData = async () => {
+      console.log("[DEBUG] fetchUserData started");
       try {
         const savedUser = sessionStorage.getItem("currentUser");
         if (!savedUser) {
@@ -50,19 +54,48 @@ const ManageAccount = () => {
         const userId = currentUser.user_id;
         const role = currentUser.role;
 
+        console.log("[DEBUG] userId:", userId, "role:", role);
+
         if (!userId) {
           throw new Error("User ID not found");
         }
 
-        const endpoint = `/specific/verified/account/${userId}`;
-        const response = await api.get(endpoint);
+        // ✅ Choose endpoint based on role
+        const endpoint = role === "school"
+          ? `/school/account/info/id/?user_id=${encodeURIComponent(userId)}`
+          : `/focal/account/info/id/?user_id=${encodeURIComponent(userId)}`;
 
-        if (!response.data || !response.data.data) {
-          throw new Error("Invalid response from server");
+        // ✅ Build full URL
+        const fullUrl = `${API_BASE_URL}${endpoint}`;
+        console.log("[DEBUG] Fetching from:", fullUrl);
+
+        // ✅ Use fetch
+        const res = await fetch(fullUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            // Add Authorization header if your backend requires it:
+            // Authorization: `Bearer ${currentUser.token}`,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch user  ${res.status} ${res.statusText}`);
         }
 
-        const backendData = response.data.data;
+        const rawData = await res.json();
+        console.log("[Raw API Response]", rawData);
 
+        // ✅ Assume backend returns user object directly
+        const backendData = rawData;
+
+        // ✅ Optional: Validate it has required fields instead
+        if (!backendData || typeof backendData !== 'object') {
+          throw new Error("Invalid response structure: expected user object");
+        }
+        console.log("[API Response - User Data]", backendData);
+
+        // ✅ Build merged user data
         let mergedData = {
           user_id: backendData.user_id || userId,
           first_name: backendData.first_name || "",
@@ -71,7 +104,7 @@ const ManageAccount = () => {
           email: backendData.email || "",
           contact_number: backendData.contact_number || "",
           avatar: backendData.avatar || null,
-          role: role,
+          role: role, // preserve from session
           school_name: backendData.school_name || "Not specified",
           school_address: backendData.school_address || "Not specified",
           position: backendData.position || "Not specified",
@@ -79,6 +112,7 @@ const ManageAccount = () => {
           section_designation: backendData.section_designation || "Not specified",
         };
 
+        // ✅ Auto-fill school address if missing and role is "school"
         if (role === "school" && (mergedData.school_address === "N/A" || mergedData.school_address === "Not specified")) {
           const correctAddress = schoolAddresses[mergedData.school_name];
           if (correctAddress) {
@@ -86,11 +120,12 @@ const ManageAccount = () => {
           }
         }
 
+        // ✅ Update session and state
         sessionStorage.setItem("currentUser", JSON.stringify(mergedData));
         setUserData(mergedData);
         setAvatar(mergedData.avatar);
 
-        // Initialize tempProfile with current data
+        // ✅ Initialize tempProfile for editing
         setTempProfile({
           first_name: mergedData.first_name,
           middle_name: mergedData.middle_name,
@@ -101,9 +136,9 @@ const ManageAccount = () => {
 
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching user ", error);
+        console.error("Error fetching user data:", error);
         setLoading(false);
-        
+
         const savedUser = sessionStorage.getItem("currentUser");
         if (savedUser) {
           const fallbackData = JSON.parse(savedUser);
@@ -185,12 +220,27 @@ const ManageAccount = () => {
         ? `/school/account/update/id/?user_id=${encodeURIComponent(userId)}`
         : `/focal/account/update/id/?user_id=${encodeURIComponent(userId)}`;
 
-      // ✅ Send PUT request
-      const response = await api.put(endpoint, payload);
+      // ✅ Build full URL
+      const fullUrl = `${API_BASE_URL}${endpoint}`;
+      console.log("[PUT Request to]", fullUrl);
 
-      if (!response.data) {
-        throw new Error("No data returned from server");
+      // ✅ Send PUT request with fetch
+      const res = await fetch(fullUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          // Authorization: `Bearer ${userData.token}`, // Uncomment if auth required
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || `Update failed: ${res.status} ${res.statusText}`);
       }
+
+      const responseData = await res.json();
+      console.log("[Update Response]", responseData);
 
       // ✅ Update session storage
       const updatedData = { ...userData, ...payload };
@@ -203,7 +253,7 @@ const ManageAccount = () => {
       window.location.reload();
     } catch (error) {
       console.error("Error updating profile:", error);
-      toast.error(`❌ Failed to update profile: ${error.response?.data?.detail || error.message}`);
+      toast.error(`❌ Failed to update profile: ${error.message}`);
     }
   };
 
@@ -229,13 +279,13 @@ const ManageAccount = () => {
         reader.onload = async () => {
           const base64Image = reader.result;
           setAvatar(base64Image);
-          
+
           const savedUser = JSON.parse(sessionStorage.getItem("currentUser"));
           const updatedUser = { ...savedUser, avatar: base64Image };
           sessionStorage.setItem("currentUser", JSON.stringify(updatedUser));
-          
+
           setUserData(prev => ({ ...prev, avatar: base64Image }));
-          
+
           toast.info("Profile picture updated!", { autoClose: 1500 });
         };
         reader.readAsDataURL(file);

@@ -8,8 +8,7 @@ import ParticleBackground from "../../components/ParticleBackground/Particle2.js
 import logo from "../../assets/images/logo-w-text.png";
 import { schoolAddresses } from "../../data/schoolAddresses";
 
-// 🔽 Import Axios instance
-import api from "../../api/axios";
+import {API_BASE_URL} from "../../api/api"
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +28,6 @@ const Login = () => {
     const email = formData.get("email").trim();
     const password = formData.get("password");
 
-    // 🔹 DYNAMIC ENDPOINT BASED ON PATH
     const endpoint = isSchoolPath 
       ? "/school/account/login" 
       : isOfficePath 
@@ -37,93 +35,92 @@ const Login = () => {
         : "/school/account/login";
 
     try {
-    const response = await api.post(endpoint, { email, password });
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    console.log("Backend response:", response.data);
+      let data;
+      let errorMsg = "";
 
-    // ✅ Validate response structure
-    if (!response.data || typeof response.data !== 'object') {
-      throw new Error("Invalid server response format");
-    }
+      // ✅ Handle non-2xx responses
+      if (!response.ok) {
+        try {
+          data = await response.json();
+        } catch (jsonErr) {
+          throw new Error(`Server returned ${response.status} with non-JSON body`);
+        }
 
-    // ✅ Extract role
-    const role = isOfficePath ? "office" : "school";
+        // 🔹 Extract error message from backend response
+        if (typeof data.detail === 'string') {
+          errorMsg = data.detail;
+        } else if (Array.isArray(data.detail)) {
+          errorMsg = data.detail
+            .map(e => e.msg || e.message || "Invalid input")
+            .filter(Boolean)
+            .join(" • ");
+        } else if (data.message) {
+          errorMsg = data.message;
+        } else {
+          errorMsg = `Login failed with status ${response.status}`;
+        }
 
-    // ✅ Build userData from response.data (NOT response.data.data)
-    const userData = {
-      user_id: response.data.user_id || "",
-      first_name: response.data.first_name || "",
-      middle_name: response.data.middle_name || "",
-      last_name: response.data.last_name || "",
-      school_name: response.data.school_name || "Not specified",
-      school_address: response.data.school_address || "Not specified",
-      position: response.data.position || "Not specified",
-      office: response.data.office || "Not specified",
-      section_designation: response.data.section_designation || "Not specified",
-      email: response.data.email || "",
-      contact_number: response.data.contact_number || "",
-      registration_date: response.data.registration_date || new Date().toISOString(),
-      active: response.data.active !== undefined ? response.data.active : true,
-      avatar: response.data.avatar || null,
-      role: role,
-    };
-
-    // ✅ Auto-fill school address if needed
-    if (role === "school" && (userData.school_address === "N/A" || userData.school_address === "Not specified")) {
-      const correctAddress = schoolAddresses[userData.school_name];
-      if (correctAddress) {
-        userData.school_address = correctAddress;
+        throw new Error(errorMsg); // Re-throw to be caught below
       }
-    }
 
-    sessionStorage.setItem("currentUser", JSON.stringify(userData));
+      // ✅ If response is OK, parse data
+      data = await response.json();
+      console.log("Backend response:", data);
 
-    if (role === "school") {
-      navigate("/home");
-    } else if (role === "office") {
-      navigate("/task/ongoing");
-    } else {
-      navigate("/home");
-    }
+      if (!data || typeof data !== 'object') {
+        throw new Error("Invalid server response format");
+      }
+
+      const role = isOfficePath ? "office" : "school";
+
+      const userData = {
+        user_id: data.user_id || "",
+        first_name: data.first_name || "",
+        middle_name: data.middle_name || "",
+        last_name: data.last_name || "",
+        school_name: data.school_name || "Not specified",
+        school_address: data.school_address || "Not specified",
+        position: data.position || "Not specified",
+        office: data.office || "Not specified",
+        section_designation: data.section_designation || "Not specified",
+        email: data.email || "",
+        contact_number: data.contact_number || "",
+        registration_date: data.registration_date || new Date().toISOString(),
+        active: data.active !== undefined ? data.active : true,
+        avatar: data.avatar || null,
+        role: role,
+      };
+
+      if (role === "school" && (userData.school_address === "N/A" || userData.school_address === "Not specified")) {
+        const correctAddress = schoolAddresses[userData.school_name];
+        if (correctAddress) {
+          userData.school_address = correctAddress;
+        }
+      }
+
+      sessionStorage.setItem("currentUser", JSON.stringify(userData));
+
+      if (role === "school") {
+        navigate("/home");
+      } else if (role === "office") {
+        navigate("/task/ongoing");
+      } else {
+        navigate("/home");
+      }
 
     } catch (err) {
-      console.error("Full error:", err);
+      console.error("Login error:", err.message || err);
 
-      let errorMsg = "Login failed. Please try again.";
-
-      try {
-        if (err && err.response && err.response.data) {
-          const data = err.response.data;
-
-          if (typeof data.detail === 'string') {
-            errorMsg = data.detail;
-          } else if (Array.isArray(data.detail)) {
-            errorMsg = data.detail
-              .map(e => e.msg || e.message || "Invalid input")
-              .filter(Boolean)
-              .join(" • ");
-          } else if (data.message) {
-            errorMsg = data.message;
-          } else {
-            try {
-              errorMsg = JSON.stringify(data);
-            } catch (e) {
-              errorMsg = "An unknown error occurred.";
-            }
-          }
-        } else if (!err.response) {
-          errorMsg = "Network error. Please check your connection.";
-        }
-      } catch (innerErr) {
-        console.error("Error processing error:", innerErr);
-        errorMsg = "An unexpected error occurred.";
-      }
-
-      if (typeof errorMsg !== 'string' || !errorMsg) {
-        errorMsg = "An error occurred during login.";
-      }
-
-      setError(errorMsg);
+      // ✅ Now this will show real backend error messages
+      setError(err.message || "An unexpected error occurred during login.");
     }
   };
 
@@ -200,6 +197,13 @@ const Login = () => {
                   {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
+
+              <div className="login-forgot-password">
+                <a href="#forgot" className="login-forgot-link">
+                  I forgot my password
+                </a>
+              </div>
+
             </div>
 
             <button
@@ -226,6 +230,20 @@ const Login = () => {
                 onClick={handleRegisterClick}
               >
                 Register here
+              </a>
+            </p>
+          </div>
+
+           <div className="login-terms-notice">
+            <p>
+              By using this service, you understand and agree to the DepEd
+              Online Services{" "}
+              <a href="#terms" className="login-terms-link">
+                Terms of Use
+              </a>{" "}
+              and{" "}
+              <a href="#privacy" className="login-terms-link">
+                Privacy Statement
               </a>
             </p>
           </div>

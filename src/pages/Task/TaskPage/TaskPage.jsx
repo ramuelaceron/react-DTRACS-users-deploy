@@ -7,14 +7,20 @@ import { API_BASE_URL } from "../../../api/api";
 import "./TaskPage.css";
 
 const TaskPage = () => {
+  
   // ✅ Declare ALL hooks first
+  const [hasLoaded, setHasLoaded] = useState(false); // 👈 Add this
   const [selectedSort, setSelectedSort] = useState("newest");
   const [tasks, setTasks] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
-  const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+  
+  const currentUser = useMemo(() => {
+      const item = sessionStorage.getItem("currentUser");
+      return item ? JSON.parse(item) : null;
+    }, []); // 👈 Only parse once on mount
 
   // ✅ Get focal_id (creator_id) of current user
   const focalId = currentUser?.user_id;
@@ -55,17 +61,17 @@ const TaskPage = () => {
     for (const [sectionName, sections] of Object.entries(enrichedTasks)) {
       for (const section of sections) {
         for (const task of section.tasklist) {
-          console.log(`BEFORE enrichment - Task: ${task.title}, Status: ${task.task_status}`);
+          // console.log(`BEFORE enrichment - Task: ${task.title}, Status: ${task.task_status}`);
 
           const assignments = await fetchAssignmentsForTask(task.task_id, token);
-          console.log("📥 Assignments for task:", assignments);
+          // console.log("📥 Assignments for task:", assignments);
 
           const uniqueSchools = [...new Set(assignments.map(a => a.school_id))];
 
           task.schools_required = uniqueSchools;
           task.accounts_required = assignments;
 
-          console.log(`AFTER enrichment - Task: ${task.title}, Status: ${task.task_status}`);
+          // console.log(`AFTER enrichment - Task: ${task.title}, Status: ${task.task_status}`);
         }
       }
     }
@@ -76,7 +82,7 @@ const TaskPage = () => {
   // ✅ Fetch + enrich tasks (FILTERED BY creator_id)
   useEffect(() => {
     const fetchAndEnrichTasks = async () => {
-      console.log("🔄 Fetching tasks from backend...");
+      // console.log("🔄 Fetching tasks from backend...");
 
       try {
         setLoading(true);
@@ -94,11 +100,11 @@ const TaskPage = () => {
         }
 
         const rawData = await response.json();
-        console.log("📡 Raw tasks received:", rawData);
+        // console.log("📡 Raw tasks received:", rawData);
 
         // ✅ FILTER: Only keep tasks created by the current user (focal_id)
         const filteredTasks = rawData.filter(task => task.creator_id === focalId);
-        console.log(`✅ Filtered tasks (creator_id === ${focalId}):`, filteredTasks);
+        // console.log(`✅ Filtered tasks (creator_id === ${focalId}):`, filteredTasks);
 
         const groupedBySection = filteredTasks.reduce((acc, task) => {
           const sectionName = task.section || "General";
@@ -154,7 +160,7 @@ const TaskPage = () => {
 
   // ✅ useMemo: called unconditionally — now only processes filtered tasks
   const { upcomingTasks, pastDueTasks, completedTasks } = useMemo(() => {
-    console.log("🧮 Recalculating task categories...");
+    // console.log("🧮 Recalculating task categories...");
     const upcoming = [];
     const pastDue = [];
     const completed = [];
@@ -166,7 +172,7 @@ const TaskPage = () => {
           const taskDeadline = new Date(task.deadline);
           const taskStatus = task.task_status || "ONGOING";
 
-          console.log(`Task: ${task.title} | Status: ${taskStatus}`);
+          // console.log(`Task: ${task.title} | Status: ${taskStatus}`);
 
           const taskDataObj = {
             id: task.creator_id,
@@ -182,6 +188,7 @@ const TaskPage = () => {
             creator_name: task.creator_name,
             description: task.description,
             task_status: taskStatus,
+            links: task.links,
             section_designation: sectionName,
             schools_required: task.schools_required || [],
             accounts_required: task.accounts_required || [],
@@ -298,6 +305,8 @@ const TaskPage = () => {
           completedTasks: sortTasks(completedTasks, selectedSort),
           selectedSort,
           allOffices,
+          loading,
+          hasLoaded, // 👈 ADD THIS
         }}
       />
     </div>

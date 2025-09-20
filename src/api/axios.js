@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://bi-passive-statute-exempt.trycloudflare.com",
+  baseURL: "https://searches-nil-wizard-specifies.trycloudflare.com",
   timeout: 5000,
 });
 

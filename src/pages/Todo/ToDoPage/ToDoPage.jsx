@@ -14,7 +14,11 @@ const ToDoPage = () => {
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
-  const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+  
+  const currentUser = useMemo(() => {
+    const item = sessionStorage.getItem("currentUser");
+    return item ? JSON.parse(item) : null;
+  }, []); // 👈 Only parse once on mount
 
   const isOfficeWithoutSection = currentUser?.role === "office" && (
     !currentUser.section_designation ||
