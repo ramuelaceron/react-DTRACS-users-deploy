@@ -7,7 +7,7 @@ import { Outlet } from "react-router-dom";
 import "./SectionPage.css";
 
 // Import API base URL
-import { API_BASE_URL } from "../../api/api"; // <-- You may need to create this file
+import config from "../../config";
 
 const SectionPage = () => {
   const { sectionId } = useParams();
@@ -33,7 +33,7 @@ const SectionPage = () => {
           const { section_designation } = item;
 
           const response = await fetch(
-            `${API_BASE_URL}/school/office/section?section_designation=${encodeURIComponent(section_designation)}`
+            `${config.API_BASE_URL}/school/office/section?section_designation=${encodeURIComponent(section_designation)}`
           );
 
 

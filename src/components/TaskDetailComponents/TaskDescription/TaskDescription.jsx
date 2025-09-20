@@ -4,7 +4,7 @@ import { SlOptionsVertical } from "react-icons/sl";
 import useClickOutside from "../../../hooks/useClickOutside";
 import TaskForm from "../../../components/TaskForm/TaskForm";
 import { toast } from "react-toastify";
-import { API_BASE_URL } from "../../../api/api";
+import config from "../../../config";
 import { useNavigate } from "react-router-dom"; // 👈 ADD THIS
 import "./TaskDescription.css";
 
@@ -112,7 +112,7 @@ const TaskDescription = ({
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/focal/task/delete/id/?task_id=${encodeURIComponent(effectiveTaskId)}`,
+        `${config.API_BASE_URL}/focal/task/delete/id/?task_id=${encodeURIComponent(effectiveTaskId)}`,
         {
           method: "DELETE", // 👈 Make sure it's DELETE
           headers: {

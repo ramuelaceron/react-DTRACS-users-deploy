@@ -8,7 +8,7 @@ import ParticleBackground from "../../components/ParticleBackground/Particle2.js
 import logo from "../../assets/images/logo-w-text.png";
 import { schoolAddresses } from "../../data/schoolAddresses";
 
-import {API_BASE_URL} from "../../api/api"
+import config from "../../config";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +35,7 @@ const Login = () => {
         : "/school/account/login";
 
     try {
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      const response = await fetch(`${config.API_BASE_URL}${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

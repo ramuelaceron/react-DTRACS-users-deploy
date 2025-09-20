@@ -12,7 +12,7 @@ import ProfileInfoCard from '../../components/ProfileInfoCard/ProfileInfoCard';
 import ProfileAvatar from '../../components/ProfileAvatar/ProfileAvatar';
 
 // API Base URL
-import { API_BASE_URL } from "../../api/api";
+import config from "../../config";
 
 // Data
 import { schoolAddresses } from "../../data/schoolAddresses";
@@ -66,7 +66,7 @@ const ManageAccount = () => {
           : `/focal/account/info/id/?user_id=${encodeURIComponent(userId)}`;
 
         // ✅ Build full URL
-        const fullUrl = `${API_BASE_URL}${endpoint}`;
+        const fullUrl = `${config.API_BASE_URL}${endpoint}`;
         console.log("[DEBUG] Fetching from:", fullUrl);
 
         // ✅ Use fetch
@@ -221,7 +221,7 @@ const ManageAccount = () => {
         : `/focal/account/update/id/?user_id=${encodeURIComponent(userId)}`;
 
       // ✅ Build full URL
-      const fullUrl = `${API_BASE_URL}${endpoint}`;
+      const fullUrl = `${config.API_BASE_URL}${endpoint}`;
       console.log("[PUT Request to]", fullUrl);
 
       // ✅ Send PUT request with fetch

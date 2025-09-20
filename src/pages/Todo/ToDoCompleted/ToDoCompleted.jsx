@@ -1,8 +1,9 @@
+// Updated ToDoCompleted component
 import { useState, useEffect } from "react";
-import { Link, useOutletContext, useNavigate } from "react-router-dom"; // 👈 Added useNavigate
+import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
-import { createSlug } from "../../../utils/idGenerator"; // 👈 Import createSlug
+import { createSlug } from "../../../utils/idGenerator";
 import {
   formatDate,
   formatTime,
@@ -12,8 +13,15 @@ import "./ToDoCompleted.css";
 
 const ToDoCompleted = () => {
   // ✅ Get pre-filtered completed tasks and selected sort from ToDoPage layout
-  const { completedTasks, selectedSort } = useOutletContext();
-  const navigate = useNavigate(); // 👈 Initialize navigate
+  const { 
+    completedTasks, 
+    selectedSort, 
+    loading, 
+    hasLoaded,
+    selectedOffice,
+    getOfficeEmptyMessage
+  } = useOutletContext();
+  const navigate = useNavigate();
 
   // Group tasks by formatted completion date
   const groupedByDate = completedTasks.reduce((groups, task) => {
@@ -60,13 +68,16 @@ const ToDoCompleted = () => {
   const getEmptyMessage = () => {
     switch (selectedSort) {
       case "today":
-        return "No completed tasks due today.";
+        return selectedOffice === "All Offices" 
+          `No completed tasks due today for ${selectedOffice}.`;
       case "week":
-        return "No completed tasks due this week.";
+        return selectedOffice === "All Offices" 
+          `No completed tasks due this week for ${selectedOffice}.`;
       case "month":
-        return "No completed tasks due this month.";
+        return selectedOffice === "All Offices" 
+          `No completed tasks due this month for ${selectedOffice}.`;
       default:
-        return "No completed tasks.";
+        return getOfficeEmptyMessage("Completed");
     }
   };
 
@@ -82,11 +93,11 @@ const ToDoCompleted = () => {
         deadline: task.deadline,
         creation_date: task.creation_date,
         taskDescription: task.description,
-        section_designation: task.section, // 👈 Used in ToDoDetailPage header
+        section_designation: task.section,
         creator_name: task.creator_name,
         office: task.office,
-        completion_date: task.completion_date, // 👈 Optional but useful for context
-        task_status: task.task_status, // 👈 For status display
+        completion_date: task.completion_date,
+        task_status: task.task_status,
       },
     });
   };
@@ -94,8 +105,16 @@ const ToDoCompleted = () => {
   return (
     <div className="completed-app">
       <main className="completed-main">
-        {/* Task List Grouped by completion date */}
-        {sortedDates.length > 0 ? (
+        {loading ? (
+          <div className="completed-loading">
+            <div className="completed-spinner"></div>
+            <p>Loading tasks...</p>
+          </div>
+        ) : hasLoaded && sortedDates.length === 0 ? (
+          <div className="completed-no-tasks">
+            {getEmptyMessage()}
+          </div>
+        ) : (
           sortedDates.map((date) => {
             const tasks = groupedByDate[date];
             const weekday = getWeekday(date);
@@ -127,8 +146,8 @@ const ToDoCompleted = () => {
                         <div
                           key={task.task_id}
                           className="completed-task-item"
-                          onClick={() => handleTaskClick(task)} // 👈 Click handler here
-                          style={{ cursor: "pointer", userSelect: "none" }} // 👈 Visual feedback
+                          onClick={() => handleTaskClick(task)}
+                          style={{ cursor: "pointer", userSelect: "none" }}
                         >
                           <div className="completed-task-header">
                             <div className="completed-task-icon">
@@ -155,10 +174,6 @@ const ToDoCompleted = () => {
               </div>
             );
           })
-        ) : (
-          <div className="completed-no-tasks">
-            {getEmptyMessage()}
-          </div>
         )}
       </main>
     </div>

@@ -1,3 +1,4 @@
+// Updated ToDoTabs component
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './ToDoTabs.css';
@@ -26,6 +27,14 @@ const ToDoTabs = ({
       });
     }
   }, [location.pathname]);
+
+  // Define the 3 specific offices
+  const officeOptions = [
+    "All Offices",
+    "School Governance and Operations Division",
+    "Curriculum Implementation Division", 
+    "Office of the Schools Division Superintendent"
+  ];
 
   return (
     <div className="todo-tabs-container">
@@ -64,8 +73,7 @@ const ToDoTabs = ({
         value={selectedOffice}
         onChange={(e) => onOfficeChange(e.target.value)}
       >
-        <option>All Offices</option>
-        {allOffices.map(office => (
+        {officeOptions.map((office) => (
           <option key={office} value={office}>
             {office}
           </option>

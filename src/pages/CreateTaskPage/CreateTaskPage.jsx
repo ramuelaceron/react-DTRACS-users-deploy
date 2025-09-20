@@ -3,7 +3,6 @@ import React from 'react';
 import { FaPlus } from "react-icons/fa6";
 import './CreateTaskPage.css';
 import TaskForm from '../../components/TaskForm/TaskForm'; // Import modal
-import {API_BASE_URL} from '../../api/api'
 
 const CreateTaskPage = ({ onTaskCreated, focalId }) => { // 👈 Add focalId to props
   const [isModalOpen, setIsModalOpen] = React.useState(false);

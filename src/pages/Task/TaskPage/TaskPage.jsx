@@ -3,16 +3,16 @@ import { useMemo, useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import TaskTabs from "../../../components/TaskTabs/TaskTabs";
 import { createSlug } from "../../../utils/idGenerator";
-import { API_BASE_URL } from "../../../api/api";
+import config from "../../../config";
 import "./TaskPage.css";
 
 const TaskPage = () => {
   
   // ✅ Declare ALL hooks first
-  const [hasLoaded, setHasLoaded] = useState(false); // 👈 Add this
+  const [hasLoaded, setHasLoaded] = useState(false); 
+  const [loading, setLoading] = useState(true);
   const [selectedSort, setSelectedSort] = useState("newest");
   const [tasks, setTasks] = useState({});
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const TaskPage = () => {
   // ✅ Fetch assignments for a single task
   const fetchAssignmentsForTask = async (task_id, token) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/focal/task/assignments?task_id=${encodeURIComponent(task_id)}`, {
+      const response = await fetch(`${config.API_BASE_URL}/focal/task/assignments?task_id=${encodeURIComponent(task_id)}`, {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",
           "Content-Type": "application/json",
@@ -88,7 +88,7 @@ const TaskPage = () => {
         setLoading(true);
         const token = currentUser?.token;
 
-        const response = await fetch(`${API_BASE_URL}/focal/tasks/all`, {
+        const response = await fetch(`${config.API_BASE_URL}/focal/tasks/all`, {
           headers: {
             Authorization: token ? `Bearer ${token}` : "",
             "Content-Type": "application/json",
@@ -306,7 +306,7 @@ const TaskPage = () => {
           selectedSort,
           allOffices,
           loading,
-          hasLoaded, // 👈 ADD THIS
+          hasLoaded, 
         }}
       />
     </div>

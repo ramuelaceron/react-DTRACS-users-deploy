@@ -54,7 +54,7 @@ const SchoolSidebar = ({ isExpanded }) => {
           {/* Offices dropdown */}
           <li>
             <button
-              className="sidebar-link dropdown-toggle"
+              className="sidebar-link-dropdown-toggle"
               onClick={handleOfficesClick}
             >
               <FaBriefcase className="sidebar-icon" />

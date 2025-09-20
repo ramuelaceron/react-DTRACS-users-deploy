@@ -1,22 +1,27 @@
+// Updated ToDoUpcoming component
 import { useState, useEffect } from "react";
-import { Link, useOutletContext, useNavigate } from "react-router-dom"; // 👈 Added useNavigate
+import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { createSlug } from "../../../utils/idGenerator";
-import { ToastContainer, toast } from "react-toastify";
 import {
   formatDate,
   formatTime,
   getWeekday,
-  getTaskCompletionStats,
 } from "../../../utils/taskHelpers";
-import "react-toastify/dist/ReactToastify.css";
 import "./ToDoUpcoming.css";
 
 const ToDoUpcoming = () => {
   // Get sorted tasks from context
-  const { upcomingTasks, selectedSort } = useOutletContext();
-  const navigate = useNavigate(); // 👈 Initialize navigate
+  const { 
+    upcomingTasks, 
+    selectedSort, 
+    loading, 
+    hasLoaded,
+    selectedOffice,
+    getOfficeEmptyMessage
+  } = useOutletContext();
+  const navigate = useNavigate();
 
   // Group tasks by formatted creation date
   const groupedByDate = upcomingTasks.reduce((groups, task) => {
@@ -60,13 +65,16 @@ const ToDoUpcoming = () => {
   const getEmptyMessage = () => {
     switch (selectedSort) {
       case "today":
-        return "No tasks due today.";
+        return selectedOffice === "All Offices" 
+          `No tasks due today for ${selectedOffice}.`;
       case "week":
-        return "No tasks due this week.";
+        return selectedOffice === "All Offices" 
+          `No tasks due this week for ${selectedOffice}.`;
       case "month":
-        return "No tasks due this month.";
+        return selectedOffice === "All Offices" 
+          `No tasks due this month for ${selectedOffice}.`;
       default:
-        return "No ongoing tasks at the moment.";
+        return getOfficeEmptyMessage("Upcoming");
     }
   };
 
@@ -75,7 +83,6 @@ const ToDoUpcoming = () => {
     const sectionSlug = createSlug(task.section || "Unknown Section");
     const taskSlug = createSlug(task.title || "Untitled Task");
 
-    // 👇 Navigate to /todo/:sectionId/:taskSlug with full task data in state
     navigate(`/todo/${sectionSlug}/${taskSlug}`, {
       state: {
         taskId: task.task_id,
@@ -83,9 +90,9 @@ const ToDoUpcoming = () => {
         deadline: task.deadline,
         creation_date: task.creation_date,
         taskDescription: task.description,
-        section_designation: task.section, // 👈 Needed for header in ToDoDetailPage
-        creator_name: task.creator_name,   // 👈 For author display
-        office: task.office,               // 👈 Optional, but useful
+        section_designation: task.section,
+        creator_name: task.creator_name,
+        office: task.office,
       },
     });
   };
@@ -93,7 +100,16 @@ const ToDoUpcoming = () => {
   return (
     <div className="upcoming-app">
       <main className="upcoming-main">
-        {sortedDates.length > 0 ? (
+        {loading ? (
+          <div className="upcoming-loading">
+            <div className="upcoming-spinner"></div>
+            <p>Loading tasks...</p>
+          </div>
+        ) : hasLoaded && sortedDates.length === 0 ? (
+          <div className="upcoming-no-tasks">
+            {getEmptyMessage()}
+          </div>
+        ) : (
           sortedDates.map((date) => {
             const tasks = groupedByDate[date];
             const weekday = getWeekday(date);
@@ -122,8 +138,8 @@ const ToDoUpcoming = () => {
                       <div
                         key={task.task_id}
                         className="upcoming-task-item"
-                        onClick={() => handleTaskClick(task)} // 👈 Click handler here
-                        style={{ cursor: "pointer", userSelect: "none" }} // 👈 Visual feedback
+                        onClick={() => handleTaskClick(task)}
+                        style={{ cursor: "pointer", userSelect: "none" }}
                       >
                         <div className="upcoming-task-header">
                           <div className="upcoming-task-icon">
@@ -147,25 +163,8 @@ const ToDoUpcoming = () => {
               </div>
             );
           })
-        ) : (
-          <div className="upcoming-no-tasks">
-            {getEmptyMessage()}
-          </div>
         )}
       </main>
-
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
     </div>
   );
 };

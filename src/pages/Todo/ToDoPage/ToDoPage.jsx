@@ -1,17 +1,19 @@
-// src/pages/ToDoPage.jsx
+// Updated ToDoPage component
 import { useMemo, useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import ToDoTabs from "../../../components/ToDoTabs/ToDoTabs";
 import { createSlug } from "../../../utils/idGenerator";
-import { API_BASE_URL } from "../../../api/api";
+import config from "../../../config";
 import "./ToDoPage.css";
 
 const ToDoPage = () => {
   // ✅ Declare ALL hooks first
+  const [hasLoaded, setHasLoaded] = useState(false); 
+  const [loading, setLoading] = useState(true);
   const [selectedSort, setSelectedSort] = useState("newest");
   const [tasks, setTasks] = useState({});
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedOffice, setSelectedOffice] = useState("All Offices"); // New state for office filter
 
   const navigate = useNavigate();
   
@@ -49,7 +51,7 @@ const ToDoPage = () => {
 
         // ✅ NEW ENDPOINT: Only fetch tasks assigned to this school
         const response = await fetch(
-          `${API_BASE_URL}/school/all/tasks?user_id=${encodeURIComponent(schoolUserId)}`,
+          `${config.API_BASE_URL}/school/all/tasks?user_id=${encodeURIComponent(schoolUserId)}`,
           {
             headers: {
               Authorization: token ? `Bearer ${token}` : "",
@@ -86,6 +88,7 @@ const ToDoPage = () => {
         }, {});
 
         setTasks(groupedBySection);
+        setHasLoaded(true);
       } catch (err) {
         console.error("Error fetching tasks:", err);
         setError(err.message || "Failed to load tasks. Please try again.");
@@ -114,6 +117,14 @@ const ToDoPage = () => {
       ),
     ].sort();
   }, [tasks]);
+
+  // ✅ Filter tasks by selected office
+  const filterTasksByOffice = (tasks, office) => {
+    if (office === "All Offices") {
+      return tasks;
+    }
+    return tasks.filter(task => task.office === office);
+  };
 
   // ✅ useMemo: called unconditionally — simplified, no assignment fields used
   const { upcomingTasks, pastDueTasks, completedTasks } = useMemo(() => {
@@ -166,24 +177,17 @@ const ToDoPage = () => {
       });
     });
 
-    return { upcomingTasks: upcoming, pastDueTasks: pastDue, completedTasks: completed };
-  }, [tasks]);
+    // Apply office filter
+    const filteredUpcoming = filterTasksByOffice(upcoming, selectedOffice);
+    const filteredPastDue = filterTasksByOffice(pastDue, selectedOffice);
+    const filteredCompleted = filterTasksByOffice(completed, selectedOffice);
 
-  // ✅ NOW return conditionally (after hooks)
-  if (isOfficeWithoutSection) {
-    return (
-      <div className="no-section-page">
-        <div className="no-section-container">
-          <h2>⏳ Section Not Assigned Yet</h2>
-          <p>Your account has not been assigned to a section by the administrator.</p>
-          <p>Please wait for admin approval or contact support for assistance.</p>
-          <p className="note">
-            <strong>Note:</strong> You will not be able to view or manage tasks until your section is assigned.
-          </p>
-        </div>
-      </div>
-    );
-  }
+    return { 
+      upcomingTasks: filteredUpcoming, 
+      pastDueTasks: filteredPastDue, 
+      completedTasks: filteredCompleted 
+    };
+  }, [tasks, selectedOffice]);
 
   if (error) {
     return (
@@ -244,11 +248,20 @@ const ToDoPage = () => {
     }
   };
 
+  // Get appropriate empty message based on selected office
+  const getOfficeEmptyMessage = (tabName) => {
+    if (selectedOffice === "All Offices") {
+      return `No ${tabName.toLowerCase()} tasks at the moment.`;
+    }
+    return `No tasks for ${selectedOffice}.`;
+  };
+
   return (
     <div className="task-layout">
       <ToDoTabs
-        selectedSort={selectedSort}
-        onSortChange={setSelectedSort}
+        selectedOffice={selectedOffice}
+        onOfficeChange={setSelectedOffice}
+        allOffices={allOffices}
         showUpcomingIndicator={upcomingTasks.length > 0}
         showPastDueIndicator={pastDueTasks.length > 0}
         showCompletedIndicator={completedTasks.length > 0}
@@ -259,7 +272,11 @@ const ToDoPage = () => {
           pastDueTasks: sortTasks(pastDueTasks, selectedSort),
           completedTasks: sortTasks(completedTasks, selectedSort),
           selectedSort,
+          selectedOffice, // Pass selected office to child components
           allOffices,
+          loading,
+          hasLoaded,
+          getOfficeEmptyMessage // Pass function to get appropriate empty message
         }}
       />
     </div>

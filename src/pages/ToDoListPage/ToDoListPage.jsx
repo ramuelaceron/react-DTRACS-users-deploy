@@ -1,22 +1,20 @@
+// src/pages/ToDoListPage/ToDoListPage.jsx
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { createSlug } from '../../utils/idGenerator';
-import { generateAvatar } from '../../utils/iconGenerator'; // Import the utility
+import { generateAvatar } from '../../utils/iconGenerator';
 import './ToDoListPage.css';
-import { API_BASE_URL } from '../../api/api';
+import config from '../../config';
 
 const ToDoListPage = () => {
-  const { sectionId } = useParams(); // e.g., "grade-7"
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Extract state from navigation (passed from ToDoPage)
   const { state } = location;
   const { section_designation, full_name, user_id } = state || {};
   const pageTitle = section_designation || 'Task List';
-  const person = full_name || 'Unknown Focal';
+  const person = full_name || 'Unknown Focal]]';
 
-  // ✅ Get currentUser's school ID from sessionStorage (fallback if not in state)
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
   const schoolUserId = user_id || currentUser?.user_id;
 
@@ -24,23 +22,18 @@ const ToDoListPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Generate avatar data using the utility
   const { initials, color } = generateAvatar(full_name);
 
-  // Function to extract time from ISO date string
   const extractTimeFromDate = (dateString) => {
     if (!dateString) return 'No deadline';
-    
     try {
       const date = new Date(dateString);
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     } catch (error) {
-      console.error('Error parsing date:', error);
       return 'Invalid date';
     }
   };
 
-  // ✅ Fetch tasks from backend API (filtered by school_id)
   useEffect(() => {
     const fetchTasksBySection = async () => {
       if (!schoolUserId || !section_designation) {
@@ -53,7 +46,7 @@ const ToDoListPage = () => {
         const token = currentUser?.token;
 
         const response = await fetch(
-          `${API_BASE_URL}/school/all/tasks?user_id=${encodeURIComponent(schoolUserId)}`,
+          `${config.API_BASE_URL}/school/all/tasks?user_id=${encodeURIComponent(schoolUserId)}`,
           {
             headers: {
               Authorization: token ? `Bearer ${token}` : "",
@@ -68,14 +61,9 @@ const ToDoListPage = () => {
         }
 
         const allAssignedTasks = await response.json();
-        console.log("📡 All tasks assigned to school:", allAssignedTasks);
-
-        // ✅ FILTER BY SECTION: Only keep tasks where task.section === section_designation
         const filteredTasks = allAssignedTasks.filter(
           (task) => task.section === section_designation
         );
-
-        console.log(`✅ Filtered tasks for section "${section_designation}":`, filteredTasks);
 
         setTasks(filteredTasks);
       } catch (err) {
@@ -87,9 +75,8 @@ const ToDoListPage = () => {
     };
 
     fetchTasksBySection();
-  }, [schoolUserId, section_designation]); // 👈 Depend on section and user_id
+  }, [schoolUserId, section_designation, currentUser?.token]);
 
-  // Handle view task navigation
   const handleViewTask = (task) => {
     const slug = createSlug(section_designation);
     navigate(`${slug}`, {
@@ -106,16 +93,12 @@ const ToDoListPage = () => {
 
   return (
     <div className="task-list-page">
-      {/* ✅ Header with real avatar or generated one */}
       <div className="header">
         <div className="avatar">
           {currentUser?.avatar ? (
             <img src={currentUser.avatar} alt={`${person}'s avatar`} />
           ) : (
-            <div 
-              className="avatar-fallback" 
-              style={{ backgroundColor: color }}
-            >
+            <div className="avatar-fallback" style={{ backgroundColor: color }}>
               {initials}
             </div>
           )}
@@ -126,7 +109,6 @@ const ToDoListPage = () => {
         </div>
       </div>
 
-      {/* Task List or Empty State */}
       {loading ? (
         <div className="no-tasks-container">
           <p className="no-tasks">Loading tasks...</p>

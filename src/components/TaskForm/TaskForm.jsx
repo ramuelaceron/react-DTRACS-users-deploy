@@ -3,7 +3,7 @@ import RichTextEditor from './RichTextEditor';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import AttachSection from './AttachSection';
 import axios from 'axios';
-import { API_BASE_URL } from '../../api/api';
+import config from "../../config";
 import './TaskForm.css';
 
 const TaskForm = ({ onClose, onTaskCreated = () => {}, initialData = {} }) => {
@@ -131,7 +131,7 @@ const TaskForm = ({ onClose, onTaskCreated = () => {}, initialData = {} }) => {
   useEffect(() => {
     const fetchSchoolsAndAccounts = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/focal/school/verified/accounts`);
+        const response = await axios.get(`${config.API_BASE_URL}/focal/school/verified/accounts`);
         const accountsData = response.data;
 
         const schoolMap = new Map();
@@ -166,7 +166,7 @@ useEffect(() => {
     }
 
     try {
-      const response = await axios.get(`${API_BASE_URL}/focal/school/verified/accounts`);
+      const response = await axios.get(`${config.API_BASE_URL}/focal/school/verified/accounts`);
       const accountsData = response.data;
 
       // ✅ Get ALL verified accounts (no filtering by school)
@@ -226,7 +226,7 @@ useEffect(() => {
     const fetchSchoolsAndAccounts = async () => {
       setLoadingSchools(true); // 👈 Start loading
       try {
-        const response = await axios.get(`${API_BASE_URL}/focal/school/verified/accounts`);
+        const response = await axios.get(`${config.API_BASE_URL}/focal/school/verified/accounts`);
         const accountsData = response.data;
 
         const schoolMap = new Map();
@@ -341,7 +341,7 @@ useEffect(() => {
 
       if (isEditing && taskId) {
         // ✅ Use update payload
-        const url = `${API_BASE_URL}/focal/task/update/id/?task_id=${encodeURIComponent(taskId)}`;
+        const url = `${config.API_BASE_URL}/focal/task/update/id/?task_id=${encodeURIComponent(taskId)}`;
         response = await axios.put(
           url,
           updateTaskPayload,
@@ -352,7 +352,7 @@ useEffect(() => {
       } else {
         // ✅ Use create payload
         response = await axios.post(
-          `${API_BASE_URL}/focal/task/new-task`,
+          `${config.API_BASE_URL}/focal/task/new-task`,
           createTaskPayload, // 👈 Full payload with creator_id, schools, etc.
           {
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
