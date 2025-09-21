@@ -137,6 +137,7 @@
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  padding-bottom: 8px;
 }
 
 .upcoming-task-item:hover {
@@ -239,6 +240,16 @@
 .upcoming-time {
   font-weight: 500;
   color: #000;
+}
+
+.upcoming-task-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.upcoming-task-link:hover {
+  text-decoration: none;
+  color: inherit;
 }
 
 /* ==================== */

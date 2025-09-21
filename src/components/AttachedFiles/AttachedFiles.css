@@ -154,30 +154,14 @@
   color: white;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .attached-file-item,
-  .attached-link-item {
-    padding: 0.5rem;
-  }
-  
-  .file-icon-wrapper {
-    font-size: 1.25rem;
-    margin-right: 0.5rem;
-  }
-  
-  .attached-link-icon {
-    font-size: 1.1rem;
-    margin-right: 0.5rem;
-  }
-  
-  .file-name,
-  .attached-link-url {
-    font-size: 0.85rem;
-  }
-  
-  .attached-item-remove-btn {
-    font-size: 1.1rem;
-    padding: 0.2rem;
+@media (max-width:768px){
+ .attached-files-list{
+  position:relative;
+  top:2px;
+ }
+
+  .attached-file-card {
+    position:relative;
+    top:3rem;
   }
 }

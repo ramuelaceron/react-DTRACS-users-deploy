@@ -14,7 +14,7 @@
   background-color: #ffffff;
   border: none;
   overflow-y: auto;
-  padding-top: 20px;
+  padding-top: 30px;
 }
 
 /* ==================== */
@@ -63,7 +63,7 @@
   margin-right: 10px;
   color: #d32f2f;
   font-weight: bold;
-  background-color: rgba(211, 47, 47, 0.1);
+  background-color: rgba(33, 150, 243, 0.1);
   padding: 4px 8px;
   border-radius: 12px;
 }
@@ -91,7 +91,7 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: rgba(211, 47, 47, 0.05);
+  background-color: rgba(0, 0, 0, 0.05);
   transform: translate(-50%, -50%);
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -130,13 +130,14 @@
 .pastdue-task-item {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 16px; /* Removed padding-bottom since footer is gone */
+  padding: 16px; /* Removed extra bottom padding since footer is gone */
   background-color: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  padding-bottom: 8px;
 }
 
 .pastdue-task-item:hover {
@@ -189,7 +190,7 @@
 
 .pastdue-task-item:hover .pastdue-task-icon {
   transform: scale(1.05);
-  background-color: #b71c1c;
+  background-color: #d32f2f;
 }
 
 .pastdue-task-info {
@@ -201,8 +202,8 @@
 .pastdue-task-title {
   font-size: 18px;
   font-weight: bold;
-  color: #000;
   max-width: 600px;
+  color: #000;
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -232,13 +233,23 @@
   transition: color 0.2s ease;
 }
 
-.pastdue-task-deadline .pastdue-time {
-  color: #d32f2f;
-  font-weight: bold;
-}
-
 .pastdue-task-item:hover .pastdue-task-deadline {
   color: #d32f2f;
+}
+
+.pastdue-time {
+  font-weight: 500;
+  color: #000;
+}
+
+.pastdue-task-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.pastdue-task-link:hover {
+  text-decoration: none;
+  color: inherit;
 }
 
 /* ==================== */
@@ -246,14 +257,22 @@
 /* ==================== */
 
 .pastdue-no-tasks {
-  color: #888;
   text-align: center;
+  color: #888;
   font-style: italic;
   margin-top: 40px;
   padding: 20px;
   border-radius: 8px;
 }
 
+.pastdue-no-tasks {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  margin-top: 40px;
+  padding: 20px;
+  border-radius: 8px;
+}
 
 .pastdue-loading {
   display: flex;
@@ -273,6 +292,11 @@
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 

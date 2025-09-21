@@ -92,7 +92,7 @@ const AttachedLinks = ({ isOpen, onClose, onAddLink }) => {
                 id="link-url"
                 type="url"
                 name="url"
-                placeholder="https://example.com"
+                placeholder="https://example.com  "
                 value={linkData.url}
                 onChange={handleInputChange}
                 className={`form-input ${!isLinkValid ? 'invalid' : ''}`}

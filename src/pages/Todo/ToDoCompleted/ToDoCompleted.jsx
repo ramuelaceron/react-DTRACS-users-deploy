@@ -1,18 +1,17 @@
-// Updated ToDoCompleted component
-import { useState, useEffect } from "react";
-import { Link, useOutletContext, useNavigate } from "react-router-dom";
+// src/pages/Todo/completed/ToDocompleted.jsx
+import React, { useState, useEffect } from "react";
+import { Link, useOutletContext } from "react-router-dom";
 import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { createSlug } from "../../../utils/idGenerator";
+import "./ToDoCompleted.css";
 import {
   formatDate,
   formatTime,
   getWeekday,
 } from "../../../utils/taskHelpers";
-import "./ToDoCompleted.css";
 
 const ToDoCompleted = () => {
-  // ✅ Get pre-filtered completed tasks and selected sort from ToDoPage layout
   const { 
     completedTasks, 
     selectedSort, 
@@ -21,13 +20,10 @@ const ToDoCompleted = () => {
     selectedOffice,
     getOfficeEmptyMessage
   } = useOutletContext();
-  const navigate = useNavigate();
 
-  // Group tasks by formatted completion date
+  // Group tasks by formatted creation date
   const groupedByDate = completedTasks.reduce((groups, task) => {
-    const completionDate = task.completion_date || task.creation_date;
-    const formattedDate = formatDate(completionDate);
-    
+    const formattedDate = formatDate(task.creation_date);
     if (!groups[formattedDate]) groups[formattedDate] = [];
     groups[formattedDate].push(task);
     return groups;
@@ -46,7 +42,7 @@ const ToDoCompleted = () => {
     }
   });
 
-  // Track open/closed state for each group
+  // Track open/closed state for each date group
   const [openGroups, setOpenGroups] = useState(() =>
     sortedDates.reduce((acc, date) => ({ ...acc, [date]: true }), {})
   );
@@ -68,38 +64,17 @@ const ToDoCompleted = () => {
   const getEmptyMessage = () => {
     switch (selectedSort) {
       case "today":
-        return selectedOffice === "All Offices" 
-          `No completed tasks due today for ${selectedOffice}.`;
+        return selectedOffice === "All Offices"
+          `No tasks due today for ${selectedOffice}.`;
       case "week":
-        return selectedOffice === "All Offices" 
-          `No completed tasks due this week for ${selectedOffice}.`;
+        return selectedOffice === "All Offices"
+          `No tasks due this week for ${selectedOffice}.`;
       case "month":
-        return selectedOffice === "All Offices" 
-          `No completed tasks due this month for ${selectedOffice}.`;
+        return selectedOffice === "All Offices"
+          `No tasks due this month for ${selectedOffice}.`;
       default:
-        return getOfficeEmptyMessage("Completed");
+        return getOfficeEmptyMessage("completed");
     }
-  };
-
-  // ✅ Handle click on a task item — navigate to ToDoDetailPage
-  const handleTaskClick = (task) => {
-    const sectionSlug = createSlug(task.section || "Unknown Section");
-    const taskSlug = createSlug(task.title || "Untitled Task");
-
-    navigate(`/todo/${sectionSlug}/${taskSlug}`, {
-      state: {
-        taskId: task.task_id,
-        taskTitle: task.title,
-        deadline: task.deadline,
-        creation_date: task.creation_date,
-        taskDescription: task.description,
-        section_designation: task.section,
-        creator_name: task.creator_name,
-        office: task.office,
-        completion_date: task.completion_date,
-        task_status: task.task_status,
-      },
-    });
   };
 
   return (
@@ -125,13 +100,17 @@ const ToDoCompleted = () => {
                 <div
                   className="completed-date-header"
                   onClick={() => toggleGroup(date)}
+                  style={{ cursor: "pointer", userSelect: "none" }}
                 >
                   <span className="completed-date-bold">{date}</span>
                   <span className="completed-weekday"> ({weekday})</span>
 
                   <div className="completed-header-actions">
                     <span className="completed-task-count">{tasks.length}</span>
-                    <span className="completed-dropdown-arrow">
+                    <span
+                      className="completed-dropdown-arrow"
+                      aria-label={isOpen ? "Collapse" : "Expand"}
+                    >
                       {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
                     </span>
                   </div>
@@ -139,36 +118,41 @@ const ToDoCompleted = () => {
 
                 {isOpen && (
                   <div className="completed-task-list">
-                    {tasks.map((task) => {
-                      const completionDate = task.completion_date || task.creation_date;
-                      
-                      return (
-                        <div
-                          key={task.task_id}
-                          className="completed-task-item"
-                          onClick={() => handleTaskClick(task)}
-                          style={{ cursor: "pointer", userSelect: "none" }}
-                        >
+                    {tasks.map((task) => (
+                      <Link
+                        to={`/todo/${task.sectionId}/${createSlug(task.title)}`}
+                        state={{
+                          taskTitle: task.title,
+                          links: task.links,
+                          deadline: task.deadline,
+                          creation_date: task.creation_date,
+                          taskDescription: task.description,
+                          taskId: task.task_id,
+                          creator_name: task.creator_name,
+                          section_designation: task.section_designation,
+                          full_name: task.creator_name
+                        }}
+                        className="completed-task-link"
+                        key={`${task.task_id}-${task.title}`}
+                      >
+                        {/* ✅ Use CSS-aligned structure here */}
+                        <div className="completed-task-item">
                           <div className="completed-task-header">
                             <div className="completed-task-icon">
-                              <PiClipboardTextBold className="icon-lg" />
+                              <PiClipboardTextBold />
                             </div>
                             <div className="completed-task-info">
-                              <div className="completed-task-title">
-                                {task.title}
-                              </div>
-                              <div className="completed-task-office">
-                                {task.office}
-                              </div>
+                              <h3 className="completed-task-title">{task.title}</h3>
+                              <div className="completed-task-office">{task.office}</div>
                             </div>
-                            <div className="completed-task-completion">
-                              Completed on {formatDate(completionDate)} at{" "}
-                              <span className="completed-time">{formatTime(completionDate)}</span>
+                            <div className="completed-task-deadline">
+                              Due on {formatDate(task.deadline)} at{" "}
+                              <span className="completed-time">{formatTime(task.deadline)}</span>
                             </div>
                           </div>
                         </div>
-                      );
-                    })}
+                      </Link>
+                    ))}
                   </div>
                 )}
               </div>

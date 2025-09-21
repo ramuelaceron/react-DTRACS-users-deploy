@@ -77,6 +77,18 @@ const SchoolSidebar = ({ isExpanded }) => {
                   >
                     <span className="sidebar-text">SGOD (School Gover…)</span>
                   </NavLink>
+                  <NavLink
+                    to="/CID"
+                    className={`sidebar-link sub-link ${isActive("/CID") ? "active" : ""}`}
+                  >
+                    <span className="sidebar-text">CID (Curriculum Imp...)</span>
+                  </NavLink>
+                  <NavLink
+                    to="/OSDS"
+                    className={`sidebar-link sub-link ${isActive("/OSDS") ? "active" : ""}`}
+                  >
+                    <span className="sidebar-text">OSDS (Office of the...)</span>
+                  </NavLink>
                 </li>
               </ul>
             )}

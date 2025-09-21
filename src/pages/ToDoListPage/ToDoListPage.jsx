@@ -83,6 +83,7 @@ const ToDoListPage = () => {
       state: {
         ...state,
         taskTitle: task.title,
+        links: task.links,
         deadline: task.deadline,
         creation_date: task.creation_date,
         taskDescription: task.description,

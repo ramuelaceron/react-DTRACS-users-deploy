@@ -263,39 +263,45 @@ const TaskDescription = ({
 
       {/* Description */}
       <div className="task-body">
-        {description || task?.description || "No description provided."}
+        {description || task?.description || <em>No description</em>}
       </div>
 
-      {/* ✅ ADDED: Display task-level link (matches ADMIN version) */}
-      {/* ✅ Display Links — Handle both single string and array */}
+      {/* ✅ Display Links — Handle both single string and array, hide if empty */}
       {task?.links && (
-        <div className="task-links-container">
-          <span className="task-link-label">Link{Array.isArray(task.links) && task.links.length > 1 ? 's' : ''}:</span>
-          {Array.isArray(task.links) ? (
-            task.links.map((link, index) => (
+        (Array.isArray(task.links)
+          ? task.links.length > 0
+          : typeof task.links === 'string' && task.links.trim() !== ""
+        ) && (
+          <div className="task-links-container">
+            <span className="task-link-label">
+              Links{Array.isArray(task.links) && task.links.length > 1 ? 's' : ''}:
+            </span>
+            {Array.isArray(task.links) ? (
+              task.links.map((link, index) => (
+                <a
+                  key={index}
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="task-link"
+                  title="Open link in new tab"
+                >
+                  {link}
+                </a>
+              ))
+            ) : (
               <a
-                key={index}
-                href={link}
+                href={task.links}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="task-link"
                 title="Open link in new tab"
               >
-                {link}
+                {task.links}
               </a>
-            ))
-          ) : (
-            <a
-              href={task.links}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="task-link"
-              title="Open link in new tab"
-            >
-              {task.links}
-            </a>
-          )}
-        </div>
+            )}
+          </div>
+        )
       )}
 
       {/* Task Form Modal */}

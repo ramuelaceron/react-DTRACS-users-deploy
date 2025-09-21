@@ -1,4 +1,4 @@
-// src/pages/TaskPage.jsx
+// Updated TaskPage.jsx
 import { useMemo, useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import TaskTabs from "../../../components/TaskTabs/TaskTabs";
@@ -124,9 +124,12 @@ const TaskPage = () => {
         const enrichedTasks = await enrichTasksWithAssignments(groupedBySection, token);
 
         setTasks(enrichedTasks);
+        setHasLoaded(true); // Set hasLoaded to true after successful fetch
       } catch (err) {
         console.error("Error fetching and enriching tasks:", err);
-        setError(err.message);
+        // Instead of setting an error, we'll just set empty tasks
+        setTasks({});
+        setHasLoaded(true);
       } finally {
         setLoading(false);
       }
@@ -138,6 +141,7 @@ const TaskPage = () => {
     } else {
       console.warn("⚠️ focalId not available yet. Waiting for currentUser...");
       setLoading(false);
+      setHasLoaded(true);
     }
 
     // ✅ Set up polling every 30 seconds
@@ -230,16 +234,17 @@ const TaskPage = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="error-container" style={{ padding: "2rem", textAlign: "center", color: "red" }}>
-        <p>❌ Failed to load tasks: {error}</p>
-        <button onClick={() => window.location.reload()} style={{ marginTop: "1rem", padding: "0.5rem 1rem" }}>
-          Retry
-        </button>
-      </div>
-    );
-  }
+  // Remove the error display - we'll handle empty states in child components
+  // if (error) {
+  //   return (
+  //     <div className="error-container" style={{ padding: "2rem", textAlign: "center", color: "red" }}>
+  //       <p>❌ Failed to load tasks: {error}</p>
+  //       <button onClick={() => window.location.reload()} style={{ marginTop: "1rem", padding: "0.5rem 1rem" }}>
+  //         Retry
+  //       </button>
+  //     </div>
+  //   );
+  // }
 
   const sortTasks = (tasks, sortOption) => {
     const now = new Date();
@@ -306,7 +311,8 @@ const TaskPage = () => {
           selectedSort,
           allOffices,
           loading,
-          hasLoaded, 
+          hasLoaded,
+          focalId, // Pass focalId to child components
         }}
       />
     </div>

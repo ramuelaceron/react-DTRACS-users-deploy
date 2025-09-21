@@ -36,3 +36,18 @@
 .edit-done-button:hover {
   background-color: #1976d2;
 }
+
+@media (max-width:768px){
+  .edit-icon-wrapper {
+    position: absolute;
+    top: 15px;
+    right: 10px;
+  }
+
+  .edit-done-button {
+    padding: 4px 4px;
+    font-size: 12px;
+    bottom:0.1rem;
+    position:sticky;
+  }
+}

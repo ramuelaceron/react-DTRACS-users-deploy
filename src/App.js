@@ -17,7 +17,8 @@ import ManageAccount from "./pages/ManageAccount/ManageAccount";
 import AccountDisplay from "./pages/Schools/AccountDisplay/AccountDisplay"
 
 //CID and OSDS placeholder page
-import NoService from "./pages/OSDS_CID/NoService";
+import CIDNoService from "./pages/OSDS_CID/CIDNoService";
+import OSDSNoService from "./pages/OSDS_CID/OSDSNoService";
 
 // School ToDo Dashboard
 import ToDoPage from "./pages/Todo/ToDoPage/ToDoPage";
@@ -58,7 +59,8 @@ function App() {
         </Route>
         
         {/* CID and OSDS Routes */}
-        <Route path="/no-service" element={<NoService />} />
+        <Route path="/CID" element={<CIDNoService />} />
+        <Route path="/OSDS" element={<OSDSNoService />} />
 
         <Route path="/to-do" element={<ToDoPage />} >
           <Route path="upcoming" element={<ToDoUpcoming />} />

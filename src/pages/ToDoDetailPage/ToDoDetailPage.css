@@ -242,6 +242,37 @@
   color: #999;
 }
 
+/* Loading Spinner Container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh; /* Centers vertically in main area */
+  text-align: center;
+  color: #666;
+}
+
+.loading-container p {
+  margin-top: 16px;
+  font-size: 16px;
+}
+
+/* Spinner Animation */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .task-detail-main {
@@ -269,9 +300,44 @@
   margin-top: 1rem;
   padding: 1rem;
   border-radius: 8px;
-  color: #333;
   line-height: 1.6;
   font-size: 0.95rem;
+}
+
+/* Links Section */
+.todo-links-section {
+  margin-top: -20px;
+  margin-left: 15px;
+  padding-bottom: 30px;
+}
+
+.todo-links-title {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.todo-links-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.todo-link-item {
+  margin-bottom: 8px;
+}
+
+.todo-link {
+  color: #007bff;
+  text-decoration: underline;
+  word-break: break-all;
+  font-size: 14px;
+}
+
+.todo-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
 }
 
 @keyframes pulse {

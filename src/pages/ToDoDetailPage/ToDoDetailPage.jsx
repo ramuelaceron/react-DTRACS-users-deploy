@@ -1,22 +1,42 @@
 // src/pages/ToDoDetailPage/ToDoDetailPage.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation, useOutletContext } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { IoChevronBackOutline } from "react-icons/io5";
-import { PiClipboardTextBold } from "react-icons/pi";
+import { PiClipboardTextBold, PiLinkSimple } from "react-icons/pi";
 import AttachedFiles from "../../components/AttachedFiles/AttachedFiles";
 import TaskActions from "../../components/TaskActions/TaskActions";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./ToDoDetailPage.css";
-import config from "../../config";
+import { formatDate, formatTime } from "../../utils/dateUtils";
+import { getRemarksStatusInfo } from "../../utils/taskStatusUtils";
+import { fetchTaskDetails, updateTaskStatus, revertTaskStatus } from "../../api/taskApi";
 
 const ToDoDetailPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
 
+  // Extract task info from state
+  const taskId = state?.taskId;
+  const taskinks = state?.links || []; // may be array of strings or objects
+  const taskTitle = state?.taskTitle;
+  const taskLinks = state?.links || [];
+  const taskDeadline = state?.deadline;
+  const taskCreationDate = state?.creation_date;
+  const taskDescription = state?.taskDescription;
+
+  console.log("📍 Location state:", state);
+
+  // Normalize taskinks: ensure it's array of { url: string }
+  const normalizedTaskLinks = Array.isArray(taskinks)
+    ? taskinks.map(item =>
+        typeof item === "string" ? { url: item } : item?.url ? item : { url: "" }
+      ).filter(item => item.url)
+    : [];
+
   // State
-  const [attachedLinks, setAttachedLinks] = useState([]);
+  const [attachedLinks, setAttachedLinks] = useState(normalizedTaskLinks);
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,136 +44,14 @@ const ToDoDetailPage = () => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [revisionLinks, setRevisionLinks] = useState([]);
 
-  // Extract task info from state
-  const taskId = state?.taskId;
-  const taskTitle = state?.taskTitle;
-  const taskDeadline = state?.deadline;
-  const taskCreationDate = state?.creation_date;
-  const taskDescription = state?.taskDescription;
-
-  console.log("📍 Location state:", state);
-
   // Get current user
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
   const schoolUserId = currentUser?.user_id;
-
-  // Format date/time
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    } catch (error) {
-      return "Invalid date";
-    }
-  };
-
-  const formatTime = (dateString) => {
-    if (!dateString) return 'N/A';
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-      });
-    } catch (error) {
-      return "Invalid time";
-    }
-  };
-
-  // Status mapping
-  const getRemarksStatusInfo = (remarks, deadline, now) => {
-    if (remarks === 'TURNED IN ON TIME') {
-      return {
-        color: '#4CAF50',
-        text: 'Turned in on Time',
-        isCompleted: true,
-        isLate: false,
-        isPastDue: false,
-        isOverdue: false
-      };
-    }
-
-    if (remarks === 'TURNED IN LATE') {
-      return {
-        color: '#FF9800',
-        text: 'Turned in Late',
-        isCompleted: true,
-        isLate: true,
-        isPastDue: false,
-        isOverdue: false
-      };
-    }
-
-    if (remarks === 'MISSING') {
-      return {
-        color: '#D32F2F',
-        text: 'Missing',
-        isCompleted: false,
-        isLate: false,
-        isPastDue: true,
-        isOverdue: true
-      };
-    }
-
-    const isDeadlinePassed = deadline && new Date(deadline) < now;
-    const isPending = remarks === 'PENDING';
-
-    if (isDeadlinePassed && isPending) {
-      return {
-        color: '#D32F2F',
-        text: 'Past Due',
-        isCompleted: false,
-        isLate: false,
-        isPastDue: true,
-        isOverdue: true
-      };
-    }
-
-    return {
-      color: '#2196F3',
-      text: 'Pending',
-      icon: null,
-      isCompleted: false,
-      isLate: false,
-      isPastDue: false,
-      isOverdue: false
-    };
-  };
+  const token = currentUser?.token;
 
   // Auto-refresh logic
   useEffect(() => {
-    let intervalId;
-
-    if (task?.deadline) {
-      const checkDeadline = () => {
-        const now = new Date();
-        const deadline = new Date(task.deadline);
-        const isDeadlinePassed = deadline < now;
-        const isPending = task.assigned_response?.remarks === 'PENDING';
-
-        if (isDeadlinePassed && isPending) {
-          setTask(prev => ({
-            ...prev,
-            _autoOverdue: true
-          }));
-        }
-      };
-
-      checkDeadline();
-      intervalId = setInterval(checkDeadline, 30000);
-      return () => clearInterval(intervalId);
-    }
-  }, [task?.deadline, task?.assigned_response?.remarks]);
-
-  // Fetch task details
-  useEffect(() => {
-    const fetchTaskDetails = async () => {
+    const loadTask = async () => {
       if (!taskId || !schoolUserId) {
         setLoading(false);
         return;
@@ -161,64 +59,16 @@ const ToDoDetailPage = () => {
 
       try {
         setLoading(true);
-        const token = currentUser?.token;
-
-        // ✅ Fetch task
-        const tasksResponse = await fetch(
-          `${config.API_BASE_URL}/school/all/tasks?user_id=${encodeURIComponent(schoolUserId)}`,
-          {
-            headers: {
-              Authorization: token ? `Bearer ${token}` : "",
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (!tasksResponse.ok) {
-          throw new Error(`Failed to fetch tasks: ${tasksResponse.statusText}`);
-        }
-
-        const allTasks = await tasksResponse.json();
-        const foundTask = allTasks.find(t => t.task_id === taskId);
-
-        if (!foundTask) {
-          setError("Task not found.");
-          return;
-        }
-
-        // ✅ Fetch assignments for this task
-        const assignmentsResponse = await fetch(
-          `${config.API_BASE_URL}/school/all/task/assignments?task_id=${encodeURIComponent(taskId)}`,
-          {
-            method: 'GET',
-            headers: {
-              Authorization: token ? `Bearer ${token}` : "",
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (!assignmentsResponse.ok) {
-          throw new Error(`Failed to fetch assignments: ${assignmentsResponse.status} ${await assignmentsResponse.text()}`);
-        }
-
-        const assignments = await assignmentsResponse.json();
-
-        // ✅ Filter for current user
-        const currentUserAssignment = assignments.find(a => a.school_id === schoolUserId) || null;
-
-        const enrichedTask = {
-          ...foundTask,
-          assigned_response: currentUserAssignment,
-          all_assignments: assignments
-        };
-
+        const enrichedTask = await fetchTaskDetails(taskId, schoolUserId, token);
         setTask(enrichedTask);
         setIsCompleted(
           enrichedTask.assigned_response?.remarks === 'TURNED IN ON TIME' || 
           enrichedTask.assigned_response?.remarks === 'TURNED IN LATE'
         );
-
+        // Initialize attachedLinks from task's submitted_links if they exist
+        if (enrichedTask.submitted_links && enrichedTask.submitted_links.length > 0) {
+          setAttachedLinks(enrichedTask.submitted_links.map(url => ({ url })));
+        }
       } catch (err) {
         console.error("Error fetching task:", err);
         setError(err.message || "Failed to load task details.");
@@ -227,8 +77,8 @@ const ToDoDetailPage = () => {
       }
     };
 
-    fetchTaskDetails();
-  }, [taskId, schoolUserId, currentUser?.token]);
+    loadTask();
+  }, [taskId, schoolUserId, token]);
 
   // Handlers
   const handleBack = () => navigate(-1);
@@ -246,7 +96,7 @@ const ToDoDetailPage = () => {
     toast.info("Revision link added!");
   };
 
-  // Submit task logic
+  // Submit task logic — NO CONFIRMATIONS
   const handleComplete = async () => {
     const invalidLinks = attachedLinks.filter(link =>
       link && link.url && !/^(https?:\/\/)/i.test(link.url.trim())
@@ -257,74 +107,49 @@ const ToDoDetailPage = () => {
       return;
     }
 
-    const wasPreviouslyCompleted = task?.assigned_response?.remarks === 'TURNED IN ON TIME' || 
-                                  task?.assigned_response?.remarks === 'TURNED IN LATE';
+    // Proceed directly
+    proceedWithSubmission(
+      task?.assigned_response?.remarks === 'TURNED IN ON TIME' || 
+      task?.assigned_response?.remarks === 'TURNED IN LATE'
+    );
+  };
 
-    if (wasPreviouslyCompleted) {
-      const confirmed = window.confirm(
-        "You're about to resubmit this task. This will replace your previous submission. Continue?"
-      );
-      if (!confirmed) return;
-    }
-
-    const remarks = task?.assigned_response?.remarks;
-    if (remarks === 'MISSING') {
-      const confirmed = window.confirm(
-        "You marked this task as missing. Are you sure you want to submit it now?"
-      );
-      if (!confirmed) return;
-    }
-
-    if (attachedLinks.length === 0) {
-      const confirmed = window.confirm(
-        "You haven't added any links. Are you sure you want to submit this task?"
-      );
-      if (!confirmed) return;
-    }
-
+  const proceedWithSubmission = async (wasPreviouslyCompleted) => {
     const now = new Date();
     const deadline = new Date(task.deadline);
     const isOnTime = now <= deadline;
     const submissionRemarks = isOnTime ? 'TURNED IN ON TIME' : 'TURNED IN LATE';
-    const submissionLink = attachedLinks.length > 0 ? attachedLinks[0].url : '';
 
+    // ✅ SEND ALL LINKS to backend
     const updatePayload = {
       task_id: task.task_id,
       school_id: schoolUserId,
       status: 'COMPLETE',
       remarks: submissionRemarks,
-      link: submissionLink,
-      revision_links: revisionLinks.map(link => link.url)
+      link: attachedLinks.length > 0 ? attachedLinks[0].url : '', // Keep main link for compatibility
+      revision_links: revisionLinks.map(link => link.url),
+      attached_links: attachedLinks.map(link => link.url) // ✅ NEW: Send ALL user-attached links
     };
+
+    // 🐞 DEBUG: LOG THE PAYLOAD BEFORE SENDING
+    console.log("🚀 Sending to backend - updatePayload:", updatePayload);
+    console.log("🔗 Attached Links being sent:", attachedLinks);
+    console.log("📎 Attached Links (URLs only):", updatePayload.attached_links);
 
     try {
       setIsSubmitting(true);
-      const token = currentUser?.token;
+      
+      await updateTaskStatus(updatePayload, token);
 
-      const response = await fetch(
-        `${config.API_BASE_URL}/school/update/task/status`,
-        {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updatePayload),
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to update task status: ${response.status} ${errorText}`);
-      }
-
-      // ✅ UPDATE LOCAL STATE
+      // ✅ UPDATE TASK STATE to include submitted_links so they persist in UI
       setTask(prevTask => ({
         ...prevTask,
         assigned_response: {
           ...prevTask.assigned_response,
-          remarks: submissionRemarks
-        }
+          remarks: submissionRemarks,
+          status_updated_at: new Date().toISOString()
+        },
+        submitted_links: attachedLinks.map(link => link.url) // ✅ Persist links in task state
       }));
 
       setRevisionLinks([]);
@@ -341,56 +166,38 @@ const ToDoDetailPage = () => {
     }
   };
 
-  // Cancel submission function
+  // Cancel submission — NO CONFIRMATION
   const handleIncomplete = async () => {
     const remarks = task?.assigned_response?.remarks;
     if (remarks === 'TURNED IN ON TIME' || remarks === 'TURNED IN LATE') {
-      const confirmed = window.confirm(
-        "Are you sure you want to cancel this submission? This will reset the task status and allow you to make changes."
-      );
-      if (!confirmed) return;
-
-      try {
-        const token = currentUser?.token;
-
-        const response = await fetch(`${config.API_BASE_URL}/school/update/task/status?status=INCOMPLETE`, {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            task_id: task.task_id,
-            school_id: schoolUserId,
-            status: 'INCOMPLETE',
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to revert task status.");
-        }
-
-        setTask(prevTask => ({
-          ...prevTask,
-          assigned_response: {
-            ...prevTask.assigned_response,
-            remarks: 'PENDING'
-          }
-        }));
-
-        setAttachedLinks([]);
-        setRevisionLinks([]);
-        setIsCompleted(false);
-        
-        toast.info("Submission cancelled. Task is now pending.");
-
-      } catch (err) {
-        console.error("Revert error:", err);
-        toast.error("Failed to cancel submission. Please try again.");
-      }
-
+      proceedWithCancellation();
     } else {
       toast.info("Task is already in a non-submitted state.");
+    }
+  };
+
+  const proceedWithCancellation = async () => {
+    try {
+      await revertTaskStatus(task.task_id, schoolUserId, token);
+
+      setTask(prevTask => ({
+        ...prevTask,
+        assigned_response: {
+          ...prevTask.assigned_response,
+          remarks: 'PENDING'
+        },
+        submitted_links: [] // Clear submitted links on cancellation
+      }));
+
+      setAttachedLinks([]); // Reset local state
+      setRevisionLinks([]);
+      setIsCompleted(false);
+      
+      toast.info("Submission cancelled. Task is now pending.");
+
+    } catch (err) {
+      console.error("Revert error:", err);
+      toast.error("Failed to cancel submission. Please try again.");
     }
   };
 
@@ -409,7 +216,8 @@ const ToDoDetailPage = () => {
             <IoChevronBackOutline className="icon-md" /> Back
           </button>
           <div className="loading-container">
-            <p>Loading details...</p>
+            <div className="spinner"></div>
+            <p>Loading task details...</p>
           </div>
         </main>
         <ToastContainer />
@@ -500,8 +308,29 @@ const ToDoDetailPage = () => {
         </div>
 
         <div className="todo-description">
-          {task.description || taskDescription || "No description provided."}
+          {task.description || taskDescription || <em>No description</em>}
         </div>
+
+        {/* Display Original Links from state */}
+        {normalizedTaskLinks.length > 0 && (
+          <div className="todo-links-section">
+            <h3 className="todo-links-title">Links</h3>
+            <ul className="todo-links-list">
+              {normalizedTaskLinks.map((link, index) => (
+                <li key={index} className="todo-link-item">
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="todo-link"
+                  >
+                    {link.url}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <TaskActions
           onComplete={handleComplete}
@@ -514,10 +343,10 @@ const ToDoDetailPage = () => {
           onAddRevision={handleAddRevision}
         />
 
-        {/* Original Links */}
-        {attachedLinks.length > 0 && (
+        {/* ✅ Display User-Attached Links: Use submitted_links if task is completed */}
+        {(attachedLinks.length > 0 || task?.submitted_links?.length > 0) && (
           <AttachedFiles
-            links={attachedLinks}
+            links={isCompleted ? (task?.submitted_links?.map(url => ({ url })) || []) : attachedLinks}
             onRemoveLink={handleRemoveLink}
             isCompleted={isCompleted}
           />
@@ -536,6 +365,7 @@ const ToDoDetailPage = () => {
             />
           </div>
         )}
+
       </main>
 
       <ToastContainer

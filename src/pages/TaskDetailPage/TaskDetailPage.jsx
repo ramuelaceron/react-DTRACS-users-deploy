@@ -163,9 +163,6 @@ const TaskDetailPage = () => {
       }
     };
 
-    // Run only once per mount (no deps = runs once)
-    // We're not watching `initialTask` here because it's derived from location.state
-    // and should be stable unless route changes
     loadAndEnrichTask();
   }, []); // 👈 Empty dependency array — runs once on mount
 

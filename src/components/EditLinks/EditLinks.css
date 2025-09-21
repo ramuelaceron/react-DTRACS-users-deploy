@@ -150,12 +150,10 @@
   transform: scale(1);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .form-row {
-    flex-direction: column;
-  }
-  .form-group {
-    min-width: auto;
+@media(max-width:768px){
+  .edit-links{
+    position:relative;
+    top:3rem;
+    padding-bottom:1rem;
   }
 }

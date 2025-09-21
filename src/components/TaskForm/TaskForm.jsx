@@ -6,7 +6,7 @@ import axios from 'axios';
 import config from "../../config";
 import './TaskForm.css';
 
-const TaskForm = ({ onClose, onTaskCreated = () => {}, initialData = {} }) => {
+const TaskForm = ({ onClose, onTaskCreated = () => {}, initialData = {}, creatorId }) => {
 
   // ✅ Fallback if onClose is not provided
   const handleClose = typeof onClose === 'function' ? onClose : () => {
@@ -308,9 +308,10 @@ useEffect(() => {
       alert("Please enter a valid URL (e.g., https://example.com)");
       return;
     }
+    
 
     const createTaskPayload = {
-      creator_id: "FOCAL-0001",
+      creator_id: creatorId,
       title: formData.title,
       description: formData.description,
       deadline,
@@ -418,7 +419,7 @@ useEffect(() => {
       <div className="task-form-container" ref={formContainerRef} onClick={e => e.stopPropagation()}>
         <button className="task-form-close" onClick={onClose}>×</button>
         <div style={{ padding: '2rem', textAlign: 'center' }}>
-          <div className="loading-spinner">Loading</div>
+          <div className="loading-spinner">Loading...</div>
         </div>
       </div>
     </div>

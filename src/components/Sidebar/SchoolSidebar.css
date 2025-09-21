@@ -1,6 +1,6 @@
 .sidebar {
   position: fixed;
-  top: 54px; /* header height */
+  top: 60px; /* header height */
   left: 0;
   width: 70px; 
   height: calc(105vh - 64px);
@@ -20,7 +20,6 @@
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  padding-top: 1rem;
 }
 
 .sidebar-nav ul {

@@ -1,18 +1,17 @@
-// Updated ToDoPastDue component
-import { useState, useEffect } from "react";
-import { Link, useOutletContext, useNavigate } from "react-router-dom";
+// src/pages/Todo/pastdue/ToDopastdue.jsx
+import React, { useState, useEffect } from "react";
+import { Link, useOutletContext } from "react-router-dom";
 import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { createSlug } from "../../../utils/idGenerator";
+import "./ToDoPastDue.css";
 import {
   formatDate,
   formatTime,
   getWeekday,
 } from "../../../utils/taskHelpers";
-import "./ToDoPastDue.css";
 
 const ToDoPastDue = () => {
-  // ✅ Get pre-filtered past-due tasks and selected sort from ToDoPage layout
   const { 
     pastDueTasks, 
     selectedSort, 
@@ -21,7 +20,6 @@ const ToDoPastDue = () => {
     selectedOffice,
     getOfficeEmptyMessage
   } = useOutletContext();
-  const navigate = useNavigate();
 
   // Group tasks by formatted creation date
   const groupedByDate = pastDueTasks.reduce((groups, task) => {
@@ -44,7 +42,7 @@ const ToDoPastDue = () => {
     }
   });
 
-  // Track open/closed state for each group
+  // Track open/closed state for each date group
   const [openGroups, setOpenGroups] = useState(() =>
     sortedDates.reduce((acc, date) => ({ ...acc, [date]: true }), {})
   );
@@ -66,42 +64,23 @@ const ToDoPastDue = () => {
   const getEmptyMessage = () => {
     switch (selectedSort) {
       case "today":
-        return selectedOffice === "All Offices" 
-          `No past-due tasks due today for ${selectedOffice}.`;
+        return selectedOffice === "All Offices"
+          `No tasks due today for ${selectedOffice}.`;
       case "week":
-        return selectedOffice === "All Offices" 
-          `No past-due tasks due this week for ${selectedOffice}.`;
+        return selectedOffice === "All Offices"
+          `No tasks due this week for ${selectedOffice}.`;
       case "month":
-        return selectedOffice === "All Offices" 
-          `No past-due tasks due this month for ${selectedOffice}.`;
+        return selectedOffice === "All Offices"
+          `No tasks due this month for ${selectedOffice}.`;
       default:
-        return getOfficeEmptyMessage("Past Due");
+        return getOfficeEmptyMessage("pastdue");
     }
-  };
-
-  // ✅ Handle click on a task item — navigate to ToDoDetailPage
-  const handleTaskClick = (task) => {
-    const sectionSlug = createSlug(task.section || "Unknown Section");
-    const taskSlug = createSlug(task.title || "Untitled Task");
-
-    navigate(`/todo/${sectionSlug}/${taskSlug}`, {
-      state: {
-        taskId: task.task_id,
-        taskTitle: task.title,
-        deadline: task.deadline,
-        creation_date: task.creation_date,
-        taskDescription: task.description,
-        section_designation: task.section,
-        creator_name: task.creator_name,
-        office: task.office,
-      },
-    });
   };
 
   return (
     <div className="pastdue-app">
       <main className="pastdue-main">
-       {loading ? (
+        {loading ? (
           <div className="pastdue-loading">
             <div className="pastdue-spinner"></div>
             <p>Loading tasks...</p>
@@ -121,13 +100,17 @@ const ToDoPastDue = () => {
                 <div
                   className="pastdue-date-header"
                   onClick={() => toggleGroup(date)}
+                  style={{ cursor: "pointer", userSelect: "none" }}
                 >
                   <span className="pastdue-date-bold">{date}</span>
                   <span className="pastdue-weekday"> ({weekday})</span>
 
                   <div className="pastdue-header-actions">
                     <span className="pastdue-task-count">{tasks.length}</span>
-                    <span className="pastdue-dropdown-arrow">
+                    <span
+                      className="pastdue-dropdown-arrow"
+                      aria-label={isOpen ? "Collapse" : "Expand"}
+                    >
                       {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
                     </span>
                   </div>
@@ -136,30 +119,39 @@ const ToDoPastDue = () => {
                 {isOpen && (
                   <div className="pastdue-task-list">
                     {tasks.map((task) => (
-                      <div
-                        key={task.task_id}
-                        className="pastdue-task-item"
-                        onClick={() => handleTaskClick(task)}
-                        style={{ cursor: "pointer", userSelect: "none" }}
+                      <Link
+                        to={`/todo/${task.sectionId}/${createSlug(task.title)}`}
+                        state={{
+                          taskTitle: task.title,
+                          links: task.links,
+                          deadline: task.deadline,
+                          creation_date: task.creation_date,
+                          taskDescription: task.description,
+                          taskId: task.task_id,
+                          creator_name: task.creator_name,
+                          section_designation: task.section_designation,
+                          full_name: task.creator_name
+                        }}
+                        className="pastdue-task-link"
+                        key={`${task.task_id}-${task.title}`}
                       >
-                        <div className="pastdue-task-header">
-                          <div className="pastdue-task-icon">
-                            <PiClipboardTextBold className="icon-lg" />
-                          </div>
-                          <div className="pastdue-task-info">
-                            <div className="pastdue-task-title">
-                              {task.title}
+                        {/* ✅ Use CSS-aligned structure here */}
+                        <div className="pastdue-task-item">
+                          <div className="pastdue-task-header">
+                            <div className="pastdue-task-icon">
+                              <PiClipboardTextBold />
                             </div>
-                            <div className="pastdue-task-office">
-                              {task.office}
+                            <div className="pastdue-task-info">
+                              <h3 className="pastdue-task-title">{task.title}</h3>
+                              <div className="pastdue-task-office">{task.office}</div>
                             </div>
-                          </div>
-                          <div className="pastdue-task-deadline">
-                            Was due on {formatDate(task.deadline)} at{" "}
-                            <span className="pastdue-time">{formatTime(task.deadline)}</span>
+                            <div className="pastdue-task-deadline">
+                              Due on {formatDate(task.deadline)} at{" "}
+                              <span className="pastdue-time">{formatTime(task.deadline)}</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 )}

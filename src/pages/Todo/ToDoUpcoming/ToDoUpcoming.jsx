@@ -1,18 +1,17 @@
-// Updated ToDoUpcoming component
-import { useState, useEffect } from "react";
-import { Link, useOutletContext, useNavigate } from "react-router-dom";
+// src/pages/Todo/Upcoming/ToDoUpcoming.jsx
+import React, { useState, useEffect } from "react";
+import { Link, useOutletContext } from "react-router-dom";
 import { PiClipboardTextBold } from "react-icons/pi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { createSlug } from "../../../utils/idGenerator";
+import "./ToDoUpcoming.css";
 import {
   formatDate,
   formatTime,
   getWeekday,
 } from "../../../utils/taskHelpers";
-import "./ToDoUpcoming.css";
 
 const ToDoUpcoming = () => {
-  // Get sorted tasks from context
   const { 
     upcomingTasks, 
     selectedSort, 
@@ -21,7 +20,6 @@ const ToDoUpcoming = () => {
     selectedOffice,
     getOfficeEmptyMessage
   } = useOutletContext();
-  const navigate = useNavigate();
 
   // Group tasks by formatted creation date
   const groupedByDate = upcomingTasks.reduce((groups, task) => {
@@ -44,6 +42,7 @@ const ToDoUpcoming = () => {
     }
   });
 
+  // Track open/closed state for each date group
   const [openGroups, setOpenGroups] = useState(() =>
     sortedDates.reduce((acc, date) => ({ ...acc, [date]: true }), {})
   );
@@ -65,36 +64,17 @@ const ToDoUpcoming = () => {
   const getEmptyMessage = () => {
     switch (selectedSort) {
       case "today":
-        return selectedOffice === "All Offices" 
+        return selectedOffice === "All Offices"
           `No tasks due today for ${selectedOffice}.`;
       case "week":
-        return selectedOffice === "All Offices" 
+        return selectedOffice === "All Offices"
           `No tasks due this week for ${selectedOffice}.`;
       case "month":
-        return selectedOffice === "All Offices" 
+        return selectedOffice === "All Offices"
           `No tasks due this month for ${selectedOffice}.`;
       default:
         return getOfficeEmptyMessage("Upcoming");
     }
-  };
-
-  // Handle click on task item
-  const handleTaskClick = (task) => {
-    const sectionSlug = createSlug(task.section || "Unknown Section");
-    const taskSlug = createSlug(task.title || "Untitled Task");
-
-    navigate(`/todo/${sectionSlug}/${taskSlug}`, {
-      state: {
-        taskId: task.task_id,
-        taskTitle: task.title,
-        deadline: task.deadline,
-        creation_date: task.creation_date,
-        taskDescription: task.description,
-        section_designation: task.section,
-        creator_name: task.creator_name,
-        office: task.office,
-      },
-    });
   };
 
   return (
@@ -120,13 +100,17 @@ const ToDoUpcoming = () => {
                 <div
                   className="upcoming-date-header"
                   onClick={() => toggleGroup(date)}
+                  style={{ cursor: "pointer", userSelect: "none" }}
                 >
                   <span className="upcoming-date-bold">{date}</span>
                   <span className="upcoming-weekday"> ({weekday})</span>
 
                   <div className="upcoming-header-actions">
                     <span className="upcoming-task-count">{tasks.length}</span>
-                    <span className="upcoming-dropdown-arrow">
+                    <span
+                      className="upcoming-dropdown-arrow"
+                      aria-label={isOpen ? "Collapse" : "Expand"}
+                    >
                       {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
                     </span>
                   </div>
@@ -135,28 +119,39 @@ const ToDoUpcoming = () => {
                 {isOpen && (
                   <div className="upcoming-task-list">
                     {tasks.map((task) => (
-                      <div
-                        key={task.task_id}
-                        className="upcoming-task-item"
-                        onClick={() => handleTaskClick(task)}
-                        style={{ cursor: "pointer", userSelect: "none" }}
+                      <Link
+                        to={`/todo/${task.sectionId}/${createSlug(task.title)}`}
+                        state={{
+                          taskTitle: task.title,
+                          links: task.links,
+                          deadline: task.deadline,
+                          creation_date: task.creation_date,
+                          taskDescription: task.description,
+                          taskId: task.task_id,
+                          creator_name: task.creator_name,
+                          section_designation: task.section_designation,
+                          full_name: task.creator_name
+                        }}
+                        className="upcoming-task-link"
+                        key={`${task.task_id}-${task.title}`}
                       >
-                        <div className="upcoming-task-header">
-                          <div className="upcoming-task-icon">
-                            <PiClipboardTextBold className="icon-lg" />
-                          </div>
-                          <div className="upcoming-task-info">
-                            <div className="upcoming-task-title">
-                              {task.title.trim() || "Untitled Task"}
+                        {/* ✅ Use CSS-aligned structure here */}
+                        <div className="upcoming-task-item">
+                          <div className="upcoming-task-header">
+                            <div className="upcoming-task-icon">
+                              <PiClipboardTextBold />
                             </div>
-                            <div className="upcoming-task-office">{task.office}</div>
-                          </div>
-                          <div className="upcoming-task-deadline">
-                            Due on {formatDate(task.deadline)} at{" "}
-                            <span className="upcoming-time">{formatTime(task.deadline)}</span>
+                            <div className="upcoming-task-info">
+                              <h3 className="upcoming-task-title">{task.title}</h3>
+                              <div className="upcoming-task-office">{task.office}</div>
+                            </div>
+                            <div className="upcoming-task-deadline">
+                              Due on {formatDate(task.deadline)} at{" "}
+                              <span className="upcoming-time">{formatTime(task.deadline)}</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 )}
