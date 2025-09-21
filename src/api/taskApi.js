@@ -52,7 +52,7 @@ export const fetchTaskDetails = async (taskId, schoolUserId, token) => {
   };
 };
 
-export const updateTaskStatus = async (payload, token) => {
+export const updateTaskStatus = async (updatePayload, token) => {
   const response = await fetch(
     `${config.API_BASE_URL}/school/update/task/status`,
     {
@@ -61,7 +61,7 @@ export const updateTaskStatus = async (payload, token) => {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(updatePayload),
     }
   );
 

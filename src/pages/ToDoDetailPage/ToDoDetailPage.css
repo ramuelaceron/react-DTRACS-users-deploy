@@ -318,6 +318,18 @@
 
 .todo-link-item2 {
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.todo-link-item2:hover {
+  background: #e9ecef;
 }
 
 .todo-link1 {
@@ -408,7 +420,7 @@
   color: #0056b3;
 }
 
-.attached-item-remove-btn {
+.todo-remove-link-btn {
   background: none;
   border: none;
   font-size: 1.25rem;
@@ -421,7 +433,7 @@
   margin-left: auto;
 }
 
-.attached-item-remove-btn:hover {
+.todo-remove-link-btn:hover {
   background: #dc3545;
   color: white;
 }
@@ -515,11 +527,6 @@
     font-size: 13px;
   }
 
-  .todo-link1,
-  .todo-link2 {
-    font-size: 13px;
-  }
-
   /* Attached links adjustments */
   .attached-links-section {
     margin: 1rem 0;
@@ -593,5 +600,19 @@
 
   .attached-link-url {
     font-size: 12px;
+  }
+
+  .attached-link-icon {
+    font-size: 1.1rem;
+    margin-right: 0.5rem;
+  }
+
+  .attached-link-url {
+    font-size: 0.85rem;
+  }
+
+  .attached-item-remove-btn {
+    font-size: 1.1rem;
+    padding: 0.2rem;
   }
 }

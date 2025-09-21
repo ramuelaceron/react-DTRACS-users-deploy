@@ -79,6 +79,8 @@ const TaskDetailPage = () => {
       if (!response.ok) throw new Error(`Failed to fetch assignments for task ${task_id}`);
 
       const data = await response.json();
+      console.log({data});
+
       if (!Array.isArray(data)) return {};
 
       const schoolsRequired = new Set();

@@ -25,7 +25,7 @@ const ToDoDetailPage = () => {
   const taskCreationDate = state?.creation_date;
   const taskDescription = state?.taskDescription;
 
-  console.log("📍 Location state:", state);
+  // console.log("📍 Location state:", state);
 
   // Normalize taskinks: ensure it's array of { url: string }
   const normalizedTaskLinks = Array.isArray(taskinks)
@@ -124,39 +124,35 @@ const ToDoDetailPage = () => {
     const isOnTime = now <= deadline;
     const submissionRemarks = isOnTime ? 'TURNED IN ON TIME' : 'TURNED IN LATE';
 
-    // ✅ SEND ALL LINKS to backend
+    // ✅ SEND ONLY USER-ATTACHED LINKS under field name "links"
     const updatePayload = {
       task_id: task.task_id,
       school_id: schoolUserId,
       status: 'COMPLETE',
-      remarks: submissionRemarks,
-      link: attachedLinks.length > 0 ? attachedLinks[0].url : '', // Keep main link for compatibility
-      revision_links: revisionLinks.map(link => link.url),
-      attached_links: attachedLinks.map(link => link.url) // ✅ NEW: Send ALL user-attached links
+      links: attachedLinks.map(link => link.url) // ✅ This is what backend expects
     };
 
     // 🐞 DEBUG: LOG THE PAYLOAD BEFORE SENDING
     console.log("🚀 Sending to backend - updatePayload:", updatePayload);
-    console.log("🔗 Attached Links being sent:", attachedLinks);
-    console.log("📎 Attached Links (URLs only):", updatePayload.attached_links);
+    console.log("📎 Final 'links' field being sent:", updatePayload.links);
 
     try {
       setIsSubmitting(true);
       
       await updateTaskStatus(updatePayload, token);
+      console.log("📤 Sending payload to backend:", JSON.stringify(updatePayload, null, 2));
 
       // ✅ UPDATE TASK STATE to include submitted_links so they persist in UI
       setTask(prevTask => ({
         ...prevTask,
         assigned_response: {
           ...prevTask.assigned_response,
-          remarks: submissionRemarks,
           status_updated_at: new Date().toISOString()
         },
         submitted_links: attachedLinks.map(link => link.url) // ✅ Persist links in task state
       }));
 
-      setRevisionLinks([]);
+      setRevisionLinks([]); // Optional: clear revisions if desired
       setIsCompleted(true);
       setIsSubmitting(false);
 
