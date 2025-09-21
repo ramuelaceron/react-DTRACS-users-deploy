@@ -85,3 +85,34 @@
   background-size: 16px 16px;
   padding-right: 36px; /* Make room for custom arrow */
 }
+
+@media (max-width:768px){
+.todo-tabs-container {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-left: 0;
+  padding: 8px 12px;
+  position: relative;
+  top: 30px;
+}
+
+.todo-tabs {
+  gap: 20px;
+}
+
+.todo-tab{
+ font-size:13px;
+ white-space: nowrap;
+}
+
+.todo-dropdown{
+  position: relative;
+    margin-right: 0; /* Remove large right margin causing cutoff */
+    max-width: calc(100vw - 40px); /* Keep dropdown inside viewport */
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 40px; /* Ensure space for arrow */
+    white-space: nowrap; /* Keep dropdown text in single line */
+  }
+}

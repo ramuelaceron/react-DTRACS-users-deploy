@@ -5,7 +5,8 @@ import useClickOutside from "../../../hooks/useClickOutside";
 import TaskForm from "../../../components/TaskForm/TaskForm";
 import { toast } from "react-toastify";
 import config from "../../../config";
-import { useNavigate } from "react-router-dom"; // 👈 ADD THIS
+import { useNavigate } from "react-router-dom";
+import DOMPurify from 'dompurify';
 import "./TaskDescription.css";
 
 // Utility to format date
@@ -65,10 +66,11 @@ const TaskDescription = ({
   onEditTask,
   onDeleteTask,
   onCopyLink,
-  onTaskUpdated,
+  onTaskUpdated, // 👈 ADD THIS
   schools_required = [],
   accounts_required = [],
-  token
+  token,
+  
 }) => {
 
   const navigate = useNavigate();
@@ -136,10 +138,19 @@ const TaskDescription = ({
     }
   };
 
-  const handleCopyLink = () => {
-    setShowOptionsMenu(false);
-    onCopyLink();
-  };
+  const handleCopyLink = async () => {
+  setShowOptionsMenu(false);
+
+  const currentUrl = window.location.href;
+
+  try {
+    await navigator.clipboard.writeText(currentUrl);
+    toast.success("📋 Link copied to clipboard!");
+  } catch (err) {
+    console.error("Failed to copy link:", err);
+    toast.error("Failed to copy link. Please try again.");
+  }
+};
 
   const handleTaskSave = (updatedTaskData) => {
     if (onTaskUpdated) {
@@ -262,9 +273,12 @@ const TaskDescription = ({
       </div>
 
       {/* Description */}
-      <div className="task-body">
-        {description || task?.description || <em>No description</em>}
-      </div>
+      <div 
+        className="task-body"
+        dangerouslySetInnerHTML={{ 
+          __html: DOMPurify.sanitize(description || task?.description || "<em>No description</em>") 
+        }}
+      />
 
       {/* ✅ Display Links — Handle both single string and array, hide if empty */}
       {task?.links && (

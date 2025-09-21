@@ -81,3 +81,41 @@
   background-size: 16px 16px;
   padding-right: 36px; /* Make room for custom arrow */
 }
+
+@media (max-width: 768px) {
+  .task-tabs-container {
+    flex-direction: column;   
+    align-items: flex-start;
+    gap: 12px;
+    margin-left: 0;
+    padding: 8px 12px;
+    position: relative;
+    top: 30px;
+    overflow-x: hidden;
+  }
+
+  .task-tabs {
+    flex-wrap: wrap;          /* allow wrapping if tabs are many */
+    gap: 12px;
+    width: 100%;
+  }
+
+  .task-tab {
+    font-size: 14px;
+    padding: 10px 0;
+  }
+
+  .task-dropdown {
+    width: 100%;     /* make dropdown full width */
+    min-width: unset;
+    font-size: 14px;
+    padding: 10px 36px 10px 12px;
+  }
+
+  .task-indicator {
+    top: 4px;
+    right: -8px;
+    width: 6px;
+    height: 6px;
+  }
+}

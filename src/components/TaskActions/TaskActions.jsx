@@ -4,7 +4,7 @@ import "./TaskActions.css";
 import { IoMdLink } from "react-icons/io";
 import { MdOutlineDoneOutline, MdCancel } from "react-icons/md";
 import SharedButton from "../SharedButton/SharedButton";
-import AttachedLinks from "../AttachedFiles/AttachedLinks/AttachedLinks";
+import AttachedLinks from "../AttachedLinks/AttachedLinks";
 
 const TaskActions = ({
   onComplete,

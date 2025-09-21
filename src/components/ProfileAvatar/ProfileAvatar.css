@@ -69,3 +69,14 @@
   border-radius: 50%;
   object-fit: cover;
 }
+
+@media (max-width: 768px) {
+ .profile-avatar-container {
+  position:relative;
+  top:3.5rem;
+}
+.change-avatar-btn {
+  position:sticky;
+  top:4rem;
+}
+}

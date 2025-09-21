@@ -14,3 +14,30 @@
 .sidebar.expanded ~ .app-content {
   margin-left: 200px;
 }
+
+/*smaller device*/
+@media (max-width: 520px) {
+  .app-content {
+    /*margin-top:2rem;*/
+    margin-left:0px;
+    width: 100%;
+    width: auto;
+    padding:0;
+  }
+
+  .sidebar.expanded ~ .app-content {
+  margin-left: 0px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-content {
+    /*margin-top:3rem;*/
+    margin-left:0px;
+    width: 100%;
+  }
+
+  .sidebar.expanded ~ .app-content {
+  left: 0px;
+  }
+} 

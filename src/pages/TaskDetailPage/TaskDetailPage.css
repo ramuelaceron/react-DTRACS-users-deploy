@@ -134,3 +134,34 @@
   padding-left: 40px;
   font-style: italic;
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .task-detail-page {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  
+  .task-detail-left {
+    margin-top: 0;
+    order: 1;
+  }
+  
+  .task-detail-right {
+    margin-top: 0;
+    order: 2;
+  }
+  
+  .task-back-btn {
+    margin-left: 0;
+    margin-bottom: 0;
+    padding: 10px 12px;
+    font-size: 16px;
+  }
+  
+  .task-back-btn span {
+    font-size: 20px;
+  }
+}

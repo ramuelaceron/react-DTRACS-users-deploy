@@ -1,9 +1,7 @@
-// src/pages/ToDoDetailPage/ToDoDetailPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoChevronBackOutline } from "react-icons/io5";
-import { PiClipboardTextBold, PiLinkSimple } from "react-icons/pi";
-import AttachedFiles from "../../components/AttachedFiles/AttachedFiles";
+import { PiClipboardTextBold } from "react-icons/pi";
 import TaskActions from "../../components/TaskActions/TaskActions";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,6 +9,7 @@ import "./ToDoDetailPage.css";
 import { formatDate, formatTime } from "../../utils/dateUtils";
 import { getRemarksStatusInfo } from "../../utils/taskStatusUtils";
 import { fetchTaskDetails, updateTaskStatus, revertTaskStatus } from "../../api/taskApi";
+import DOMPurify from 'dompurify';
 
 const ToDoDetailPage = () => {
   const navigate = useNavigate();
@@ -36,7 +35,7 @@ const ToDoDetailPage = () => {
     : [];
 
   // State
-  const [attachedLinks, setAttachedLinks] = useState(normalizedTaskLinks);
+  const [attachedLinks, setAttachedLinks] = useState([]); // ✅ Start empty
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,6 +49,7 @@ const ToDoDetailPage = () => {
   const token = currentUser?.token;
 
   // Auto-refresh logic
+  // ✅ Then inside loadTask, set from backend ONLY if previously submitted
   useEffect(() => {
     const loadTask = async () => {
       if (!taskId || !schoolUserId) {
@@ -65,10 +65,14 @@ const ToDoDetailPage = () => {
           enrichedTask.assigned_response?.remarks === 'TURNED IN ON TIME' || 
           enrichedTask.assigned_response?.remarks === 'TURNED IN LATE'
         );
-        // Initialize attachedLinks from task's submitted_links if they exist
+
+        // ✅ ONLY populate attachedLinks from previously submitted links
         if (enrichedTask.submitted_links && enrichedTask.submitted_links.length > 0) {
           setAttachedLinks(enrichedTask.submitted_links.map(url => ({ url })));
+        } else {
+          setAttachedLinks([]); // Ensure empty if no prior submission
         }
+
       } catch (err) {
         console.error("Error fetching task:", err);
         setError(err.message || "Failed to load task details.");
@@ -306,23 +310,27 @@ const ToDoDetailPage = () => {
         <div className="todo-author">
           {task.creator_name || "Unknown Creator"} • Posted on {formatDate(task.creation_date || taskCreationDate)}
         </div>
-
-        <div className="todo-description">
-          {task.description || taskDescription || <em>No description</em>}
-        </div>
+        
+        {/* Description */}
+        <div 
+          className="todo-description"
+          dangerouslySetInnerHTML={{ 
+            __html: DOMPurify.sanitize(task.description || taskDescription || "<em>No description</em>")
+          }}
+        />
 
         {/* Display Original Links from state */}
         {normalizedTaskLinks.length > 0 && (
-          <div className="todo-links-section">
-            <h3 className="todo-links-title">Links</h3>
+          <div className="todo-links-section1">
+            <h3 className="todo-links-title1">Links</h3>
             <ul className="todo-links-list">
               {normalizedTaskLinks.map((link, index) => (
-                <li key={index} className="todo-link-item">
+                <li key={index} className="todo-link-item1">
                   <a
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="todo-link"
+                    className="todo-link1"
                   >
                     {link.url}
                   </a>
@@ -343,26 +351,65 @@ const ToDoDetailPage = () => {
           onAddRevision={handleAddRevision}
         />
 
-        {/* ✅ Display User-Attached Links: Use submitted_links if task is completed */}
+        {/* ✅ REPLACED AttachedFiles — Display User-Attached Links */}
         {(attachedLinks.length > 0 || task?.submitted_links?.length > 0) && (
-          <AttachedFiles
-            links={isCompleted ? (task?.submitted_links?.map(url => ({ url })) || []) : attachedLinks}
-            onRemoveLink={handleRemoveLink}
-            isCompleted={isCompleted}
-          />
+          <div className="todo-links-section2">
+            <h3 className="todo-links-title2">Submitted Links</h3>
+            <ul className="todo-links-list">
+              {(isCompleted ? task?.submitted_links || [] : attachedLinks).map((link, index) => (
+                <li key={index} className="todo-link-item2">
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="todo-link2"
+                  >
+                    {link.url}
+                  </a>
+                  {!isCompleted && (
+                    <button
+                      type="button"
+                      className="todo-remove-link-btn"
+                      onClick={() => handleRemoveLink(index)}
+                      aria-label="Remove link"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
 
         {/* Revision Links */}
         {revisionLinks.length > 0 && (
           <div className="revision-section">
             <h3 className="revision-title">Revision Links</h3>
-            <AttachedFiles
-              links={revisionLinks}
-              onRemoveLink={(index) => {
-                setRevisionLinks(prev => prev.filter((_, i) => i !== index));
-              }}
-              isCompleted={isCompleted}
-            />
+            <div className="todo-links-section3">
+              <ul className="todo-links-list">
+                {revisionLinks.map((link, index) => (
+                  <li key={link.id || index} className="todo-link-item">
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="todo-link"
+                    >
+                      {link.url}
+                    </a>
+                    <button
+                      type="button"
+                      className="todo-remove-link-btn"
+                      onClick={() => setRevisionLinks(prev => prev.filter((_, i) => i !== index))}
+                      aria-label="Remove revision link"
+                    >
+                      ✕
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
 

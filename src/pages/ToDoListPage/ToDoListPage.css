@@ -1,10 +1,16 @@
 /* ToDoListPage.css */
 .task-list-page {
+  display: flex;
+  flex-direction: column;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  margin-top: 50px;
+  margin: 0;
+  padding: 0;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  padding-left: 20px;
+  margin-top: 60px;
 }
 
 /* Header */
@@ -120,4 +126,26 @@
 .no-tasks {
   margin: 0;
   font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .header {
+    display: flex;
+    align-items: center;
+    background-color: #1a3666;
+    color: white;
+    padding: 16px 24px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    top: 15px;
+  }
+
+  .no-tasks {
+    margin: 0;
+    font-size: 1rem;
+    position: relative;
+    top: 10px;
+  }
 }

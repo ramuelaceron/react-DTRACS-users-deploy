@@ -1,5 +1,3 @@
-/* ToDoDetailPage.css */
-
 /* Main App Container */
 .todo-detail-app {
   font-family: Arial, sans-serif;
@@ -23,7 +21,7 @@
 
 /* Back Button */
 .todo-back-btn {
-  position: relative; /* 👈 ADD THIS */
+  position: relative;
   background: none;
   border: none;
   color: #000;
@@ -107,7 +105,7 @@
 /* Highlighted back button when task is completed */
 .highlighted-back-btn {
   position: relative;
-  z-index: 1001; /* Above the overlay */
+  z-index: 1001;
   border-radius: 6px;
   padding: 6px 12px;
   transform: translateY(-1px);
@@ -248,7 +246,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 60vh; /* Centers vertically in main area */
+  height: 60vh;
   text-align: center;
   color: #666;
 }
@@ -273,29 +271,6 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .task-detail-main {
-    padding: 20px;
-    margin-top: 20px;
-  }
-  
-  .task-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-  
-  .task-meta {
-    flex-direction: column;
-    gap: 5px;
-  }
-  
-  .task-title {
-    font-size: 20px;
-  }
-}
-
 .todo-description {
   margin-top: 1rem;
   padding: 1rem;
@@ -305,13 +280,26 @@
 }
 
 /* Links Section */
-.todo-links-section {
+.todo-links-section1, .todo-links-section3 {
+  margin-top: -20px;
+  margin-left: 15px;
+  padding-bottom: 30px;
+} 
+
+.todo-links-section1 {
   margin-top: -20px;
   margin-left: 15px;
   padding-bottom: 30px;
 }
 
-.todo-links-title {
+.todo-links-title1 {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.todo-links-title2 {
   font-size: 14px;
   color: #6c757d;
   font-weight: 600;
@@ -324,11 +312,22 @@
   margin: 0;
 }
 
-.todo-link-item {
+.todo-link-item1 {
   margin-bottom: 8px;
 }
 
-.todo-link {
+.todo-link-item2 {
+  margin-bottom: 8px;
+}
+
+.todo-link1 {
+  color: #007bff;
+  text-decoration: underline;
+  word-break: break-all;
+  font-size: 14px;
+}
+
+.todo-link2 {
   color: #007bff;
   text-decoration: underline;
   word-break: break-all;
@@ -344,4 +343,255 @@
   0% { opacity: 1; }
   50% { opacity: 0.7; }
   100% { opacity: 1; }
+}
+
+/* ✅ Styled Link Containers — For Submitted & Revision Links */
+.attached-links-section {
+  margin: 1.5rem 0;
+}
+
+.attached-section-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.attached-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.attached-link-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.attached-link-item:hover {
+  background: #e9ecef;
+}
+
+.attached-link-icon {
+  font-size: 1.25rem;
+  color: #007bff;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.link-info {
+  flex: 1;
+  min-width: 0;
+  margin-right: 0.5rem;
+}
+
+.attached-link-url {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.attached-link-url:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+.attached-item-remove-btn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.attached-item-remove-btn:hover {
+  background: #dc3545;
+  color: white;
+}
+
+/* ==================== */
+/*  Responsive Design   */
+/* ==================== */
+
+@media (max-width: 768px) {
+  .todo-detail-app {
+    padding: 0;
+  }
+  
+  .todo-detail-main {
+    padding: 20px 16px;
+    margin-top: 20px;
+  }
+
+  .todo-back-btn {
+    margin-bottom: 20px;
+    margin-left: 0;
+    top: 0;
+    padding: 6px 0;
+  }
+
+  .todo-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+
+  .todo-title {
+    font-size: 20px;
+    line-height: 1.3;
+    white-space: normal;
+    word-break: break-word;
+    top: 0;
+    order: 1;
+  }
+
+  .todo-status {
+    font-size: 13px;
+    align-self: flex-start;
+    top: 0;
+    order: 2;
+  }
+
+  .todo-icon {
+    display: none;
+  }
+
+  .todo-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 12px;
+    margin-bottom: 15px;
+    top: 0;
+  }
+
+  .divider {
+    margin: 12px 0;
+    top: 0;
+  }
+
+  .todo-author {
+    font-size: 12px;
+    margin-bottom: 15px;
+    top: 0;
+  }
+
+  .todo-description {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    top: 0;
+    padding: 12px;
+  }
+
+  /* Links section adjustments */
+  .todo-links-section1, 
+  .todo-links-section3 {
+    margin-top: 0;
+    margin-left: 0;
+    padding-bottom: 20px;
+  }
+
+  .todo-links-title1,
+  .todo-links-title2 {
+    font-size: 13px;
+  }
+
+  .todo-link1,
+  .todo-link2 {
+    font-size: 13px;
+  }
+
+  /* Attached links adjustments */
+  .attached-links-section {
+    margin: 1rem 0;
+  }
+
+  .attached-link-item {
+    padding: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .attached-link-icon {
+    margin-right: 0;
+    font-size: 18px;
+  }
+
+  .link-info {
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .attached-link-url {
+    white-space: normal;
+    font-size: 13px;
+  }
+
+  .attached-item-remove-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    margin-left: 0;
+  }
+
+  /* Button container adjustments */
+  .task-actions-container {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .action-btn {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .todo-detail-main {
+    padding: 16px 12px;
+    margin-top: 15px;
+  }
+
+  .todo-title {
+    font-size: 18px;
+  }
+
+  .todo-status {
+    font-size: 12px;
+  }
+
+  .todo-description {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .attached-link-item {
+    padding: 10px;
+  }
+
+  .attached-link-url {
+    font-size: 12px;
+  }
 }

@@ -114,55 +114,56 @@ const TaskDetailPage = () => {
     }
   };
 
-  // ✅ Only run once when component mounts OR when initialTask changes
+  // ✅ Define loadAndEnrichTask HERE — in component scope, NOT inside useEffect
+  const loadAndEnrichTask = async () => {
+    setLoading(true);
+    setError(null);
+
+    if (!initialTask) {
+      setLoading(false);
+      return;
+    }
+
+    // If already enriched, skip fetching
+    if (
+      initialTask.schools_required &&
+      initialTask.accounts_required &&
+      initialTask.schools_required.length > 0
+    ) {
+      setTask(initialTask);
+      setLoading(false);
+      return;
+    }
+
+    // If no focal user, just show raw task
+    if (!selectedFocal) {
+      setTask(initialTask);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const enrichment = await fetchAssignmentsForSingleTask(
+        initialTask.task_id,
+        currentUserRef.current?.token
+      );
+
+      const enrichedTask = {
+        ...initialTask,
+        ...enrichment,
+      };
+
+      setTask(enrichedTask);
+    } catch (err) {
+      setError("Failed to load school assignments.");
+      setTask(initialTask); // Still show base task
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Now call it inside useEffect
   useEffect(() => {
-    const loadAndEnrichTask = async () => {
-      setLoading(true);
-      setError(null);
-
-      if (!initialTask) {
-        setLoading(false);
-        return;
-      }
-
-      // If already enriched, skip fetching
-      if (
-        initialTask.schools_required &&
-        initialTask.accounts_required &&
-        initialTask.schools_required.length > 0
-      ) {
-        setTask(initialTask);
-        setLoading(false);
-        return;
-      }
-
-      // If no focal user, just show raw task
-      if (!selectedFocal) {
-        setTask(initialTask);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const enrichment = await fetchAssignmentsForSingleTask(
-          initialTask.task_id,
-          currentUserRef.current?.token
-        );
-
-        const enrichedTask = {
-          ...initialTask,
-          ...enrichment,
-        };
-
-        setTask(enrichedTask);
-      } catch (err) {
-        setError("Failed to load school assignments.");
-        setTask(initialTask); // Still show base task
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadAndEnrichTask();
   }, []); // 👈 Empty dependency array — runs once on mount
 
@@ -183,6 +184,14 @@ const TaskDetailPage = () => {
 
   const navigate = useNavigate();
   const handleBack = () => navigate(-1);
+  
+  const handleTaskUpdated = async (updatedTaskData) => {
+    setTask(prev => ({ ...prev, ...updatedTaskData }));
+    await loadAndEnrichTask();
+
+    navigate(-1);           // ← Goes back to TaskPage
+    toast.success("✅ Task Updated!"); // ← Toast appears on TaskPage ✅
+  };
 
   // Handle task not found
   if (!initialTask && !state) {
@@ -250,10 +259,10 @@ const TaskDetailPage = () => {
           deadline={task?.deadline}
           description={task?.description}
           isCompleted={isCompleted}
-          // ✅ Explicitly pass schools_required and accounts_required
           schools_required={task?.schools_required || []}
           accounts_required={task?.accounts_required || []}
           token={token}
+          onTaskUpdated={handleTaskUpdated}
         />
       </div>
 

@@ -21,9 +21,9 @@ const ToDoCompleted = () => {
     getOfficeEmptyMessage
   } = useOutletContext();
 
-  // Group tasks by formatted creation date
+  // Group tasks by formatted completion date (fallback to creation_date)
   const groupedByDate = completedTasks.reduce((groups, task) => {
-    const formattedDate = formatDate(task.creation_date);
+    const formattedDate = formatDate(task.completedTime || task.creation_date);
     if (!groups[formattedDate]) groups[formattedDate] = [];
     groups[formattedDate].push(task);
     return groups;
@@ -65,13 +65,16 @@ const ToDoCompleted = () => {
     switch (selectedSort) {
       case "today":
         return selectedOffice === "All Offices"
-          `No tasks due today for ${selectedOffice}.`;
+          ? `No tasks due today for ${selectedOffice}.`
+          : `No tasks due today for ${selectedOffice}.`;
       case "week":
         return selectedOffice === "All Offices"
-          `No tasks due this week for ${selectedOffice}.`;
+          ? `No tasks due this week for ${selectedOffice}.`
+          : `No tasks due this week for ${selectedOffice}.`;
       case "month":
         return selectedOffice === "All Offices"
-          `No tasks due this month for ${selectedOffice}.`;
+          ? `No tasks due this month for ${selectedOffice}.`
+          : `No tasks due this month for ${selectedOffice}.`;
       default:
         return getOfficeEmptyMessage("completed");
     }
@@ -146,8 +149,8 @@ const ToDoCompleted = () => {
                               <div className="completed-task-office">{task.office}</div>
                             </div>
                             <div className="completed-task-deadline">
-                              Due on {formatDate(task.deadline)} at{" "}
-                              <span className="completed-time">{formatTime(task.deadline)}</span>
+                              Completed on {formatDate(task.completedTime)} at{" "}
+                              <span className="completed-time">{formatTime(task.completedTime)}</span>
                             </div>
                           </div>
                         </div>

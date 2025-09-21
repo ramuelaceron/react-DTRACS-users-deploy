@@ -2,8 +2,8 @@
 import React, { useState, useRef } from "react";
 import { MdClose } from "react-icons/md";
 import { IoMdLink } from "react-icons/io";
-import SharedButton from "../../SharedButton/SharedButton";
-import useClickOutside from "../../../hooks/useClickOutside";
+import SharedButton from "../SharedButton/SharedButton";
+import useClickOutside from "../../hooks/useClickOutside";
 import "./AttachedLinks.css";
 
 const AttachedLinks = ({ isOpen, onClose, onAddLink }) => {
@@ -16,7 +16,7 @@ const AttachedLinks = ({ isOpen, onClose, onAddLink }) => {
 
   // Close modal when clicking outside
   useClickOutside(modalRef, () => {
-    if (isOpen) handleClose();
+    if (isOpen) onClose();
   });
 
   const handleInputChange = (e) => {
@@ -54,7 +54,7 @@ const AttachedLinks = ({ isOpen, onClose, onAddLink }) => {
     };
 
     onAddLink(newLink);
-    handleClose();
+    onClose();
   };
 
   const handleClose = () => {
@@ -66,47 +66,47 @@ const AttachedLinks = ({ isOpen, onClose, onAddLink }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="attached-links-modal-overlay">
-      <div className="attached-links-modal" ref={modalRef}>
-        <div className="attached-links-modal-header">
-          <div className="modal-title-section">
-            <IoMdLink className="modal-title-icon" />
+    <div className="al-overlay">
+      <div className="al-modal" ref={modalRef}>
+        <div className="al-header">
+          <div className="al-title-section">
+            <IoMdLink className="al-title-icon" />
             <h3>Add Website Link</h3>
           </div>
           <button
             type="button"
-            className="modal-close-btn"
+            className="al-close-btn"
             onClick={handleClose}
           >
             <MdClose />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="attached-links-modal-form">
-          <div className="modal-body">
-            <div className="form-group">
-              <label htmlFor="link-url" className="form-label">
+        <form onSubmit={handleSubmit} className="al-form">
+          <div className="al-body">
+            <div className="al-form-group">
+              <label htmlFor="link-url" className="al-form-label">
                 Website URL *
               </label>
               <input
                 id="link-url"
                 type="url"
                 name="url"
-                placeholder="https://example.com  "
+                placeholder="https://example.com"
                 value={linkData.url}
                 onChange={handleInputChange}
-                className={`form-input ${!isLinkValid ? 'invalid' : ''}`}
+                className={`al-form-input ${!isLinkValid ? 'al-invalid' : ''}`}
                 required
               />
               {!isLinkValid && (
-                <p className="form-error">
+                <p className="al-form-error">
                   Please enter a valid URL starting with http:// or https://
                 </p>
               )}
             </div>
           </div>
 
-          <div className="modal-footer">
+          <div className="al-footer">
             <SharedButton
               type="button"
               variant="secondary"

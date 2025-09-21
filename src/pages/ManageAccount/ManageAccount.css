@@ -25,3 +25,16 @@
   align-items: flex-start;
   padding-top: 20px;
 }
+
+@media (max-width: 768px) {
+  .manage-account-main {
+    padding: 15px;
+  }
+
+  .profile-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
+}

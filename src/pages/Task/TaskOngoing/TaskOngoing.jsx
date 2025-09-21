@@ -17,6 +17,15 @@ import "./TaskOngoing.css";
 const TaskOngoing = () => {
   // Get sorted tasks from context
   const { upcomingTasks, selectedSort, focalId, loading, hasLoaded } = useOutletContext(); // 👈 Add focalId here
+
+  // Add this useEffect — it runs once on mount
+  useEffect(() => {
+    const shouldShowToast = sessionStorage.getItem('showTaskCreatedToast');
+    if (shouldShowToast === 'true') {
+      toast.success("Task created!");
+      sessionStorage.removeItem('showTaskCreatedToast'); // Clean up
+    }
+  }, []);
   
   // Group tasks by formatted creation date
   const groupedByDate = upcomingTasks.reduce((groups, task) => {
@@ -76,9 +85,11 @@ const TaskOngoing = () => {
       <main className="ongoing-main">
         <CreateTaskPage
           onTaskCreated={() => {
-            toast.success("Task created!");
+            // Set flag before reload
+            sessionStorage.setItem('showTaskCreatedToast', 'true');
+            window.location.reload(); // Reload immediately
           }}
-          focalId={focalId} // 👈 Pass user_id as a prop
+          focalId={focalId}
         />
 
         {loading ? (

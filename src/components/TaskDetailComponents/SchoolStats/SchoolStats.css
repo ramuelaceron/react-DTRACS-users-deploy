@@ -214,3 +214,21 @@
   color: #6b7280;
   cursor: default;
 }
+
+@media (max-width:768px){
+  .school-stats{
+    width:90vw;  
+    justify-content:baseline;
+    position: relative;
+    left: 10px;
+    overflow:visible;
+  }
+
+  .stats-tabs {
+    margin-bottom: 1rem;
+  }
+
+  .account-item {
+    padding: 8px 0 8px 14px;
+  }
+}

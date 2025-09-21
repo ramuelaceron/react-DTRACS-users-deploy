@@ -381,57 +381,103 @@
 /* ==================== */
 
 @media (max-width: 768px) {
-  .ongoing-app {
-    margin-left: 10px;
-    margin-right: 10px;
+   .ongoing-main{ /**/
+    position:relative; 
+    top: 40px; 
+    padding-top:0;
+    flex:1 0;
   }
-  
-  .ongoing-task-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .ongoing-task-deadline {
-    margin-left: 0;
-    margin-top: 8px;
-    padding-left: 0;
-    align-self: flex-end;
-  }
-  
-  .ongoing-task-footer {
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
-  }
-  
-  .ongoing-assigned-submitted-counts {
-    align-self: flex-end;
-  }
-  
-  .ongoing-date-header {
-    flex-wrap: wrap;
-  }
-  
-  .ongoing-header-actions {
-    margin-left: 0;
-    width: 100%;
-    justify-content: flex-end;
-    margin-top: 4px;
-  }
-}
 
-@media (max-width: 480px) {
-  .ongoing-task-item {
-    padding: 12px;
+  .ongoing-task-card {
+    padding: 0;
+    margin-right: 13px;
+    margin-bottom: 13px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+    border: 1px solid #ddd;
   }
-  
-  .ongoing-assigned-submitted-counts {
-    gap: 12px;
+
+  .ongoing-task-info{/**/
+     position:absolute;
+    left:4rem;
   }
-  
-  .ongoing-task-icon {
-    width: 32px;
-    height: 32px;
+
+  .ongoing-date-header{ /**/
+    flex-wrap: wrap;
+    padding-top:0;
+    margin-bottom:8px;    
+  }
+
+  .ongoing-task-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 4px; /*0*/
+    width: 100%;
+    padding: 10px;
+    position: relative;
+    z-index: 1;
+    margin-bottom:auto;
+  }
+
+  .ongoing-task-title {
     font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    margin: 0;
+    line-height: 1.3;
+    max-width: calc(100% - 52px);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    white-space:normal;
+  }
+
+
+  .ongoing-task-icon {
+    width: 40px;
+    height: 40px;
+    background: #2196f3;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-right: 12px;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+    margin-top: 0;
+  }
+
+  .ongoing-date-group{ /**/
+    margin-bottom: 10px;
+  }
+
+  .ongoing-task-deadline {
+    font-size: 11px;
+    color: #555;
+    margin: 0;
+    margin-top: 35px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    /* Left-aligned — no more right */
+    position: relative;
+    top: 0.9rem;
+    left: 2.65rem;
+    text-align: right;
+  }
+
+
+  .ongoing-task-footer { /**/
+    padding: 10px;
   }
 }

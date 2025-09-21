@@ -7,3 +7,21 @@
   padding: 0 40px;
   box-sizing: border-box;
 }
+
+@media (max-width: 768px) {
+  .section-container { 
+    gap: 1.5rem;
+    padding: 0 4vw;
+    grid-template-columns: repeat(2, 1fr);  
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 520px) {
+  .section-container {
+    gap: 1rem;
+    padding: 2rem 3vw;
+    grid-template-columns: 1fr;
+    max-width: 320px;
+  }
+}

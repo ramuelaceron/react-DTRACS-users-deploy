@@ -156,37 +156,10 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width:768px){
   .task-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .task-actions-link-btn,
-  .task-actions-complete-btn,
-  .task-actions-cancel-btn,
-  .task-actions-status-completed {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .task-actions-buttons-container {
-    width: 100%;
-    justify-content: center;
-  }
+  position:relative;
+  top:1rem;
+  margin-bottom: 5px;
 }
-
-.is-completed .task-actions-cancel-btn {
-  position: relative;
-  z-index: 1001; /* Above the overlay (which has z-index: 100) */
-}
-
-/* Remove the animation and transform effects from the existing code */
-.is-completed .task-actions-cancel-btn {
-  animation: none;
-  transform: none;
-}
-
-.is-completed .task-actions-cancel-btn:hover {
-  transform: none; /* Remove the hover transform too */
 }
