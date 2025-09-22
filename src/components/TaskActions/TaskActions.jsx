@@ -32,16 +32,17 @@ const TaskActions = ({
 
   return (
     <div className={`task-actions ${isCompleted ? 'is-completed' : ''}`}>
-      {/* ✅ ALWAYS show "Add Link" button — disabled if completed */}
-      <button
-        type="button"
-        className="task-actions-link-btn"
-        onClick={handleLinkClick}
-        disabled={isCompleted}
-      >
-        <IoMdLink className="task-actions-icon" />
-        Add Link
-      </button>
+      {/* ✅ Show "Add Link" button ONLY if task is NOT completed */}
+      {!isCompleted && (
+        <button
+          type="button"
+          className="task-actions-link-btn"
+          onClick={handleLinkClick}
+        >
+          <IoMdLink className="task-actions-icon" />
+          Add Link
+        </button>
+      )}
 
       {/* Link Modal */}
       <AttachedLinks

@@ -95,21 +95,54 @@ const TaskForm = ({ onClose, onTaskCreated = () => {}, initialData = {}, creator
 
   // Fetch users when schools change
   useEffect(() => {
-    if (formData.for.length === 0) return;
+    if (formData.for.length === 0) {
+      setAvailableUsers([]);
+      return;
+    }
+    
     setLoadingUsers(true);
     const fetchUsers = async () => {
       try {
         const res = await axios.get(`${config.API_BASE_URL}/focal/school/verified/accounts`);
-        const userOptions = res.data.map(acc => ({
+        
+        // Get all unique school names from the response
+        const allSchoolNames = [...new Set(res.data.map(acc => acc.school_name))];
+        
+        // Check if all schools are selected
+        const allSchoolsSelected = formData.for.length === allSchoolNames.length && 
+                                  formData.for.every(school => allSchoolNames.includes(school));
+        
+        let filteredAccounts;
+        if (allSchoolsSelected) {
+          // Show all accounts if all schools are selected
+          filteredAccounts = res.data;
+        } else {
+          // Show only accounts from selected schools
+          filteredAccounts = res.data.filter(acc => formData.for.includes(acc.school_name));
+        }
+        
+        const userOptions = filteredAccounts.map(acc => ({
           value: acc.user_id,
           label: `${acc.first_name} ${acc.last_name}`,
-          position: acc.position || ''
+          position: acc.position || '',
+          school: acc.school_name
         }));
+        
         setAvailableUsers(userOptions);
 
+        // Filter assignedTo to only include valid user IDs
         const validIds = userOptions.map(u => String(u.value));
         const filtered = formData.assignedTo.filter(id => validIds.includes(String(id)));
-        if (filtered.length && (JSON.stringify(filtered) !== JSON.stringify(formData.assignedTo))) {
+        
+        // Only update if there's a difference (this prevents losing selection on initial load)
+        // But when editing, we want to ensure the valid selected users are preserved
+        if (JSON.stringify(filtered) !== JSON.stringify(formData.assignedTo)) {
+          setFormData(prev => ({ ...prev, assignedTo: filtered }));
+        }
+        
+        // Special case for editing: if we have initialData and this is the first load,
+        // make sure we set the assignedTo values that are valid
+        if (initialData.assignedTo && initialData.assignedTo.length > 0 && formData.assignedTo.length === 0 && filtered.length > 0) {
           setFormData(prev => ({ ...prev, assignedTo: filtered }));
         }
       } catch (err) {
@@ -119,7 +152,22 @@ const TaskForm = ({ onClose, onTaskCreated = () => {}, initialData = {}, creator
       }
     };
     fetchUsers();
-  }, [formData.for]);
+  }, [formData.for, schools, initialData.assignedTo]);
+
+  // Add this useEffect after the existing ones
+  useEffect(() => {
+    // If we're editing and have assigned users, try to set them once users are loaded
+    if (initialData.assignedTo && initialData.assignedTo.length > 0 && availableUsers.length > 0 && formData.assignedTo.length === 0) {
+      const validIds = availableUsers.map(u => String(u.value));
+      const validAssigned = initialData.assignedTo
+        .map(id => String(id))
+        .filter(id => validIds.includes(id));
+      
+      if (validAssigned.length > 0) {
+        setFormData(prev => ({ ...prev, assignedTo: validAssigned }));
+      }
+    }
+  }, [availableUsers, initialData.assignedTo]);
 
   const handleSchoolSelection = (selected) => setFormData(prev => ({ ...prev, for: selected }));
   const handleUserSelection = (selected) => setFormData(prev => ({ ...prev, assignedTo: selected }));
@@ -200,6 +248,16 @@ const TaskForm = ({ onClose, onTaskCreated = () => {}, initialData = {}, creator
   const schoolOptions = schools.map(s => ({ value: s.school_name, label: s.school_name }));
   const userOptions = availableUsers.map(u => ({ value: u.value, label: u.label, position: u.position }));
 
+  // Determine if "All Schools" are selected
+  const allSchoolsSelected = schools.length > 0 && formData.for.length === schools.length;
+  
+  // Update placeholder text based on selection
+  const getUserPlaceholder = () => {
+    if (formData.for.length === 0) return "No schools selected";
+    if (availableUsers.length === 0) return "No accounts found";
+    return "Select accounts";
+  };
+
   if (error) return (
     <div className="task-form-overlay" onClick={onClose}>
       <div className="task-form-container" ref={formContainerRef} onClick={e => e.stopPropagation()}>
@@ -214,15 +272,6 @@ const TaskForm = ({ onClose, onTaskCreated = () => {}, initialData = {}, creator
       <div className="task-form-container" ref={formContainerRef} onClick={e => e.stopPropagation()}>
         <button className="task-form-close" onClick={onClose}>×</button>
         <div style={{ padding: '2rem', textAlign: 'center' }}>Loading schools...</div>
-      </div>
-    </div>
-  );
-
-  if (loadingUsers && formData.for.length > 0) return (
-    <div className="task-form-overlay" onClick={onClose}>
-      <div className="task-form-container" ref={formContainerRef} onClick={e => e.stopPropagation()}>
-        <button className="task-form-close" onClick={onClose}>×</button>
-        <div style={{ padding: '2rem', textAlign: 'center' }}>Loading accounts...</div>
       </div>
     </div>
   );
@@ -248,8 +297,8 @@ const TaskForm = ({ onClose, onTaskCreated = () => {}, initialData = {}, creator
                 options={userOptions}
                 selectedValues={formData.assignedTo}
                 onSelectionChange={handleUserSelection}
-                placeholder={formData.for.length === 0 ? "No schools selected" : availableUsers.length === 0 ? "No accounts found" : "Select accounts"}
-                disabled={formData.for.length === 0 || availableUsers.length === 0}
+                placeholder={getUserPlaceholder()}
+                disabled={formData.for.length === 0 || (availableUsers.length === 0 && !loadingUsers)}
                 isAccountDropdown={true}
               />
             </div>
@@ -274,7 +323,7 @@ const TaskForm = ({ onClose, onTaskCreated = () => {}, initialData = {}, creator
               value={formData.description}
               onChange={(val) => setFormData(prev => ({ 
                 ...prev, 
-                description: val // 👈 Just save the raw HTML — DO NOT strip tags
+                description: val
               }))}
             />
           </div>

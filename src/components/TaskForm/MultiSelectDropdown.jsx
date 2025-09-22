@@ -1,4 +1,3 @@
-// ✅ Already perfect — no changes needed
 import React, { useState, useEffect } from 'react';
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import './TaskForm.css';
@@ -46,6 +45,21 @@ const MultiSelectDropdown = ({
     onSelectionChange([]);
   };
 
+  // New functions for selecting principals and teachers
+  const selectAllPrincipals = () => {
+    const principalValues = options
+      .filter(opt => opt.position && opt.position.toLowerCase().includes('principal'))
+      .map(opt => opt.value);
+    onSelectionChange([...validSelectedValues, ...principalValues.filter(v => !validSelectedValues.includes(v))]);
+  };
+
+  const selectAllTeachers = () => {
+    const teacherValues = options
+      .filter(opt => opt.position && opt.position.toLowerCase().includes('teacher'))
+      .map(opt => opt.value);
+    onSelectionChange([...validSelectedValues, ...teacherValues.filter(v => !validSelectedValues.includes(v))]);
+  };
+
   const getDisplayText = () => {
     if (validSelectedValues.length === 0) return placeholder;
     if (validSelectedValues.length === options.length) return "All selected";
@@ -74,12 +88,28 @@ const MultiSelectDropdown = ({
       {isOpen && !disabled && (
         <div className="dropdown-menu">
           <div className="dropdown-actions">
-            <button type="button" onClick={selectAll} className="dropdown-action-btn">
-              Select All
-            </button>
-            <button type="button" onClick={clearAll} className="dropdown-action-btn">
-              Clear All
-            </button>
+            {isAccountDropdown ? (
+              <>
+                <button type="button" onClick={selectAllPrincipals} className="dropdown-action-btn">
+                  Select All Principals
+                </button>
+                <button type="button" onClick={selectAllTeachers} className="dropdown-action-btn">
+                  Select All Teachers
+                </button>
+                <button type="button" onClick={clearAll} className="dropdown-action-btn">
+                  Clear All
+                </button>
+              </>
+            ) : (
+              <>
+                <button type="button" onClick={selectAll} className="dropdown-action-btn">
+                  Select All
+                </button>
+                <button type="button" onClick={clearAll} className="dropdown-action-btn">
+                  Clear All
+                </button>
+              </>
+            )}
           </div>
           
           <div className="dropdown-options">

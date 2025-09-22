@@ -50,7 +50,7 @@ const ToDoDetailPage = () => {
 
   // Auto-refresh logic
   // ✅ Then inside loadTask, set from backend ONLY if previously submitted
-  useEffect(() => {
+    useEffect(() => {
     const loadTask = async () => {
       if (!taskId || !schoolUserId) {
         setLoading(false);
@@ -61,16 +61,29 @@ const ToDoDetailPage = () => {
         setLoading(true);
         const enrichedTask = await fetchTaskDetails(taskId, schoolUserId, token);
         setTask(enrichedTask);
+
+        // ✅ Set completion status
         setIsCompleted(
           enrichedTask.assigned_response?.remarks === 'TURNED IN ON TIME' || 
           enrichedTask.assigned_response?.remarks === 'TURNED IN LATE'
         );
 
-        // ✅ ONLY populate attachedLinks from previously submitted links
-        if (enrichedTask.submitted_links && enrichedTask.submitted_links.length > 0) {
-          setAttachedLinks(enrichedTask.submitted_links.map(url => ({ url })));
+        // ✅ Populate attachedLinks from backend (for editing)
+        const submittedLinks = enrichedTask.assigned_response?.links || [];
+
+        if (submittedLinks && submittedLinks.length > 0) {
+          const normalized = submittedLinks.map(item =>
+            typeof item === 'string' ? { url: item } : item
+          );
+          setAttachedLinks(normalized);
+
+          // ✅ ALSO set submitted_links on task state so it's always available in UI
+          setTask(prev => ({
+            ...prev,
+            submitted_links: normalized // Preserve for display even after cancellation
+          }));
         } else {
-          setAttachedLinks([]); // Ensure empty if no prior submission
+          setAttachedLinks([]);
         }
 
       } catch (err) {
@@ -142,15 +155,23 @@ const ToDoDetailPage = () => {
       await updateTaskStatus(updatePayload, token);
       console.log("📤 Sending payload to backend:", JSON.stringify(updatePayload, null, 2));
 
-      // ✅ UPDATE TASK STATE to include submitted_links so they persist in UI
-      setTask(prevTask => ({
-        ...prevTask,
-        assigned_response: {
-          ...prevTask.assigned_response,
-          status_updated_at: new Date().toISOString()
-        },
-        submitted_links: attachedLinks.map(link => link.url) // ✅ Persist links in task state
-      }));
+      // ✅ UPDATE TASK STATE to include submitted_links AND update remarks so UI reflects completion status
+      setTask(prevTask => {
+        const now = new Date();
+        const deadline = new Date(prevTask.deadline);
+        const isOnTime = now <= deadline;
+        const newRemarks = isOnTime ? 'TURNED IN ON TIME' : 'TURNED IN LATE';
+
+        return {
+          ...prevTask,
+          assigned_response: {
+            ...prevTask.assigned_response,
+            remarks: newRemarks, // ✅ This ensures getRemarksStatusInfo picks up the right status
+            status_updated_at: new Date().toISOString()
+          },
+          submitted_links: attachedLinks.map(link => ({ url: link.url }))
+        };
+      });
 
       setRevisionLinks([]); // Optional: clear revisions if desired
       setIsCompleted(true);
@@ -185,11 +206,11 @@ const ToDoDetailPage = () => {
         assigned_response: {
           ...prevTask.assigned_response,
           remarks: 'PENDING'
-        },
-        submitted_links: [] // Clear submitted links on cancellation
+        }
       }));
 
-      setAttachedLinks([]); // Reset local state
+      // ✅ Repopulate editable links with previously submitted ones
+      setAttachedLinks(task?.submitted_links || []);
       setRevisionLinks([]);
       setIsCompleted(false);
       
