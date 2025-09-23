@@ -135,33 +135,157 @@
   font-style: italic;
 }
 
-/* Mobile Responsive Styles */
-@media (max-width: 768px) {
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
+
+@media (max-width: 767px) {
+  /* Main Page Layout */
   .task-detail-page {
-    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
+    padding: 16px 12px 80px; /* Extra bottom padding for safe area */
+    margin-right: 0;
+    gap: 0;
+    margin-top: 60px;
   }
-  
+
+  /* Left Panel (Task Description) */
   .task-detail-left {
+    flex: none;
     margin-top: 0;
-    order: 1;
+    width: 100%;
   }
-  
-  .task-detail-right {
-    margin-top: 0;
-    order: 2;
-  }
-  
+
+  /* Back Button */
   .task-back-btn {
-    margin-left: 0;
-    margin-bottom: 0;
-    padding: 10px 12px;
+    margin: 0 0 16px 0;
+    padding: 10px 8px;
+    font-size: 15px;
+    gap: 6px;
+  }
+
+  .task-back-btn .icon-md {
+    font-size: 20px;
+  }
+
+  /* Right Panel (School Stats) */
+  .task-detail-right {
+    flex: none;
+    margin-top: 24px;
+    width: 100%;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+  }
+
+  /* Loading State */
+  .loading {
+    padding-left: 0;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 40px;
+    color: #555;
+  }
+
+  /* Error Container */
+  .error-container {
+    padding: 20px;
+    text-align: center;
+    color: #d32f2f;
     font-size: 16px;
   }
-  
-  .task-back-btn span {
-    font-size: 20px;
+
+  .error-container small {
+    display: block;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #888;
+  }
+
+  /* Comment Section */
+  .task-comment-section {
+    margin-top: 10px;
+    padding: 16px;
+  }
+
+  .task-comment-section h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  /* Comments Toggle */
+  .comments-toggle-section {
+    margin-top: 16px;
+    padding: 0 12px;
+  }
+
+  .comments-toggle-btn {
+    font-size: 15px;
+    padding: 8px 0;
+  }
+
+  .comments-toggle-btn .icon-md {
+    font-size: 1.2rem;
+  }
+
+  /* No Comments Message */
+  .no-comments-message {
+    padding: 16px;
+    font-size: 14px;
+  }
+
+  .no-comments-message p {
+    font-size: 14px;
+  }
+}
+
+/* Extra Small Screens */
+@media (max-width: 375px) {
+  .task-detail-page {
+    padding: 12px 8px 70px;
+  }
+
+  .task-back-btn {
+    font-size: 14px;
+    padding: 8px 6px;
+  }
+
+  .task-back-btn .icon-md {
+    font-size: 18px;
+  }
+
+  .task-detail-left,
+  .task-detail-right {
+    padding: 0;
+  }
+
+  .task-comment-section {
+    padding: 14px;
+  }
+
+  .task-comment-section h3 {
+    font-size: 17px;
+  }
+
+  .comments-toggle-btn {
+    font-size: 14px;
+  }
+
+  .loading {
+    font-size: 15px;
+  }
+
+  .error-container {
+    font-size: 15px;
+  }
+
+  .error-container small {
+    font-size: 13px;
+  }
+
+  .no-comments-message {
+    padding: 14px;
+    font-size: 13px;
   }
 }

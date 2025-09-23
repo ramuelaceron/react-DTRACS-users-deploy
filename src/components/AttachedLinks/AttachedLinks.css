@@ -111,21 +111,4 @@
   border-top: 1px solid #e0e0e0;
 }
 
-/* Responsive design */
-@media (max-width: 600px) {
-  .al-overlay {
-    padding: 0.5rem;
-  }
-  
-  .al-header {
-    padding: 1rem;
-  }
-  
-  .al-body {
-    padding: 1rem;
-  }
-  
-  .al-footer {
-    padding: 1rem;
-  }
-}
+

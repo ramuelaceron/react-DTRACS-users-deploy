@@ -49,10 +49,20 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .home-greeting-section {
-  margin-bottom: 1rem;
+  margin-bottom: 0;
+}
+
+.home-logo {
+  width: 260px;
+  height: auto;
+  margin: 0 auto 1rem;
+  display: block;
 }
 
 .home-greeting-text {
@@ -61,7 +71,6 @@
   font-weight: 700;
   letter-spacing: 1.5px;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-  margin-bottom: 0.5rem; 
 }
 
 .home-welcome-text {
@@ -225,87 +234,124 @@
   animation: slideOut 0.5s forwards;
 }
 
-@keyframes slideOut {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
-}
+
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
 
 @media (max-width: 768px) {
   .home-blue-overlay {
-    width:100%;       /* Full width overlay */
-    height: 100%;       /* Adjust height automatically */
-    padding: 40px 20px; /* Mas maliit na padding */
-    position: relative; /* Para hindi fixed, scrollable na */
-    overflow:auto;
+    width: 100%;
+    padding: 40px 20px;
+    position: relative;
+    overflow-y: auto;
+    height: 100vh;
+    box-sizing: border-box;
   }
 
-  .home-greeting-section {
-    margin-left: 0;     /* Remove manual shift */
-    text-align: center; /* Center align */
-    position:relative;
-    bottom:1.5rem;    /* Keep aspect ratio */
+  .home-content-container {
+    padding: 0 10px;
+    gap: 1.5rem;
   }
 
-  .greeting-image {
-    max-width: 600px;   /* Smaller image for mobile */
-    height: auto;   
+  .home-logo {
+    width: 200px; /* Slightly smaller logo */
+    margin: 0 auto 1.5rem;
   }
 
-  .welcome-text {
-    font-size: 16px;
-    font-weight: 500;
-    white-space: normal; /*para pwede mag-wrap*/
+  .home-greeting-text {
+    font-size: 36px; /* Smaller heading */
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+
+  .home-welcome-text {
+    font-size: 14px;
+    padding: 0 10px;
     line-height: 1.4;
-    position: relative; 
-    bottom: 55px;
-    margin: 0 auto;   /* center text */
-    text-align: center;   
   }
 
   .home-instruction-section {
-    flex-direction: row; /* Stack arrow + text */
-    justify-content: center;
-    gap: 1rem;
-  
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .home-arrow-icon {
+    font-size: 24px;
+    animation: bounce 2s infinite;
   }
 
   .home-instruction-text {
-    font-size: 16px;
-    font-weight: 300;
-    letter-spacing: 1px;
-    position: relative;
-    bottom: 45px;
+    font-size: 14px;
+    text-align: center;
   }
 
   .home-button-group {
-      flex-direction: column; /* Stack buttons vertically */
-      gap: 0.8rem;
-      align-items: center;    /* Center sa mobile */
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
   }
 
   .home-btn-school,
   .home-btn-office {
-    width: 100%;          /* Full width button */
-    max-width: 250px;     /* Limit para di sobrang lapad */
-    position: relative;
-    bottom: 45px;
+    width: 100%;
+    max-width: 250px;
+    height: 50px;
+    font-size: 1.1rem;
   }
 
   .home-terms-disclaimer {
     font-size: 12px;
-    max-width: 100%;
+    padding: 0 15px;
     text-align: center;
+  }
+
+  .home-link {
+    font-size: 12px;
+  }
+}
+
+/* Optional: Extra small devices (e.g. iPhone SE) */
+@media (max-width: 480px) {
+  .home-logo {
+    margin-top: -65px;
+    width: 200px;
+    margin-bottom: 1.2rem;
+  }
+
+  .home-greeting-text {
+    font-size: 36px;
+  }
+
+  .home-welcome-text {
+    font-size: 13px;
+  }
+
+  .home-btn-school,
+  .home-btn-office {
+    height: 48px;
+    width: 200px;
+    font-size: 1rem;
+  }
+
+  .home-instruction-text {
+    font-size: 13px;
   }
 
   .home-arrow-icon {
-    position: relative;
-    bottom: 43px;
-    align-items:center;
+    font-size: 22px;
   }
+}
 
-  .home-content-container {
-    text-align: center;
-    width: 100%;
-    margin: 0 auto;
+/* Smooth bounce animation for arrow (if not already defined) */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
   }
 }

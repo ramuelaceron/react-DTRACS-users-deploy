@@ -82,40 +82,99 @@
   padding-right: 36px; /* Make room for custom arrow */
 }
 
-@media (max-width: 768px) {
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
+
+@media (max-width: 767px) {
   .task-tabs-container {
-    flex-direction: column;   
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: baseline;
     gap: 12px;
+    padding: 12px 0;
     margin-left: 0;
-    padding: 8px 12px;
-    position: relative;
-    top: 30px;
-    overflow-x: hidden;
+    border-bottom: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
 
   .task-tabs {
-    flex-wrap: wrap;          /* allow wrapping if tabs are many */
-    gap: 12px;
-    width: 100%;
+    display: flex;
+    gap: 10px;
+    justify-content: space-around;
+    padding: 0 8px;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  .task-tabs::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
   }
 
   .task-tab {
+    padding: 12px 8px;
     font-size: 14px;
-    padding: 10px 0;
+    white-space: nowrap;
+    position: relative;
+    flex: 1;
+    text-align: center;
+    max-width: 33%;
   }
 
-  .task-dropdown {
-    width: 100%;     /* make dropdown full width */
-    min-width: unset;
-    font-size: 14px;
-    padding: 10px 36px 10px 12px;
+  .task-tab::after {
+    height: 3px;
+    bottom: -1px;
   }
 
   .task-indicator {
-    top: 4px;
-    right: -8px;
+    top: 6px;
+    padding-left: 1px;
     width: 6px;
     height: 6px;
+  }
+
+  .task-dropdown {
+    width: 100%;
+    min-width: auto;
+    padding: 12px 36px 12px 16px;
+    font-size: 14px;
+    border-radius: 8px;
+    background-position: right 12px center;
+    background-size: 14px 14px;
+  }
+}
+
+/* Extra Small Screens */
+@media (max-width: 375px) {
+  .task-tab {
+    padding: 10px 4px;
+    font-size: 13px;
+  }
+
+  .task-indicator {
+    width: 5px;
+    height: 5px;
+    right: 6px;
+  }
+
+  .task-dropdown {
+    padding: 10px 32px 10px 14px;
+    font-size: 13px;
+  }
+
+  .no-section-container {
+    padding: 20px 16px;
+  }
+
+  .no-section-container h2 {
+    font-size: 18px;
+  }
+
+  .no-section-container p {
+    font-size: 13px;
   }
 }

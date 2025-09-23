@@ -5,7 +5,7 @@ import { FiCheckSquare } from "react-icons/fi";
 import { MdManageAccounts } from "react-icons/md";
 import { IoChevronDown } from "react-icons/io5";
 import { useSidebar } from "../../context/SidebarContext";
-import "./SchoolSidebar.css";
+import "./Sidebar.css";
 
 const SchoolSidebar = ({ isExpanded }) => {
   const { toggleSidebar, openDropdown, toggleDropdown } = useSidebar();

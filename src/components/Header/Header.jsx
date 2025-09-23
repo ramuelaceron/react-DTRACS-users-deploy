@@ -54,11 +54,22 @@ const Header = ({ toggleSidebar }) => {
   };
 
   const handleSignOut = () => {
+    // Save role before clearing session
+    const role = currentUser?.role;
+
+    // Clear session
     sessionStorage.removeItem("currentUser");
     setCurrentUser(null);
     setAvatarProps(null);
     console.log("Signing out...");
-    navigate("/");
+
+    // Redirect using `replace` so user cannot go back to protected page
+    if (role === "office") {
+      window.location.replace("/login/office");
+    } else {
+      window.location.replace("/login/school");
+    }
+
     setIsDropdownOpen(false);
   };
 

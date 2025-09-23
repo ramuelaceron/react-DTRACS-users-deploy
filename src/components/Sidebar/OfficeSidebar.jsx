@@ -1,5 +1,5 @@
 import React from "react";
-import "./OfficeSidebar.css";
+import "./Sidebar.css";
 import { FaTasks } from "react-icons/fa"; // Task icon
 import { RiSchoolFill } from "react-icons/ri"; // Schools icon
 import { MdManageAccounts } from "react-icons/md"; // Manage Account icon

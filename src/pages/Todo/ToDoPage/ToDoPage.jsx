@@ -47,12 +47,21 @@ const ToDoPage = () => {
         }
       );
 
+      // ❗ Only throw if HTTP error (non-2xx)
       if (!tasksResponse.ok) {
-        throw new Error(`Failed to fetch tasks: ${tasksResponse.statusText}`);
+        throw new Error(`HTTP ${tasksResponse.status}: ${tasksResponse.statusText}`);
       }
 
       const tasks = await tasksResponse.json();
-      console.log("📥 Raw tasks from API:", tasks); // 👈 ADD THIS
+      console.log("📥 Raw tasks from API:", tasks);
+
+      // ✅ If tasks is empty array, just proceed with empty state
+      if (!Array.isArray(tasks)) {
+        console.warn("Tasks response is not an array:", tasks);
+        setTasks({});
+        setError(null);
+        return;
+      }
 
       // ✅ Step 2: For each task, fetch its assignments
       const assignmentPromises = tasks.map(async (task) => {
@@ -82,7 +91,7 @@ const ToDoPage = () => {
       const allAssignments = assignmentResults.flatMap(result => 
         result.assignments.map(assignment => ({
           ...assignment,
-          task_id: result.task_id // Ensure task_id is attached
+          task_id: result.task_id
         }))
       );
 
@@ -109,9 +118,7 @@ const ToDoPage = () => {
       setError(null); // Clear any previous error
     } catch (err) {
       console.error("Error fetching tasks or assignments:", err);
-      setError(err.message || "Failed to load tasks. Please try again.");
     } finally {
-      // ✅ CRITICAL: Always turn off loading, even if error
       setLoading(false);
       setHasLoaded(true);
     }

@@ -128,24 +128,151 @@
   font-size: 1rem;
 }
 
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
+
 @media (max-width: 768px) {
+  .task-list-page {
+    padding: 12px;
+    margin-top: 50px;
+    min-height: calc(100vh - 50px);
+  }
+
   .header {
-    display: flex;
+    flex-direction: row; /* Keep horizontal */
     align-items: center;
     background-color: #1a3666;
     color: white;
-    padding: 16px 24px;
+    padding: 14px 16px;
     border-radius: 8px;
     margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: relative;
-    top: 15px;
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .avatar-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .header-info h1 {
+    font-size: 1.2rem;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .header-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.9;
+    line-height: 1.2;
+  }
+
+  .task-list {
+    gap: 10px;
+  }
+
+  .task-item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .task-content h3 {
+    font-size: 1.05rem;
+  }
+
+  .task-content .due-time {
+    font-size: 0.8rem;
+  }
+
+  .view-task-btn {
+    align-self: flex-end;
+    width: 100%;
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .no-tasks-container {
+    padding: 16px 12px;
   }
 
   .no-tasks {
-    margin: 0;
+    font-size: 0.95rem;
+  }
+}
+
+/* Small phones (e.g., iPhone SE) */
+@media (max-width: 480px) {
+  .task-list-page {
+    padding: 8px;
+    margin-top: 65px;
+    min-height: calc(100vh - 40px);
+  }
+
+  .header {
+    padding: 12px 10px;
+  }
+
+  .avatar {
+    width: 85px;
+    height: 55px;
+    margin-right: -1px;
+  }
+
+  .avatar-fallback {
+    font-size: 16px;
+  }
+
+  .header-info h1 {
+    font-size: 1.1rem;
+  }
+
+  .header-info p {
+    font-size: 0.8rem;
+  }
+
+  .task-item {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .task-content h3 {
     font-size: 1rem;
-    position: relative;
-    top: 10px;
+  }
+
+  .task-content .due-time {
+    font-size: 0.68rem;
+  }
+
+  .view-task-btn {
+    padding: 8px;
+    font-size: 0.875rem;
   }
 }

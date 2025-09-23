@@ -141,25 +141,3 @@
   margin: 0;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .task-actions {
-    gap: 10px;
-  }
-  
-  .task-actions-link-btn,
-  .task-actions-complete-btn,
-  .task-actions-cancel-btn,
-  .task-actions-status-completed {
-    padding: 8px 12px;
-    font-size: 13px;
-  }
-}
-
-@media (max-width:768px){
-  .task-actions {
-  position:relative;
-  top:1rem;
-  margin-bottom: 5px;
-}
-}

@@ -60,20 +60,22 @@ const ToDoPastDue = () => {
     }));
   };
 
-  // Get appropriate empty message based on filter
   const getEmptyMessage = () => {
     switch (selectedSort) {
       case "today":
         return selectedOffice === "All Offices"
-          `No tasks due today for ${selectedOffice}.`;
+          ? "No tasks due today."
+          : `No tasks due today for ${selectedOffice}.`;
       case "week":
         return selectedOffice === "All Offices"
-          `No tasks due this week for ${selectedOffice}.`;
+          ? "No tasks due this week."
+          : `No tasks due this week for ${selectedOffice}.`;
       case "month":
         return selectedOffice === "All Offices"
-          `No tasks due this month for ${selectedOffice}.`;
+          ? "No tasks due this month."
+          : `No tasks due this month for ${selectedOffice}.`;
       default:
-        return getOfficeEmptyMessage("pastdue");
+        return getOfficeEmptyMessage("Upcoming");
     }
   };
 

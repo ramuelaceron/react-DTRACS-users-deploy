@@ -1,0 +1,198 @@
+.sidebar {
+  position: fixed;
+  top: 70px; /* header height */
+  left: 0;
+  width: 70px; 
+  height: calc(105vh - 64px);
+  background-color: #f4f5f7;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  z-index: 900;
+  overflow: hidden;
+  transition: width 0.2s ease;
+}
+
+.sidebar.expanded {
+  width: 220px; 
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav li {
+  margin: 0;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  padding: 0 12px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: #203061;
+}
+
+.sidebar-link:hover {
+  background-color: #e0e0e0;
+}
+
+.sidebar-icon {
+  margin-left: 10px;  
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.sidebar-text {
+  margin-left: 12px;
+  font-size: 16px;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar-link.active {
+  background-color: #203061; /* Blue background when active */
+  color: white;              /* Make text/icon white */
+}
+
+.sidebar-link.active .sidebar-icon {
+  color: white; /* Icons also turn white when active */
+}
+
+.sidebar-link-dropdown-toggle {
+  display: flex;
+  background-color: #f4f5f7;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  height: 60px;
+  padding: 0 12px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: #203061;
+}
+
+.sidebar-link-dropdown-toggle:hover {
+  background-color: #e0e0e0;
+}
+
+.dropdown-icon {
+  margin-left: auto; /* push to right */
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-icon.open {
+  transform: rotate(180deg); /* rotate when open */
+}
+
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
+
+@media (max-width: 768px) {
+  .sidebar {
+    top: 60px; /* Adjust for mobile header height */
+    width: 0;
+    height: calc(100vh - 60px);
+    z-index: 1000;
+    box-shadow: none;
+  }
+
+  .sidebar.expanded {
+    width: 260px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+  }
+
+  .sidebar-nav {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Smooth iOS scroll */
+  }
+
+  .sidebar-link,
+  .sidebar-link-dropdown-toggle {
+    height: 56px;
+    padding: 0 16px;
+  }
+
+  .sidebar-icon {
+    margin-left: 0;
+    font-size: 22px;
+  }
+
+  .sidebar-text {
+    font-size: 15px;
+    margin-left: 14px;
+  }
+
+  .dropdown-icon {
+    font-size: 20px;
+  }
+
+  /* Submenu adjustments */
+  .sidebar-submenu {
+    background-color: #f0f2f5;
+    border-left: 3px solid #203061;
+  }
+
+  .sidebar-submenu .sidebar-link {
+    padding-left: 36px;
+    height: 50px;
+    background-color: transparent;
+    color: #203061;
+  }
+
+  .sidebar-submenu .sidebar-link:hover {
+    background-color: #e6e9ed;
+  }
+
+  .sidebar-submenu .sidebar-link.active {
+    background-color: #203061;
+    color: white;
+  }
+
+  /* Hide text when sidebar is collapsed on mobile */
+  .sidebar:not(.expanded) .sidebar-text,
+  .sidebar:not(.expanded) .dropdown-icon {
+    display: none;
+  }
+
+  .sidebar:not(.expanded) .sidebar-icon {
+    margin: 0 auto; /* Center icon when collapsed */
+  }
+}
+
+/* Extra small devices (e.g., iPhone SE) */
+@media (max-width: 480px) {
+  .sidebar.expanded {
+    width: 50vw; /* Full screen on very small devices */
+  }
+
+  .sidebar-link,
+  .sidebar-link-dropdown-toggle {
+    height: 52px;
+    padding: 0 12px;
+  }
+
+  .sidebar-text {
+    font-size: 14px;
+  }
+
+  .sidebar-submenu .sidebar-link {
+    padding-left: 5px;
+    height: 48px;
+  }
+}

@@ -18,7 +18,7 @@ html, body {
   align-items: center;
   justify-content: space-between;
   background-color: #203061;
-  height: 60px; /* Reduced height for mobile */
+  height: 70px; /* Reduced height for mobile */
   padding: 0 16px;
   position: fixed;
   top: 0;
@@ -260,123 +260,160 @@ hr {
   border: 2px solid #fff;
 }
 
-/* Mobile-specific styles */
-@media (max-width: 480px) {
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
+
+@media (max-width: 768px) {
   .app-header {
-    height: 60px;
+    height: 60px; /* Slightly shorter */
     padding: 0 12px;
   }
-  
+
   .menu-btn {
     font-size: 24px;
-    padding: 6px;
     margin-right: 8px;
+    padding: 6px;
   }
-  
+
   .logo-w-text {
-    width: 120px;
-    height: 28px;
+    width: 14rem; /* Smaller logo */
+    height: auto;
+    max-height: 36px;
   }
-  
+
   .profile-icon-wrapper {
     width: 36px;
     height: 36px;
   }
-  
+
   .profile-sub-icon {
     width: 14px;
     height: 14px;
     font-size: 12px;
+    bottom: -1px;
+    right: -1px;
   }
-  
+
   .prf-dropdown {
-    width: calc(100vw - 24px);
-    right: 6px;
-    border-radius: 10px;
+    width: 260px;
+    font-size: 14px;
+    margin-top: 6px;
+    margin-right: 0;
+    right: 8px; /* Don't stick to edge */
   }
-  
+
   .prf-info {
-    padding: 14px;
+    padding: 12px 16px;
+    gap: 10px;
   }
-  
+
+  .prf-details strong {
+    font-size: 14px;
+  }
+
+  .prf-email {
+    font-size: 12px;
+  }
+
   .prf-dropdown-item {
-    padding: 14px;
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+
+  .prf-dropdown-item svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .header-profile-avatar-img,
+  .prf-avatar-generated {
+    width: 40px;
+    height: 40px;
+  }
+
+  .generated-avatar {
+    font-size: 14px;
+  }
+
+  .profile-icon-wrapper .generated-avatar {
+    width: 36px;
+    height: 36px;
     font-size: 14px;
   }
 }
 
-/* Safe area insets for notch phones */
-@supports(padding: max(0px)) {
+/* Extra Small Devices (e.g., iPhone SE, 320px wide) */
+@media (max-width: 480px) {
   .app-header {
-    padding-left: max(16px, env(safe-area-inset-left));
-    padding-right: max(16px, env(safe-area-inset-right));
-    padding-top: env(safe-area-inset-top);
-    height: calc(70px + env(safe-area-inset-top));
+    height: 60px;
+    padding: 0 8px;
   }
-  
+
+  .logo-w-text {
+    width: 12rem;
+    max-height: 32px;
+  }
+
+  .menu-btn {
+    font-size: 22px;
+    margin-right: 6px;
+    padding: 4px;
+  }
+
+  .profile-icon-wrapper {
+    width: 32px;
+    height: 32px;
+  }
+
+  .profile-sub-icon {
+    width: 12px;
+    height: 12px;
+    font-size: 10px;
+  }
+
   .prf-dropdown {
-    top: calc(100% + env(safe-area-inset-top));
+    width: 240px;
+    right: 4px;
   }
-  
-  @media (max-width: 480px) {
-    .app-header {
-      height: calc(60px + env(safe-area-inset-top));
-    }
-    
-    .prf-dropdown {
-      top: calc(100% + env(safe-area-inset-top));
-    }
-  }
-}
 
-/* Prevent body scrolling when dropdown is open */
-body.dropdown-open {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-}
+  .prf-info {
+    padding: 10px 12px;
+  }
 
-/* Touch device optimizations */
-@media (hover: none) and (pointer: coarse) {
-  .menu-btn:hover,
-  .profile-btn:hover,
-  .prf-dropdown-item:hover {
-    background: none;
+  .prf-details strong {
+    font-size: 13px;
   }
-  
-  .menu-btn:active,
-  .profile-btn:active,
-  .prf-dropdown-item:active {
-    background: rgba(255, 255, 255, 0.15);
-  }
-  
-  .prf-dropdown-item:active {
-    background-color: #f0f8ff;
-  }
-}
 
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .app-header {
-    border-bottom: 2px solid #000;
+  .prf-email {
+    font-size: 11px;
   }
-  
-  .prf-dropdown {
-    border: 2px solid #000;
-  }
-  
-  hr {
-    border-top: 2px solid #000;
-  }
-}
 
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  .menu-btn,
-  .profile-icon-wrapper,
-  .prf-dropdown,
   .prf-dropdown-item {
-    transition: none;
-    animation: none;
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+
+  .prf-dropdown-item svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .header-profile-avatar-img,
+  .prf-avatar-generated {
+    width: 36px;
+    height: 36px;
+  }
+
+  .generated-avatar {
+    font-size: 13px;
+  }
+
+  .profile-icon-wrapper .generated-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
   }
 }

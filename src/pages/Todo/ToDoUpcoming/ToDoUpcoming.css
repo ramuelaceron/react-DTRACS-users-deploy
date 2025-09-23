@@ -334,14 +334,270 @@
   }
 }
 
-@media (max-width: 480px) {
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
+
+@media (max-width: 767px) {
+  /* App & Main Layout */
+  .upcoming-app {
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  .upcoming-main {
+    padding: 16px;
+    padding-top: 24px;
+  }
+
+  /* Date Group Header */
+  .upcoming-date-group {
+    margin-bottom: 24px;
+  }
+
+  .upcoming-date-header {
+    padding: 12px 0;
+    font-size: 14px;
+    gap: 6px;
+    align-items: center;
+    flex-direction: row;
+  }
+
+  .upcoming-date-bold {
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  .upcoming-weekday {
+    font-size: 13px;
+    color: #999;
+  }
+
+  .upcoming-header-actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: -30px;
+    gap: 8px;
+  }
+
+  .upcoming-task-count {
+    font-size: 11px;
+    padding: 3px 7px;
+    margin-right: 0;
+    background-color: rgba(33, 150, 243, 0.1);
+    border-radius: 10px;
+  }
+
+  .upcoming-dropdown-arrow {
+    font-size: 18px;
+    width: 26px;
+    height: 26px;
+    margin-right: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .upcoming-dropdown-arrow svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Task Item */
+  .upcoming-task-item {
+    padding: 14px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .upcoming-task-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    border-color: #2196f3;
+  }
+
+  .upcoming-task-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 0;
+    background-color: #2196f3;
+    transition: height 0.3s ease;
+  }
+
+  .upcoming-task-item:hover::before {
+    height: 100%;
+  }
+
+  /* Task Header - Stack vertically */
+  .upcoming-task-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  /* Icon - Left-aligned */
+  .upcoming-task-icon {
+    width: 40px;
+    height: 40px;
+    background: #2196f3;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .upcoming-task-item:hover .upcoming-task-icon {
+    transform: scale(1.05);
+    background-color: #0d8bf2;
+  }
+
+  /* Task Info - Title + Office */
+  .upcoming-task-info {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .upcoming-task-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.4;
+  }
+
+  .upcoming-task-office {
+    font-size: 12px;
+    color: #555;
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Deadline - Right-aligned */
+  .upcoming-task-deadline {
+    font-size: 12px;
+    color: #555;
+    margin-top: -2px;
+    padding-left: 58px;
+    text-align: left;
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  .upcoming-time {
+    font-weight: 600;
+    color: #000;
+  }
+
+  /* Task Link */
+  .upcoming-task-link {
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .upcoming-task-link:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* No Tasks & Loading */
+  .upcoming-no-tasks {
+    margin-top: 30px;
+    font-size: 14px;
+    padding: 16px;
+    text-align: center;
+    color: #888;
+    font-style: italic;
+  }
+
+  .upcoming-loading {
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .upcoming-spinner {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* Extra Small Screens */
+@media (max-width: 375px) {
+  .upcoming-main {
+    padding: 12px;
+    padding-top: 20px;
+  }
+
+  .upcoming-date-header {
+    padding: 10px 0;
+  }
+
+  .upcoming-date-bold {
+    font-size: 14px;
+  }
+
   .upcoming-task-item {
     padding: 12px;
   }
-  
+
   .upcoming-task-icon {
     width: 32px;
     height: 32px;
     font-size: 16px;
+  }
+
+  .upcoming-task-title {
+    font-size: 15px;
+  }
+
+  .upcoming-task-deadline {
+    font-size: 11px;
+  }
+
+  .upcoming-time {
+    font-size: 11px;
+  }
+
+  .upcoming-dropdown-arrow {
+    width: 24px;
+    height: 24px;
+  }
+
+  .upcoming-dropdown-arrow svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .upcoming-task-count {
+    font-size: 10px;
+    padding: 2px 6px;
   }
 }

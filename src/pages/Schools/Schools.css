@@ -138,71 +138,176 @@
   color: #0056b3;
 }
 
-@media (max-width: 768px) {
-  .admin-section {
-    padding: clamp(1rem, 3vw, 2rem);
-    padding-top: clamp(2rem, 5vw, 4rem);
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
+
+@media (max-width: 767px) {
+  /* Main Section */
+  .admin-school-section {
+    padding: 18px 14px;
+    max-width: 100%;
   }
 
+  /* Header */
   .admin-school-header {
-    flex-direction: column;   /* stack title + actions */
+    padding-top: 60px;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
-    padding-top: clamp(1.5rem, 4vw, 2.5rem);
+    gap: 8px;
   }
 
   .admin-school-title {
-    font-size: clamp(24px, 4vw, 24px);
-    position:relative;
-    top: 3.5rem;
-    right: 8.5rem;
+    font-size: 20px;
+    margin: 0;
   }
 
+  /* School List */
   .admin-school-list {
-    padding-left: clamp(0.5rem, 2vw, 2.5rem);
-    gap: 0.5rem;
-    position:relative;
-    top: 4.5rem;
+    padding: 0;
+    gap: 12px;
   }
 
+  /* School Item */
   .admin-school-item {
-    flex-wrap: wrap;  /* auto wrap kapag maliit ang space */
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-    padding: 5px 0;
-    border-bottom: 1px solid #eee;
-    position: relative;
-    bottom: 10px;
+    align-items: stretch;
+    padding: 14px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f0f0f0;
+    gap: 12px;
   }
 
+  /* School Info */
   .admin-school-info {
-    gap: clamp(6px, 2vw, 12px);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
   }
 
   .admin-school-logo {
-    width: clamp(35px, 8vw, 50px);
-    height: clamp(35px, 8vw, 50px);
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+  }
+
+  .admin-school-text {
+    flex: 1;
+    min-width: 0;
   }
 
   .admin-schoolname {
-    font-size: clamp(13px, 3.5vw, 16px);
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+    padding-top: 0;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .admin-school-address {
-    font-size: clamp(10px, 2.5vw, 12px);
+    font-size: 12px;
+    color: #555;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
-  .admin-account-count,
+  /* Account Count Link */
   .admin-account-count-link {
-    font-size: clamp(11px, 3vw, 14px);
-    gap: 0.20rem;
-    position: relative;
-    bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #2196F3;
+    padding: 8px 12px;
+    background-color: rgba(33, 150, 243, 0.1);
+    border-radius: 6px;
+    text-decoration: none;
+    width: fit-content;
+    align-self: flex-start;
+    transition: all 0.2s ease;
+  }
+
+  .admin-account-count-link:hover {
+    color: #0b7dda;
+    background-color: rgba(33, 150, 243, 0.2);
+    transform: translateY(-1px);
   }
 
   .admin-account-image {
-    width: clamp(12px, 3vw, 14px);
-    height: clamp(12px, 3vw, 14px);
+    width: 16px;
+    height: 16px;
+    color: #2196F3;
+  }
+
+  .admin-account-count span {
+    font-weight: 500;
+  }
+
+  .admin-account-count span:hover {
+    text-decoration: underline;
+    color: #0b7dda;
+  }
+}
+
+/* Extra Small Screens */
+@media (max-width: 375px) {
+  .admin-school-section {
+    padding: 12px 8px;
+  }
+
+  .admin-school-header {
+    padding-top: 16px;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+  }
+
+  .admin-school-title {
+    font-size: 18px;
+  }
+
+  .admin-school-list {
+    gap: 10px;
+  }
+
+  .admin-school-item {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .admin-school-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .admin-schoolname {
+    font-size: 15px;
+  }
+
+  .admin-school-address {
+    font-size: 11px;
+  }
+
+  .admin-account-count-link {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+
+  .admin-account-image {
+    width: 14px;
+    height: 14px;
   }
 }

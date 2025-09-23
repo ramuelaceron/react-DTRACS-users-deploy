@@ -214,7 +214,7 @@ const ToDoDetailPage = () => {
       setRevisionLinks([]);
       setIsCompleted(false);
       
-      toast.info("Submission cancelled. Task is now pending.");
+      toast.info("Submission cancelled");
 
     } catch (err) {
       console.error("Revert error:", err);

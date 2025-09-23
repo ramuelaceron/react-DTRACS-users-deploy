@@ -438,181 +438,212 @@
   color: white;
 }
 
-/* ==================== */
-/*  Responsive Design   */
-/* ==================== */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
 
-@media (max-width: 768px) {
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
+
+@media (max-width: 767px) {
+  /* App & Main Layout */
   .todo-detail-app {
-    padding: 0;
-  }
-  
-  .todo-detail-main {
-    padding: 20px 16px;
-    margin-top: 20px;
+    min-height: 100vh; /* Use full viewport on mobile */
+    margin-top: 0;
   }
 
+  .todo-detail-main {
+    padding: 16px;
+    margin-top: 60px;
+  }
+
+  /* Back Button */
   .todo-back-btn {
     margin-bottom: 20px;
-    margin-left: 0;
-    top: 0;
-    padding: 6px 0;
+    font-size: 14px;
   }
 
+  /* Header */
   .todo-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: 12px;
-    margin-bottom: 15px;
   }
 
   .todo-title {
     font-size: 20px;
-    line-height: 1.3;
-    white-space: normal;
-    word-break: break-word;
-    top: 0;
-    order: 1;
   }
 
   .todo-status {
-    font-size: 13px;
-    align-self: flex-start;
-    top: 0;
-    order: 2;
+    font-size: 12px;
   }
 
-  .todo-icon {
-    display: none;
-  }
-
+  /* Meta Info */
   .todo-meta {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-    font-size: 12px;
-    margin-bottom: 15px;
-    top: 0;
+    gap: 4px;
+    font-size: 11px;
   }
 
-  .divider {
-    margin: 12px 0;
-    top: 0;
+  .todo-due {
+    text-align: left;
   }
 
+  /* Author */
   .todo-author {
-    font-size: 12px;
-    margin-bottom: 15px;
-    top: 0;
+    font-size: 11px;
+    margin-bottom: 16px;
   }
 
+  /* Description */
   .todo-description {
-    font-size: 14px;
-    line-height: 1.5;
-    margin-bottom: 20px;
-    top: 0;
-    padding: 12px;
+    font-size: 0.9rem;
+    padding: 0.75rem;
   }
 
-  /* Links section adjustments */
-  .todo-links-section1, 
-  .todo-links-section3 {
-    margin-top: 0;
+  /* Links Sections */
+  .todo-links-section1,
+  .todo-links-section2,
+  .todo-links-section3,
+  .revision-section {
     margin-left: 0;
-    padding-bottom: 20px;
+    margin-right: 0;
+    padding: 0 0 16px 0;
   }
 
   .todo-links-title1,
-  .todo-links-title2 {
+  .todo-links-title2,
+  .revision-title {
     font-size: 13px;
   }
 
-  /* Attached links adjustments */
-  .attached-links-section {
-    margin: 1rem 0;
-  }
-
-  .attached-link-item {
-    padding: 12px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .attached-link-icon {
-    margin-right: 0;
-    font-size: 18px;
-  }
-
-  .link-info {
-    margin-right: 0;
-    width: 100%;
-  }
-
-  .attached-link-url {
-    white-space: normal;
+  .todo-link-item2 {
+    padding: 0.5rem;
     font-size: 13px;
   }
 
-  .attached-item-remove-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    margin-left: 0;
+  .todo-link1,
+  .todo-link2 {
+    font-size: 13px;
   }
 
-  /* Button container adjustments */
-  .task-actions-container {
+  /* Task Actions */
+  .task-actions {
     flex-direction: column;
-    gap: 10px;
-    margin-top: 15px;
+    align-items: stretch;
+    gap: 12px;
   }
 
-  .action-btn {
+  .task-actions-buttons-container {
     width: 100%;
+    justify-content: center;
+  }
+
+  .task-actions-link-btn,
+  .task-actions-complete-btn,
+  .task-actions-cancel-btn {
+    width: 100%;
+    justify-content: center;
     padding: 10px 16px;
     font-size: 14px;
   }
+
+  .task-actions-status-completed {
+    justify-content: center;
+    padding: 10px 16px;
+  }
+
+  /* Shared Button */
+  .shared-button--small,
+  .shared-button--medium,
+  .shared-button--large {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Attached Links Modal */
+  .al-modal {
+    margin: 1rem;
+    max-width: none;
+  }
+
+  .al-header,
+  .al-body,
+  .al-footer {
+    padding: 1rem;
+  }
+
+  .al-form-input {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .al-form-label {
+    font-size: 13px;
+  }
+
+  /* Loading & Error States */
+  .loading-container,
+  .error-container {
+    padding: 20px 16px;
+  }
+
+  .loading-container p,
+  .error-container p {
+    font-size: 16px;
+  }
+
+    /* Adjust Toastify container and toast styles for mobile */
+  .Toastify__toast-container--top-right {
+    top: 10px !important;
+    right: 10px !important;
+    left: auto !important;
+    width: 250px !important;
+    max-width: 85% !important; /* Decrease max width */
+  }
+
+  .Toastify__toast {
+    min-height: auto !important;
+    padding: 16px 14px !important; /* Reduce padding for smaller height */
+    font-size: 13px !important;
+  }
+
+  .Toastify__toast-body {
+    padding: 0 !important;
+  }
+
+  /* Optional: Adjust icon size if needed */
+  .Toastify__toast-icon {
+    width: 16px !important;
+    height: 16px !important;
+    margin-right: 8px !important;
+  }
 }
 
-@media (max-width: 480px) {
+/* Optional: Extra small screens (e.g., iPhone SE) */
+@media (max-width: 375px) {
   .todo-detail-main {
-    padding: 16px 12px;
-    margin-top: 15px;
+    padding: 14px;
   }
 
   .todo-title {
     font-size: 18px;
   }
 
-  .todo-status {
-    font-size: 12px;
-  }
-
-  .todo-description {
+  .task-actions-link-btn,
+  .task-actions-complete-btn,
+  .task-actions-cancel-btn,
+  .shared-button {
+    padding: 8px 12px;
     font-size: 13px;
-    padding: 10px;
   }
 
-  .attached-link-item {
-    padding: 10px;
+  .al-header h3 {
+    font-size: 1rem;
   }
 
-  .attached-link-url {
-    font-size: 12px;
-  }
-
-  .attached-link-icon {
-    font-size: 1.1rem;
-    margin-right: 0.5rem;
-  }
-
-  .attached-link-url {
-    font-size: 0.85rem;
-  }
-
-  .attached-item-remove-btn {
-    font-size: 1.1rem;
-    padding: 0.2rem;
+  .al-form-input {
+    padding: 8px;
+    font-size: 13px;
   }
 }
+

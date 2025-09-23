@@ -44,11 +44,46 @@
   font-size: 14px;
 }
 
-@media (max-width: 768px) {
-  .no-section-container {
-    padding: 20px;
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
+
+@media (max-width: 767px) {
+  .task-layout {
+    margin-top: 55px;
+    padding: 0 12px;
+    min-height: 100vh;
   }
+
+  /* No Section Page */
+  .no-section-page {
+    padding: 16px;
+    min-height: calc(100vh - 56px); /* Adjust for mobile navbar */
+  }
+
+  .no-section-container {
+    padding: 24px 20px;
+    margin: 0 auto;
+    max-width: 100%;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  }
+
   .no-section-container h2 {
     font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .no-section-container p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+
+  .no-section-container .note {
+    margin-top: 20px;
+    padding-top: 20px;
+    font-size: 13px;
   }
 }

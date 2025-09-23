@@ -234,18 +234,6 @@ const TaskPage = () => {
     );
   }
 
-  // Remove the error display - we'll handle empty states in child components
-  // if (error) {
-  //   return (
-  //     <div className="error-container" style={{ padding: "2rem", textAlign: "center", color: "red" }}>
-  //       <p>❌ Failed to load tasks: {error}</p>
-  //       <button onClick={() => window.location.reload()} style={{ marginTop: "1rem", padding: "0.5rem 1rem" }}>
-  //         Retry
-  //       </button>
-  //     </div>
-  //   );
-  // }
-
   const sortTasks = (tasks, sortOption) => {
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());

@@ -334,14 +334,270 @@
   }
 }
 
-@media (max-width: 480px) {
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
+
+@media (max-width: 767px) {
+  /* App & Main Layout */
+  .pastdue-app {
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  .pastdue-main {
+    padding: 16px;
+    padding-top: 24px;
+  }
+
+  /* Date Group Header */
+  .pastdue-date-group {
+    margin-bottom: 24px;
+  }
+
+  .pastdue-date-header {
+    padding: 12px 0;
+    font-size: 14px;
+    gap: 6px;
+    align-items: center;
+    flex-direction: row;
+  }
+
+  .pastdue-date-bold {
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  .pastdue-weekday {
+    font-size: 13px;
+    color: #999;
+  }
+
+  .pastdue-header-actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: -30px;
+    gap: 8px;
+  }
+
+  .pastdue-task-count {
+    font-size: 11px;
+    padding: 3px 7px;
+    margin-right: 0;
+    background-color: rgba(33, 150, 243, 0.1);
+    border-radius: 10px;
+  }
+
+  .pastdue-dropdown-arrow {
+    font-size: 18px;
+    width: 26px;
+    height: 26px;
+    margin-right: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .pastdue-dropdown-arrow svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Task Item */
+  .pastdue-task-item {
+    padding: 14px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .pastdue-task-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    border-color: #d32f2f;
+  }
+
+  .pastdue-task-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 0;
+    background-color: #d32f2f;
+    transition: height 0.3s ease;
+  }
+
+  .pastdue-task-item:hover::before {
+    height: 100%;
+  }
+
+  /* Task Header - Stack vertically */
+  .pastdue-task-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  /* Icon - Left-aligned */
+  .pastdue-task-icon {
+    width: 40px;
+    height: 40px;
+    background: #d32f2f;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .pastdue-task-item:hover .pastdue-task-icon {
+    transform: scale(1.05);
+    background-color: #d32f2f;
+  }
+
+  /* Task Info - Title + Office */
+  .pastdue-task-info {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .pastdue-task-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.4;
+  }
+
+  .pastdue-task-office {
+    font-size: 12px;
+    color: #555;
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Deadline - Right-aligned */
+  .pastdue-task-deadline {
+    font-size: 12px;
+    color: #555;
+    margin-top: -2px;
+    padding-left: 58px;
+    text-align: left;
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  .pastdue-time {
+    font-weight: 600;
+    color: #000;
+  }
+
+  /* Task Link */
+  .pastdue-task-link {
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .pastdue-task-link:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* No Tasks & Loading */
+  .pastdue-no-tasks {
+    margin-top: 30px;
+    font-size: 14px;
+    padding: 16px;
+    text-align: center;
+    color: #888;
+    font-style: italic;
+  }
+
+  .pastdue-loading {
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .pastdue-spinner {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* Extra Small Screens */
+@media (max-width: 375px) {
+  .pastdue-main {
+    padding: 12px;
+    padding-top: 20px;
+  }
+
+  .pastdue-date-header {
+    padding: 10px 0;
+  }
+
+  .pastdue-date-bold {
+    font-size: 14px;
+  }
+
   .pastdue-task-item {
     padding: 12px;
   }
-  
+
   .pastdue-task-icon {
     width: 32px;
     height: 32px;
     font-size: 16px;
+  }
+
+  .pastdue-task-title {
+    font-size: 15px;
+  }
+
+  .pastdue-task-deadline {
+    font-size: 11px;
+  }
+
+  .pastdue-time {
+    font-size: 11px;
+  }
+
+  .pastdue-dropdown-arrow {
+    width: 24px;
+    height: 24px;
+  }
+
+  .pastdue-dropdown-arrow svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .pastdue-task-count {
+    font-size: 10px;
+    padding: 2px 6px;
   }
 }

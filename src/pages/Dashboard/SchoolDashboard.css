@@ -5,3 +5,23 @@
   height: 100%; 
   box-sizing: border-box; 
 } 
+
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
+
+@media (max-width: 768px) {
+  .school-dashboard {
+    padding: 16px 8px 80px; /* Add bottom padding for safe area / tab bar */
+    overflow-x: hidden;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .school-dashboard {
+    padding: 12px 6px 70px;
+  }
+}

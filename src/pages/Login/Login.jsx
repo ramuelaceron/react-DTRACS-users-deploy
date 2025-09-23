@@ -117,10 +117,8 @@ const Login = () => {
       }
 
     } catch (err) {
+      setError("Unable to connect to server. Please try again later.");
       console.error("Login error:", err.message || err);
-
-      // ✅ Now this will show real backend error messages
-      setError(err.message || "An unexpected error occurred during login.");
     }
   };
 

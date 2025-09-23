@@ -71,11 +71,6 @@ const SectionPage = () => {
     return <Outlet />;
   }
 
-  // Show loading state
-  if (loading) {
-    return <div className="loading">Loading focal persons...</div>;
-  }
-
   // Show error state
   if (error) {
     return <div className="error">⚠️ {error}</div>;

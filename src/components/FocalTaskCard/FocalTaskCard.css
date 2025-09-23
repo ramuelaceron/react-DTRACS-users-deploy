@@ -20,7 +20,6 @@ body{
 }
 
 .focal-task-card:hover {
-  transform: translateY(-6px);
   box-shadow: 
     0 12px 24px rgba(79, 96, 235, 0.15),
     0 4px 8px rgba(79, 96, 235, 0.1);
@@ -99,6 +98,13 @@ body{
   font-style: italic;
 }
 
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
+
+
 /* === MOBILE FIXES === */
 @media (max-width: 768px) {
   .focal-task-card {
@@ -108,7 +114,6 @@ body{
     border-radius: 12px;
     min-height: auto;
     padding: 20px auto;
-
     position:relative;
     top:3.5rem;
     margin-bottom: 0.15rem;  
@@ -136,10 +141,7 @@ body{
   .focal-person {
     font-size: 12px;
   }
-
-
-  /***********************MEDIA MEDIA*****************************8*/
-  /* Prevent hover effects on touch devices */
+  /* Disable hover effects on touch devices */
   @media (hover: none) {
     .focal-task-card:hover {
       transform: none;
@@ -148,8 +150,9 @@ body{
 }
 
 /* Extra small mobile */
-@media (max-width: 520px) {
+@media (max-width: 480px) {
   .focal-task-card {
+    margin-top: 10px;
     max-width: 350px;
     padding: 1rem 1rem;
     transform: translateY(10px); /* keep centered */
@@ -161,5 +164,12 @@ body{
 
   .focal-person {
     font-size: 11px;
+  }
+
+  /* Disable hover effects on touch devices */
+  @media (hover: none) {
+    .focal-task-card:hover {
+      transform: none;
+    }
   }
 }

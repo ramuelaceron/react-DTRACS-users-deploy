@@ -5,6 +5,7 @@ import "./StartUp.css";
 import background from "../../assets/images/Start-Up.png";
 import ParticleBackground from "../../components/ParticleBackground/Particle1.jsx";
 import "../../components/ParticleBackground/Particle1.css";
+import Logo from "../../assets/images/logo-w-notext.png";
 
 const StartUp = () => {
   const navigate = useNavigate();
@@ -19,9 +20,10 @@ const StartUp = () => {
 
         <div className="home-content-container">
           <div className="home-greeting-section">
-            <h1 className="home-greeting-text">Hello Welcome!</h1>
+            <img src={Logo} alt="DepEd Biñan Logo" className="home-logo" />
+            <h1 className="home-greeting-text">Hello, Welcome!</h1>
             <p className="home-welcome-text">
-              Welcome to DepEd Biñan Record Monitoring System
+              to DepEd Biñan Document Tracking and Compliance System
             </p>
           </div>
 

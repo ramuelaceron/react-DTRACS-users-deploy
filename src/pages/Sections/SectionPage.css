@@ -4,3 +4,53 @@
   gap: 16px;
   padding: 20px;
 }
+
+/* Error Message Styling */
+.error {
+  padding: 16px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  font-style: italic;
+  margin: 100px auto; /* ← This adds space above and below */
+  max-width: 600px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+/* FOR MOBILE CSS */
+
+/* ============= MEDIA QUERIES FOR MOBILE ============= */
+
+@media (max-width: 768px) {
+  .focal-container {
+    padding: 16px 12px;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .error {
+    margin-top: 80px;
+    padding: 14px 16px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .focal-container {
+    padding: 12px 8px;
+    gap: 10px;
+  }
+
+  .error {
+    margin-top: 60px;
+    padding: 12px 14px;
+    font-size: 0.9rem;
+  }
+}
+
+
