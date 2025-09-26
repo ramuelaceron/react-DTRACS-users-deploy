@@ -1,5 +1,6 @@
-import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+// src/pages/StartUp/StartUp.jsx
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaArrowDown } from "react-icons/fa";
 import "./StartUp.css";
 import background from "../../assets/images/Start-Up.png";
@@ -9,6 +10,27 @@ import Logo from "../../assets/images/logo-w-notext.png";
 
 const StartUp = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const savedUser = sessionStorage.getItem("currentUser");
+    if (savedUser) {
+      try {
+        const user = JSON.parse(savedUser);
+        // Redirect based on role
+        if (user.role === "school") {
+          navigate("/home", { replace: true });
+        } else if (user.role === "office") {
+          navigate("/task", { replace: true });
+        }
+      } catch (e) {
+        console.error("Invalid user data in sessionStorage", e);
+        // Optionally clear corrupted data
+        sessionStorage.removeItem("currentUser");
+      }
+    }
+    // If not logged in, stay on this page (show login options)
+  }, [navigate]);
 
   return (
     <div className="home-landing-page">

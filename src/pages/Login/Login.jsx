@@ -18,9 +18,9 @@ const Login = () => {
   const location = useLocation();
 
   const isSchoolPath = location.pathname.includes("/login/school");
-  const isOfficePath = location.pathname.includes("/login/office");
+    const isOfficePath = location.pathname.includes("/login/office");
 
-  const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
     e.preventDefault();
     setError(""); // Clear previous error
 
@@ -28,14 +28,9 @@ const Login = () => {
     const email = formData.get("email").trim();
     const password = formData.get("password");
 
-    const endpoint = isSchoolPath 
-      ? "/school/account/login" 
-      : isOfficePath 
-        ? "/focal/account/login" 
-        : "/school/account/login";
-
     try {
-      const response = await fetch(`${config.API_BASE_URL}${endpoint}`, {
+      // Step 1: Login to get access_token
+      const loginResponse = await fetch(`${config.API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,62 +38,83 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      let data;
+      let loginData;
       let errorMsg = "";
 
-      // ✅ Handle non-2xx responses
-      if (!response.ok) {
+      if (!loginResponse.ok) {
         try {
-          data = await response.json();
+          loginData = await loginResponse.json();
         } catch (jsonErr) {
-          throw new Error(`Server returned ${response.status} with non-JSON body`);
+          throw new Error(`Server returned ${loginResponse.status} with non-JSON body`);
         }
 
-        // 🔹 Extract error message from backend response
-        if (typeof data.detail === 'string') {
-          errorMsg = data.detail;
-        } else if (Array.isArray(data.detail)) {
-          errorMsg = data.detail
+        if (typeof loginData.detail === 'string') {
+          errorMsg = loginData.detail;
+        } else if (Array.isArray(loginData.detail)) {
+          errorMsg = loginData.detail
             .map(e => e.msg || e.message || "Invalid input")
             .filter(Boolean)
             .join(" • ");
-        } else if (data.message) {
-          errorMsg = data.message;
+        } else if (loginData.message) {
+          errorMsg = loginData.message;
         } else {
-          errorMsg = `Login failed with status ${response.status}`;
+          errorMsg = `Login failed with status ${loginResponse.status}`;
         }
 
-        throw new Error(errorMsg); // Re-throw to be caught below
+        throw new Error(errorMsg);
       }
 
-      // ✅ If response is OK, parse data
-      data = await response.json();
-      console.log("Backend response:", data);
+      const { access_token } = await loginResponse.json();
 
-      if (!data || typeof data !== 'object') {
-        throw new Error("Invalid server response format");
+      if (!access_token) {
+        throw new Error("Access token not returned from login");
       }
 
-      const role = isOfficePath ? "office" : "school";
+      // Step 2: Fetch current user profile using the unified endpoint
+      const profileResponse = await fetch(`${config.API_BASE_URL}/auth/get/current/user`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${access_token}`,
+        },
+      });
 
+      if (!profileResponse.ok) {
+        const profileError = await profileResponse.json().catch(() => ({}));
+        console.error("Profile fetch error:", profileError);
+        throw new Error("Failed to load user profile. Please try again.");
+      }
+
+      const profileData = await profileResponse.json();
+
+      // Step 3: Determine role from user_id (as per backend logic)
+      let role = "school"; // default
+      if (profileData.user_id?.includes("FOCAL")) {
+        role = "office";
+      } else if (profileData.user_id?.includes("ADMIN")) {
+        role = "admin";
+      }
+      // Note: Backend uses "SCHOOL" in user_id → so default "school" is safe
+
+      // Step 4: Build user object
       const userData = {
-        user_id: data.user_id || "",
-        first_name: data.first_name || "",
-        middle_name: data.middle_name || "",
-        last_name: data.last_name || "",
-        school_name: data.school_name || "Not specified",
-        school_address: data.school_address || "Not specified",
-        position: data.position || "Not specified",
-        office: data.office || "Not specified",
-        section_designation: data.section_designation || "Not specified",
-        email: data.email || "",
-        contact_number: data.contact_number || "",
-        registration_date: data.registration_date || new Date().toISOString(),
-        active: data.active !== undefined ? data.active : true,
-        avatar: data.avatar || null,
+        user_id: profileData.user_id || "",
+        first_name: profileData.first_name || "",
+        middle_name: profileData.middle_name || "",
+        last_name: profileData.last_name || "",
+        school_name: profileData.school_name || "Not specified",
+        school_address: profileData.school_address || "Not specified",
+        position: profileData.position || "Not specified",
+        office: profileData.office || "Not specified",
+        section_designation: profileData.section_designation || "Not specified",
+        email: profileData.email || email,
+        contact_number: profileData.contact_number || "",
+        registration_date: profileData.registration_date || new Date().toISOString(),
+        active: profileData.active !== undefined ? profileData.active : true,
+        avatar: profileData.avatar || null,
         role: role,
       };
 
+      // Fix school address if needed (only for school users)
       if (role === "school" && (userData.school_address === "N/A" || userData.school_address === "Not specified")) {
         const correctAddress = schoolAddresses[userData.school_name];
         if (correctAddress) {
@@ -106,19 +122,21 @@ const Login = () => {
         }
       }
 
+      // Save to sessionStorage
       sessionStorage.setItem("currentUser", JSON.stringify(userData));
 
+      // Navigate based on role
       if (role === "school") {
         navigate("/home");
-      } else if (role === "office") {
+      } else if (role === "office" || role === "admin") {
         navigate("/task/ongoing");
       } else {
         navigate("/home");
       }
 
     } catch (err) {
-      setError("Unable to connect to server. Please try again later.");
-      console.error("Login error:", err.message || err);
+      setError(err.message || "Unable to connect to server. Please try again later.");
+      console.error("Login error:", err);
     }
   };
 

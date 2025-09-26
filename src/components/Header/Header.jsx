@@ -53,24 +53,50 @@ const Header = ({ toggleSidebar }) => {
     setIsDropdownOpen(false);
   };
 
-  const handleSignOut = () => {
-    // Save role before clearing session
-    const role = currentUser?.role;
+  const handleSignOut = async () => {
+    try {
+      // Get the access token from wherever you store it (e.g., sessionStorage or a context)
+      const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+      const accessToken = currentUser?.access_token; // assuming you store it here
 
-    // Clear session
-    sessionStorage.removeItem("currentUser");
-    setCurrentUser(null);
-    setAvatarProps(null);
-    console.log("Signing out...");
+      if (!accessToken) {
+        console.warn("No access token found. Proceeding with local logout.");
+      } else {
+        // Call the backend logout endpoint
+        const response = await fetch("/api/auth/logout", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Important: to send cookies with the request
+        });
 
-    // Redirect using `replace` so user cannot go back to protected page
-    if (role === "office") {
-      window.location.replace("/login/office");
-    } else {
-      window.location.replace("/login/school");
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          console.error("Logout API error:", errorData.detail || "Unknown error");
+          // Optionally show a toast/notification about partial logout
+        }
+      }
+    } catch (error) {
+      console.error("Failed to call logout API:", error);
+      // Still proceed to clear local state — better to log out locally than leave user stuck
+    } finally {
+      // Clear frontend session regardless of API success
+      sessionStorage.removeItem("currentUser");
+      setCurrentUser(null);
+      setAvatarProps(null);
+
+      // Redirect based on role
+      const role = currentUser?.role;
+      if (role === "office") {
+        window.location.replace("/login/office");
+      } else {
+        window.location.replace("/login/school");
+      }
+
+      setIsDropdownOpen(false);
     }
-
-    setIsDropdownOpen(false);
   };
 
   if (!currentUser) {

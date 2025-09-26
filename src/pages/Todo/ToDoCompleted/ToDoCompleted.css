@@ -1,3 +1,5 @@
+/* src/pages/Todo/completed/ToDoCompleted.css */
+
 .completed-app {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -130,7 +132,7 @@
 .completed-task-item {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 16px; /* Removed extra bottom padding since footer is gone */
+  padding: 16px;
   background-color: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
@@ -176,7 +178,7 @@
 .completed-task-icon {
   width: 40px;
   height: 40px;
-  background: #4caf50;
+  background: #4caf50; /* Default: on-time = green */
   color: white;
   border-radius: 50%;
   display: flex;
@@ -242,6 +244,35 @@
   color: #000;
 }
 
+/* =============== LATE TASK OVERRIDES =============== */
+
+.completed-late .completed-task-icon {
+  background: #ff9800; /* Late = orange */
+}
+
+.completed-late.completed-task-item:hover .completed-task-icon {
+  background-color: #ff9800;
+}
+
+.completed-late.completed-task-item::before {
+  background-color: #ff9800;
+}
+
+.completed-late.completed-task-item:hover {
+  border-color: #ff9800;
+}
+
+.completed-late.completed-task-item:hover .completed-task-title,
+.completed-late.completed-task-item:hover .completed-task-deadline {
+  color: #ff9800;
+}
+
+.completed-late-badge {
+  color: #ff9800;
+  font-weight: bold;
+  margin-left: 6px;
+}
+
 .completed-task-link {
   text-decoration: none;
   color: inherit;
@@ -255,15 +286,6 @@
 /* ==================== */
 /*  No Tasks Message    */
 /* ==================== */
-
-.completed-no-tasks {
-  text-align: center;
-  color: #888;
-  font-style: italic;
-  margin-top: 40px;
-  padding: 20px;
-  border-radius: 8px;
-}
 
 .completed-no-tasks {
   text-align: center;
@@ -299,7 +321,6 @@
   100% { transform: rotate(360deg); }
 }
 
-
 /* ==================== */
 /*  Responsive Design   */
 /* ==================== */
@@ -334,14 +355,7 @@
   }
 }
 
-/* FOR MOBILE CSS */
-/* FOR MOBILE CSS */
-/* FOR MOBILE CSS */
-
-/* ============= MEDIA QUERIES FOR MOBILE ============= */
-
 @media (max-width: 767px) {
-  /* App & Main Layout */
   .completed-app {
     margin: 0;
     min-height: 100vh;
@@ -352,7 +366,6 @@
     padding-top: 24px;
   }
 
-  /* Date Group Header */
   .completed-date-group {
     margin-bottom: 24px;
   }
@@ -403,7 +416,6 @@
     height: 22px;
   }
 
-  /* Task Item */
   .completed-task-item {
     padding: 14px;
     padding-bottom: 10px;
@@ -434,11 +446,14 @@
     transition: height 0.3s ease;
   }
 
-  .completed-task-item:hover::before {
-    height: 100%;
+  .completed-late.completed-task-item::before {
+    background-color: #ff9800;
   }
 
-  /* Task Header - Stack vertically */
+  .completed-late.completed-task-item:hover {
+    border-color: #ff9800;
+  }
+
   .completed-task-header {
     display: flex;
     align-items: flex-start;
@@ -448,7 +463,6 @@
     flex-wrap: wrap;
   }
 
-  /* Icon - Left-aligned */
   .completed-task-icon {
     width: 40px;
     height: 40px;
@@ -464,12 +478,14 @@
     transition: transform 0.2s ease, background-color 0.2s ease;
   }
 
-  .completed-task-item:hover .completed-task-icon {
-    transform: scale(1.05);
-    background-color: #4caf50;
+  .completed-late .completed-task-icon {
+    background: #ff9800;
   }
 
-  /* Task Info - Title + Office */
+  .completed-late.completed-task-item:hover .completed-task-icon {
+    background-color: #ff9800;
+  }
+
   .completed-task-info {
     flex: 1;
     min-width: 0;
@@ -499,7 +515,6 @@
     white-space: nowrap;
   }
 
-  /* Deadline - Right-aligned */
   .completed-task-deadline {
     font-size: 12px;
     color: #555;
@@ -510,12 +525,15 @@
     flex-shrink: 0;
   }
 
+  .completed-late-badge {
+    color: #ff9800;
+  }
+
   .completed-time {
     font-weight: 600;
     color: #000;
   }
 
-  /* Task Link */
   .completed-task-link {
     width: 100%;
     text-decoration: none;
@@ -527,7 +545,6 @@
     color: inherit;
   }
 
-  /* No Tasks & Loading */
   .completed-no-tasks {
     margin-top: 30px;
     font-size: 14px;
@@ -546,10 +563,10 @@
     width: 32px;
     height: 32px;
     margin-bottom: 0.75rem;
+    border-top: 4px solid #4caf50;
   }
 }
 
-/* Extra Small Screens */
 @media (max-width: 375px) {
   .completed-main {
     padding: 12px;
@@ -571,7 +588,12 @@
   .completed-task-icon {
     width: 32px;
     height: 32px;
+    background: #4caf50;
     font-size: 16px;
+  }
+
+  .completed-late .completed-task-icon {
+    background: #ff9800;
   }
 
   .completed-task-title {

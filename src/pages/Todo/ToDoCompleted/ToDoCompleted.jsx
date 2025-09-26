@@ -121,41 +121,50 @@ const ToDoCompleted = () => {
 
                 {isOpen && (
                   <div className="completed-task-list">
-                    {tasks.map((task) => (
-                      <Link
-                        to={`/todo/${task.sectionId}/${createSlug(task.title)}`}
-                        state={{
-                          taskTitle: task.title,
-                          links: task.links,
-                          deadline: task.deadline,
-                          creation_date: task.creation_date,
-                          taskDescription: task.description,
-                          taskId: task.task_id,
-                          creator_name: task.creator_name,
-                          section_designation: task.section_designation,
-                          full_name: task.creator_name
-                        }}
-                        className="completed-task-link"
-                        key={`${task.task_id}-${task.title}`}
-                      >
-                        {/* ✅ Use CSS-aligned structure here */}
-                        <div className="completed-task-item">
-                          <div className="completed-task-header">
-                            <div className="completed-task-icon">
-                              <PiClipboardTextBold />
-                            </div>
-                            <div className="completed-task-info">
-                              <h3 className="completed-task-title">{task.title}</h3>
-                              <div className="completed-task-office">{task.office}</div>
-                            </div>
-                            <div className="completed-task-deadline">
-                              Completed on {formatDate(task.completedTime)} at{" "}
-                              <span className="completed-time">{formatTime(task.completedTime)}</span>
+                    {tasks.map((task) => {
+                      // ✅ Determine if task was completed LATE
+                      const isLate = task.deadline && task.completedTime
+                        ? new Date(task.completedTime) > new Date(task.deadline)
+                        : false;
+
+                      return (
+                        <Link
+                          to={`/todo/${task.sectionId}/${createSlug(task.title)}`}
+                          state={{
+                            taskTitle: task.title,
+                            links: task.links,
+                            deadline: task.deadline,
+                            creation_date: task.creation_date,
+                            taskDescription: task.description,
+                            taskId: task.task_id,
+                            creator_name: task.creator_name,
+                            section_designation: task.section_designation,
+                            full_name: task.creator_name
+                          }}
+                          className="completed-task-link"
+                          key={`${task.task_id}-${task.title}`}
+                        >
+                          <div className={`completed-task-item ${isLate ? 'completed-late' : ''}`}>
+                            <div className="completed-task-header">
+                              <div className="completed-task-icon">
+                                <PiClipboardTextBold />
+                              </div>
+                              <div className="completed-task-info">
+                                <h3 className="completed-task-title">{task.title}</h3>
+                                <div className="completed-task-office">{task.office}</div>
+                              </div>
+                              <div className="completed-task-deadline">
+                                Completed on {formatDate(task.completedTime)} at{" "}
+                                <span className="completed-time">{formatTime(task.completedTime)}</span>
+                                {isLate && (
+                                  <span className="completed-late-badge"> (Late)</span>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </Link>
-                    ))}
+                        </Link>
+                      );
+                    })}
                   </div>
                 )}
               </div>
