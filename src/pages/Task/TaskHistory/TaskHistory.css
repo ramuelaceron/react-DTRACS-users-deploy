@@ -1,6 +1,3 @@
-/* ==================== */
-/*  Task history Styles */
-/* ==================== */
 
 .history-app {
   font-family: Arial, sans-serif;
@@ -179,7 +176,7 @@
 .history-task-icon {
   width: 40px;
   height: 40px;
-  background: #4caf50;
+  background: #4caf50; /* Default: on-time = green */
   color: white;
   border-radius: 50%;
   display: flex;
@@ -241,8 +238,37 @@
   color: #4caf50;
 }
 
+/* =============== LATE TASK OVERRIDES =============== */
+
+.history-late .history-task-icon {
+  background: #ff9800; /* Late = orange */
+}
+
+.history-late.history-task-item:hover .history-task-icon {
+  background-color: #ff9800;
+}
+
+.history-late.history-task-item::before {
+  background-color: #ff9800;
+}
+
+.history-late.history-task-item:hover {
+  border-color: #ff9800;
+}
+
+.history-late.history-task-item:hover .history-task-title,
+.history-late.history-task-item:hover .history-task-completion {
+  color: #ff9800;
+}
+
+.history-late-badge {
+  color: #ff9800;
+  font-weight: bold;
+  margin-left: 6px;
+}
+
 /* ==================== */
-/*  Task Footer - Hidden by Default, Shown on Hover */
+/*  Task Footer         */
 /* ==================== */
 
 .history-task-footer {
@@ -281,11 +307,19 @@
   transition: all 0.2s ease;
 }
 
+.history-late .history-description-link {
+  color: #ff9800;
+}
+
 .history-description-link:hover {
   text-decoration: none;
   color: #fff;
   background-color: #4caf50;
   transform: translateY(-1px);
+}
+
+.history-late .history-description-link:hover {
+  background-color: #ff9800;
 }
 
 .history-assigned-submitted-counts {
@@ -318,6 +352,10 @@
   color: #4caf50;
 }
 
+.history-late .history-count-item:hover .history-count-number {
+  color: #ff9800;
+}
+
 .history-count-label {
   font-size: 10px;
   color: #888;
@@ -342,15 +380,6 @@
   border-radius: 8px;
 }
 
-.history-no-tasks {
-  text-align: center;
-  color: #888;
-  font-style: italic;
-  margin-top: 40px;
-  padding: 20px;
-  border-radius: 8px;
-}
-
 .history-loading {
   display: flex;
   flex-direction: column;
@@ -365,7 +394,7 @@
   width: 40px;
   height: 40px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #007bff;
+  border-top: 4px solid #4caf50;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -376,14 +405,9 @@
   100% { transform: rotate(360deg); }
 }
 
-/* FOR MOBILE CSS */
-/* FOR MOBILE CSS */
-/* FOR MOBILE CSS */
-
 /* ============= MEDIA QUERIES FOR MOBILE ============= */
 
 @media (max-width: 767px) {
-  /* App & Main Layout */
   .history-app {
     margin: 0;
     min-height: 100vh;
@@ -394,7 +418,6 @@
     padding-top: 24px;
   }
 
-  /* Date Group Header */
   .history-date-group {
     margin-bottom: 24px;
   }
@@ -422,7 +445,6 @@
     margin-right: 8px;
   }
 
-  /* Right-side group: count + arrow */
   .history-header-actions {
     display: flex;
     align-items: center;
@@ -451,7 +473,6 @@
     height: 22px;
   }
 
-  /* Task Item */
   .history-task-item {
     padding: 14px;
     padding-bottom: 12px;
@@ -482,11 +503,14 @@
     transition: height 0.3s ease;
   }
 
-  .history-task-item:hover::before {
-    height: 100%;
+  .history-late.history-task-item::before {
+    background-color: #ff9800;
   }
 
-  /* Task Header - Icon on left, title + office stacked, completion below */
+  .history-late.history-task-item:hover {
+    border-color: #ff9800;
+  }
+
   .history-task-header {
     display: flex;
     align-items: flex-start;
@@ -496,7 +520,6 @@
     flex-wrap: wrap;
   }
 
-  /* Icon - Left-aligned */
   .history-task-icon {
     width: 40px;
     height: 40px;
@@ -512,12 +535,14 @@
     transition: transform 0.2s ease, background-color 0.2s ease;
   }
 
-  .history-task-item:hover .history-task-icon {
-    transform: scale(1.05);
-    background-color: #4caf50;
+  .history-late .history-task-icon {
+    background: #ff9800;
   }
 
-  /* Task Info - Title + Office */
+  .history-late.history-task-item:hover .history-task-icon {
+    background-color: #ff9800;
+  }
+
   .history-task-info {
     flex: 1;
     min-width: 0;
@@ -547,7 +572,6 @@
     white-space: nowrap;
   }
 
-  /* completion - Below title/office, full width */
   .history-task-completion {
     font-size: 12px;
     color: #555;
@@ -558,6 +582,10 @@
     margin-top: 2px;
     margin-left: 2px;
     padding-left: 0;
+  }
+
+  .history-late-badge {
+    color: #ff9800;
   }
 
   .history-time {
@@ -585,6 +613,14 @@
     border-radius: 6px;
   }
 
+  .history-late .history-description-link {
+    color: #ff9800;
+  }
+
+  .history-late .history-description-link:hover {
+    background-color: #ff9800;
+  }
+
   .history-assigned-submitted-counts {
     gap: 12px;
   }
@@ -601,7 +637,6 @@
     font-size: 10px;
   }
 
-  /* No Tasks & Loading */
   .history-no-tasks {
     margin-top: 30px;
     font-size: 14px;
@@ -623,7 +658,6 @@
   }
 }
 
-/* Extra Small Screens */
 @media (max-width: 375px) {
   .history-main {
     padding: 12px;
@@ -646,7 +680,12 @@
   .history-task-icon {
     width: 36px;
     height: 36px;
+    background: #4caf50;
     font-size: 16px;
+  }
+
+  .history-late .history-task-icon {
+    background: #ff9800;
   }
 
   .history-task-title {
@@ -658,6 +697,10 @@
   }
 
   .history-time {
+    font-size: 11px;
+  }
+
+  .history-late-badge {
     font-size: 11px;
   }
 

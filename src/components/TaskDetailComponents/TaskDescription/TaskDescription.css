@@ -1,3 +1,5 @@
+/* src/components/TaskDescription/TaskDescription.css */
+
 .task-description {
   padding: 1rem 1.5rem; 
   background: #fff;
@@ -12,7 +14,7 @@
   margin-bottom: 15px;
 }
 
-.task-icon {
+.task-description-icon {
   background: #333;
   color: white;
   width: 40px;
@@ -25,9 +27,20 @@
   flex-shrink: 0;
 }
 
-.task-icon svg {
+.task-description-icon svg {
   width: 20px;
   height: 20px;
+}
+
+/* Pulsing animation for future incomplete tasks */
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(211, 47, 47, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+}
+
+.task-icon-pulse {
+  animation: pulse-red 2s infinite;
 }
 
 .task-title-container {
@@ -109,7 +122,7 @@
   background-color: #fdf2f2;
 }
 
-.task-due{
+.task-due {
   font-size: 12px;
 }
 
@@ -150,7 +163,14 @@
   color: #333;
 }
 
-/* ✅ Updated container for multiple links */
+/* Late badge */
+.task-late-badge {
+  color: #ff9800;
+  font-weight: bold;
+  margin-left: 6px;
+}
+
+/* Links */
 .task-links-container {
   margin-top: 1.5rem;
   padding: 12px;
@@ -168,7 +188,6 @@
   color: #333;
 }
 
-/* ✅ Style each link */
 .task-links-container .task-link {
   display: block;
   overflow: hidden;
@@ -210,20 +229,14 @@
   color: #999;
 }
 
-/* FOR MOBILE CSS */
-/* FOR MOBILE CSS */
-/* FOR MOBILE CSS */
-
 /* ============= MEDIA QUERIES FOR MOBILE ============= */
 
 @media (max-width: 767px) {
-  /* Main Container */
   .task-description {
     padding: 16px 12px;
     border-radius: 0;
   }
 
-  /* Task Header - Keep icon on left, title and options aligned */
   .task-header {
     flex-direction: row;
     align-items: flex-start;
@@ -232,14 +245,13 @@
     flex-wrap: wrap;
   }
 
-  .task-icon {
+  .task-description-icon {
     width: 44px;
     height: 44px;
     font-size: 22px;
-    flex-shrink: 0;
   }
 
-  .task-icon svg {
+  .task-description-icon svg {
     width: 22px;
     height: 22px;
   }
@@ -264,7 +276,6 @@
     margin-top: 10px;
   }
 
-  /* Task Actions */
   .task-actions-container {
     position: relative;
     align-self: flex-start;
@@ -284,12 +295,6 @@
     transition: all 0.2s;
   }
 
-  .task-options-button:hover {
-    background-color: #f8f9fa;
-    color: #34495e;
-  }
-
-  /* Options Dropdown */
   .options-dropdown {
     min-width: 160px;
     right: 0;
@@ -301,7 +306,6 @@
     font-size: 14px;
   }
 
-  /* Meta Info */
   .task-meta {
     flex-direction: column;
     gap: 4px;
@@ -318,12 +322,14 @@
     font-size: 13px;
   }
 
-  /* Divider */
+  .task-late-badge {
+    font-size: 13px;
+  }
+
   .divider {
     margin: 12px 0;
   }
 
-  /* Author Info */
   .task-author {
     font-size: 13px;
     margin-bottom: 16px;
@@ -337,13 +343,11 @@
     margin: 0 6px;
   }
 
-  /* Task Body */
   .task-body {
     font-size: 15px;
     line-height: 1.6;
   }
 
-  /* Links Container */
   .task-links-container {
     margin-top: 16px;
     padding: 12px;
@@ -363,22 +367,8 @@
   .task-links-container .task-link::after {
     font-size: 0.7em;
   }
-
-  /* Error Container */
-  .error-container {
-    padding: 30px 16px;
-  }
-
-  .error-container p {
-    font-size: 16px;
-  }
-
-  .error-container small {
-    font-size: 13px;
-  }
 }
 
-/* Extra Small Screens */
 @media (max-width: 375px) {
   .task-description {
     padding: 14px 10px;
@@ -389,13 +379,13 @@
     margin-bottom: 14px;
   }
 
-  .task-icon {
+  .task-description-icon {
     width: 40px;
     height: 40px;
     font-size: 20px;
   }
 
-  .task-icon svg {
+  .task-description-icon svg {
     width: 20px;
     height: 20px;
   }
@@ -429,6 +419,10 @@
 
   .task-due,
   .task-completed {
+    font-size: 12px;
+  }
+
+  .task-late-badge {
     font-size: 12px;
   }
 
@@ -467,17 +461,5 @@
 
   .task-links-container .task-link::after {
     font-size: 0.6em;
-  }
-
-  .error-container {
-    padding: 25px 12px;
-  }
-
-  .error-container p {
-    font-size: 15px;
-  }
-
-  .error-container small {
-    font-size: 12px;
   }
 }

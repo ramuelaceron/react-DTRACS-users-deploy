@@ -1,3 +1,4 @@
+// src/components/TaskDetailComponents/TaskDescription/TaskDescription.jsx
 import React, { useState, useRef } from "react";
 import { PiClipboardTextBold } from "react-icons/pi";
 import { SlOptionsVertical } from "react-icons/sl";
@@ -41,36 +42,50 @@ const formatTime = (dateString) => {
   }
 };
 
-// Get status color based on task status
-const getStatusColor = (status) => {
-  switch (status) {
-    case "COMPLETE":
-      return "#4CAF50"; // Green for completed
-    case "INCOMPLETE":
-      return "#D32F2F"; // Red for incomplete
-    case "ONGOING":
-    default:
-      return "#2196F3"; // Blue for ongoing 
+// ✅ Safe date parser for backend formats like "2025-09-20 15:09:00"
+const parseDate = (str) => {
+  if (!str) return null;
+  if (str.includes('T')) return new Date(str);
+  const parts = str.split(' ');
+  if (parts.length === 2) {
+    const [datePart, timePart] = parts;
+    const [year, month, day] = datePart.split('-').map(Number);
+    const normalized = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${timePart}`;
+    return new Date(normalized);
   }
+  return new Date(str);
+};
+
+// ✅ Determine icon color: green (on time), orange (late), red (incomplete)
+const getIconColor = ({ isCompleted, completion_date, deadline }) => {
+  if (isCompleted) {
+    if (!completion_date || !deadline) {
+      return "#4CAF50"; // Green by default
+    }
+    const completed = parseDate(completion_date);
+    const due = parseDate(deadline);
+    if (isNaN(completed.getTime()) || isNaN(due.getTime())) {
+      return "#4CAF50";
+    }
+    return completed > due ? "#FF9800" : "#4CAF50"; // Orange or Green
+  }
+
+  // ✅ All incomplete tasks = red
+  return "#D32F2F";
 };
 
 const TaskDescription = ({ 
   task, 
-  task_id,
   creator_name, 
   creation_date, 
   completion_date, 
   deadline, 
   description, 
   isCompleted,
-  onEditTask,
-  onDeleteTask,
-  onCopyLink,
-  onTaskUpdated, // 👈 ADD THIS
+  onTaskUpdated,
   schools_required = [],
   accounts_required = [],
   token,
-  
 }) => {
 
   const navigate = useNavigate();
@@ -82,8 +97,14 @@ const TaskDescription = ({
     if (showOptionsMenu) setShowOptionsMenu(false);
   });
 
-  const actualStatus = isCompleted ? "COMPLETE" : (task?.task_status || "ONGOING");
-  const statusColor = getStatusColor(actualStatus);
+  const iconColor = getIconColor({ isCompleted, completion_date, deadline });
+
+  // ✅ Check if task is future incomplete (for pulsing effect)
+  const isFutureIncomplete = !isCompleted && deadline && (() => {
+    const now = new Date();
+    const due = parseDate(deadline);
+    return !isNaN(due.getTime()) && now <= due;
+  })();
 
   const toggleOptionsMenu = () => {
     setShowOptionsMenu(!showOptionsMenu);
@@ -91,21 +112,11 @@ const TaskDescription = ({
 
   const handleEditTask = () => {
     setShowOptionsMenu(false);
-    console.log('📋 Preparing to edit task:', {
-      title: task?.title,
-      description: task?.description,
-      deadline: task?.deadline,
-      links: task?.links,
-      assignedTo: task?.assignedTo, // ← This must exist!
-      for: task?.for
-    });
     setShowEditForm(true);
   };
 
-  // Inside TaskDescription.jsx or TaskDetailPage.jsx
   const handleDeleteTask = async () => {
     setShowOptionsMenu(false);
-
     const effectiveTaskId = task?.task_id;
     if (!effectiveTaskId) {
       toast.error("Task ID is missing.");
@@ -116,7 +127,7 @@ const TaskDescription = ({
       const response = await fetch(
         `${config.API_BASE_URL}/focal/task/delete/id/?task_id=${encodeURIComponent(effectiveTaskId)}`,
         {
-          method: "DELETE", // 👈 Make sure it's DELETE
+          method: "DELETE",
           headers: {
             Authorization: token ? `Bearer ${token}` : "",
             "Content-Type": "application/json",
@@ -139,18 +150,16 @@ const TaskDescription = ({
   };
 
   const handleCopyLink = async () => {
-  setShowOptionsMenu(false);
-
-  const currentUrl = window.location.href;
-
-  try {
-    await navigator.clipboard.writeText(currentUrl);
-    toast.success("📋 Link copied to clipboard!");
-  } catch (err) {
-    console.error("Failed to copy link:", err);
-    toast.error("Failed to copy link. Please try again.");
-  }
-};
+    setShowOptionsMenu(false);
+    const currentUrl = window.location.href;
+    try {
+      await navigator.clipboard.writeText(currentUrl);
+      toast.success("📋 Link copied to clipboard!");
+    } catch (err) {
+      console.error("Failed to copy link:", err);
+      toast.error("Failed to copy link. Please try again.");
+    }
+  };
 
   const handleTaskSave = (updatedTaskData) => {
     if (onTaskUpdated) {
@@ -159,63 +168,12 @@ const TaskDescription = ({
     setShowEditForm(false);
   };
 
-  const getInitialFormData = () => {
-    if (!task) return {};
-
-    let dueDate = '';
-    let dueTime = '17:00';
-
-    // ✅ Parse deadline using Date object (handles both ISO and your backend format)
-    const parseDeadline = (str) => {
-      if (!str) return null;
-
-      if (str.includes('T')) {
-        return new Date(str);
-      }
-
-      const parts = str.split(' ');
-      if (parts.length === 2) {
-        const [datePart, timePart] = parts;
-        const [year, month, day] = datePart.split('-').map(Number);
-        const paddedMonth = String(month).padStart(2, '0');
-        const paddedDay = String(day).padStart(2, '0');
-        const normalized = `${year}-${paddedMonth}-${paddedDay}T${timePart}`;
-        return new Date(normalized);
-      }
-
-      return null;
-    };
-
-    if (task.deadline) {
-      const dateObj = parseDeadline(task.deadline);
-      if (dateObj && !isNaN(dateObj.getTime())) {
-        dueDate = dateObj.toISOString().split('T')[0];
-        dueTime = dateObj.toTimeString().substring(0, 5);
-      }
-    }
-
-    // ✅ Extract links as an array of strings (if it's an array) or as a single string
-    const linkUrl = Array.isArray(task.links) && task.links.length > 0 
-      ? task.links[0] // Use first link for input field
-      : task.link || ''; // Fallback to single string
-
-    return {
-      title: task.title || '',
-      description: task.description || '',
-      dueDate,
-      dueTime,
-      for: task.schools_required || [],     // ✅ Pre-fill selected schools
-      assignedTo: task.accounts_required || [], // ✅ Pre-fill assigned accounts
-      linkUrl,                      // ✅ Pre-fill link URL (first one)
-    };
-  };
-
   return (
     <div className="task-description">
       <div className="task-header">
-        <div
-          className="task-icon"
-          style={{ backgroundColor: statusColor }}
+        <div 
+          className={`task-description-icon ${isFutureIncomplete ? 'task-icon-pulse' : ''}`}
+          style={{ backgroundColor: iconColor }}
         >
           <PiClipboardTextBold className="icon-lg" style={{ color: "white" }} />
         </div>
@@ -249,12 +207,14 @@ const TaskDescription = ({
         </div>
       </div>
 
-      {/* Meta Info */}
       <div className="task-meta">
         <div className="task-category">{task?.section || task?.sectionName || "Unknown Section"}</div>
-        {actualStatus === "COMPLETE" && completion_date ? (
+        {isCompleted && completion_date ? (
           <div className="task-completed">
             Completed on {formatDate(completion_date)} at {formatTime(completion_date)}
+            {iconColor === "#FF9800" && (
+              <span className="task-late-badge"> (Late)</span>
+            )}
           </div>
         ) : (
           <div className="task-due">
@@ -265,14 +225,12 @@ const TaskDescription = ({
 
       <div className="divider" />
 
-      {/* Author & Date */}
       <div className="task-author">
         <span className="author">{creator_name || task?.creator_name || "Unknown Creator"}</span>
         <span className="dot-space">•</span>
         <span className="posted">Posted on {formatDate(creation_date || task?.creation_date)}</span>
       </div>
 
-      {/* Description */}
       <div 
         className="task-body"
         dangerouslySetInnerHTML={{ 
@@ -280,7 +238,6 @@ const TaskDescription = ({
         }}
       />
 
-      {/* ✅ Display Links — Handle both single string and array, hide if empty */}
       {task?.links && (
         (Array.isArray(task.links)
           ? task.links.length > 0
@@ -318,24 +275,20 @@ const TaskDescription = ({
         )
       )}
 
-      {/* Task Form Modal */}
       {showEditForm && (
-        <>
-          {console.log('📝 TaskDescription -> Passing to TaskForm - accounts_required:', task?.task_id)}
-          <TaskForm
-            initialData={{
-              task_id: task.task_id, // 👈 Critical!
-              title: task.title,
-              description: task.description,
-              deadline: task.deadline,
-              links: task.links,
-              for: task.accounts_required || [], // ✅ This is the key line
-              assignedTo: task.schools_required || [],
-            }}
-            onClose={() => setShowEditForm(false)}
-            onTaskCreated={handleTaskSave}
-          />
-        </>
+        <TaskForm
+          initialData={{
+            task_id: task.task_id,
+            title: task.title,
+            description: task.description,
+            deadline: task.deadline,
+            links: task.links,
+            for: task.accounts_required || [],
+            assignedTo: task.schools_required || [],
+          }}
+          onClose={() => setShowEditForm(false)}
+          onTaskCreated={handleTaskSave}
+        />
       )}
     </div>
   );

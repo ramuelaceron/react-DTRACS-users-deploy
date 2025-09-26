@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+
+import React, { useState, useEffect, useRef, useCallback } from "react"; // 👈 Added useCallback
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./TaskDetailPage.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -16,7 +17,6 @@ import { taskData } from "../../data/taskData";
 import config from "../../config";
 
 const TaskDetailPage = () => {
-  
   const { sectionId } = useParams();
   const { state } = useLocation();
 
@@ -25,17 +25,13 @@ const TaskDetailPage = () => {
   const [error, setError] = useState(null);
 
   const [isCompleted, setIsCompleted] = useState(false);
-  const [isLate, setIsLate] = useState(false);
 
-  // Use useRef to prevent unnecessary re-renders due to object changes
   const currentUserRef = useRef(JSON.parse(sessionStorage.getItem("currentUser")) || null);
   const token = currentUserRef.current?.token;
   const selectedFocal = currentUserRef.current?.user_id;
 
-  // Extract initial task from state
   let initialTask = state?.taskData || null;
 
-  // Fallback: Try to find task in taskData
   if (!initialTask && sectionId) {
     const section = taskData[sectionId];
     if (section && Array.isArray(section)) {
@@ -64,7 +60,6 @@ const TaskDetailPage = () => {
     }
   }
 
-  // Fetch assignments for THIS SINGLE task if needed
   const fetchAssignmentsForSingleTask = async (task_id, token) => {
     try {
       const response = await fetch(
@@ -79,7 +74,6 @@ const TaskDetailPage = () => {
       if (!response.ok) throw new Error(`Failed to fetch assignments for task ${task_id}`);
 
       const data = await response.json();
-      console.log({data});
 
       if (!Array.isArray(data)) return {};
 
@@ -116,8 +110,8 @@ const TaskDetailPage = () => {
     }
   };
 
-  // ✅ Define loadAndEnrichTask HERE — in component scope, NOT inside useEffect
-  const loadAndEnrichTask = async () => {
+  // ✅ Wrap with useCallback to satisfy exhaustive-deps
+  const loadAndEnrichTask = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -126,7 +120,6 @@ const TaskDetailPage = () => {
       return;
     }
 
-    // If already enriched, skip fetching
     if (
       initialTask.schools_required &&
       initialTask.accounts_required &&
@@ -137,7 +130,6 @@ const TaskDetailPage = () => {
       return;
     }
 
-    // If no focal user, just show raw task
     if (!selectedFocal) {
       setTask(initialTask);
       setLoading(false);
@@ -158,29 +150,22 @@ const TaskDetailPage = () => {
       setTask(enrichedTask);
     } catch (err) {
       setError("Failed to load school assignments.");
-      setTask(initialTask); // Still show base task
+      setTask(initialTask);
     } finally {
       setLoading(false);
     }
-  };
+  }, [initialTask, selectedFocal]); // ✅ Dependencies are stable
 
-  // ✅ Now call it inside useEffect
   useEffect(() => {
     loadAndEnrichTask();
-  }, []); // 👈 Empty dependency array — runs once on mount
+  }, [loadAndEnrichTask]); // ✅ Now safe to include
 
-  // Update completion status based on task_status
   useEffect(() => {
     const status = task?.task_status || state?.task_status;
     if (status === "COMPLETE") {
       setIsCompleted(true);
-      setIsLate(false);
-    } else if (status === "INCOMPLETE") {
-      setIsCompleted(false);
-      setIsLate(true);
     } else {
       setIsCompleted(false);
-      setIsLate(false);
     }
   }, [task?.task_status, state?.task_status]);
 
@@ -190,12 +175,10 @@ const TaskDetailPage = () => {
   const handleTaskUpdated = async (updatedTaskData) => {
     setTask(prev => ({ ...prev, ...updatedTaskData }));
     await loadAndEnrichTask();
-
-    navigate(-1);           // ← Goes back to TaskPage
-    toast.success("✅ Task Updated!"); // ← Toast appears on TaskPage ✅
+    navigate(-1);
+    toast.success("✅ Task Updated!");
   };
 
-  // Handle task not found
   if (!initialTask && !state) {
     return (
       <div className="task-detail-app">
@@ -258,6 +241,7 @@ const TaskDetailPage = () => {
           }}
           creator_name={task?.creator_name}
           creation_date={task?.creation_date}
+          completion_date={state?.completion_date || task?.completedTime}
           deadline={task?.deadline}
           description={task?.description}
           isCompleted={isCompleted}
@@ -288,4 +272,4 @@ const TaskDetailPage = () => {
   );
 };
 
-export default TaskDetailPage;
+export default TaskDetailPage;  
