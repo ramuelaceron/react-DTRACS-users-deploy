@@ -2,7 +2,7 @@
 const savedApiUrl = localStorage.getItem("API_BASE_URL");
 
 // Default fallback
-const defaultApiUrl = "https://parish-soon-involve-tires.trycloudflare.com";
+const defaultApiUrl = "https://socks-theaters-shaft-kurt.trycloudflare.com";
 
 const config = {
   API_BASE_URL: (savedApiUrl || defaultApiUrl).trim(),
