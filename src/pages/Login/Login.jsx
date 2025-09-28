@@ -70,6 +70,8 @@ const Login = () => {
         throw new Error("Access token not returned from login");
       }
 
+      // Ayusin
+
       // Step 2: Fetch current user profile using the access token
       // const profileResponse = await fetch(`${config.API_BASE_URL}/auth/proxy/get/current/user`, {
       //   method: "GET",
