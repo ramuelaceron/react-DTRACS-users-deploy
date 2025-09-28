@@ -1,17 +1,12 @@
-/* ToDoListPage.css */
 .task-list-page {
-  display: flex;
-  flex-direction: column;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 20px;
-  margin: 0;
-  padding: 0;
   min-height: calc(100vh - 60px);
   display: flex;
   flex-direction: column;
-  padding-left: 20px;
   margin-top: 60px;
 }
+
 
 /* Header */
 .header {
@@ -25,22 +20,27 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+
 .avatar {
   width: 60px;
   height: 60px;
   border-radius: 50%;
   overflow: hidden;
   margin-right: 16px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+
 .avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
+
 
 .avatar-fallback {
   width: 100%;
@@ -53,10 +53,12 @@
   font-size: 20px;
 }
 
+
 .header-info h1 {
   margin: 0;
   font-size: 1.5rem;
 }
+
 
 .header-info p {
   margin: 0;
@@ -64,12 +66,14 @@
   opacity: 0.9;
 }
 
+
 /* Task List */
 .task-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
+
 
 .task-item {
   display: flex;
@@ -83,9 +87,11 @@
   transition: box-shadow 0.2s;
 }
 
+
 .task-item:hover {
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
+
 
 .task-content h3 {
   margin: 0 0 4px 0;
@@ -93,12 +99,14 @@
   color: #333;
 }
 
+
 .task-content .due-time {
   margin: 0;
   font-size: 0.85rem;
   color: #666;
   opacity: 0.8;
 }
+
 
 .view-task-btn {
   background-color: transparent;
@@ -111,10 +119,12 @@
   transition: all 0.2s;
 }
 
+
 .view-task-btn:hover {
   background-color: #1a3666;
   color: white;
 }
+
 
 .no-tasks-container {
   padding: 20px;
@@ -123,16 +133,41 @@
   font-style: italic;
 }
 
+
 .no-tasks {
   margin: 0;
   font-size: 1rem;
 }
 
-/* FOR MOBILE CSS */
-/* FOR MOBILE CSS */
-/* FOR MOBILE CSS */
+/* Loading Spinner */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #666;
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #1a3666;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 
 /* ============= MEDIA QUERIES FOR MOBILE ============= */
+
 
 @media (max-width: 768px) {
   .task-list-page {
@@ -141,61 +176,36 @@
     min-height: calc(100vh - 50px);
   }
 
+
   .header {
-    flex-direction: row; /* Keep horizontal */
-    align-items: center;
-    background-color: #1a3666;
-    color: white;
     padding: 14px 16px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     gap: 12px;
   }
 
+
   .avatar {
     width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 50px; /* ✅ Equal = perfect circle */
+    margin-right: 12px;
   }
 
-  .avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
 
   .avatar-fallback {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: bold;
     font-size: 18px;
   }
 
+
   .header-info h1 {
     font-size: 1.2rem;
-    margin: 0;
     line-height: 1.3;
   }
 
+
   .header-info p {
-    margin: 0;
     font-size: 0.85rem;
-    opacity: 0.9;
     line-height: 1.2;
   }
 
-  .task-list {
-    gap: 10px;
-  }
 
   .task-item {
     flex-direction: column;
@@ -204,13 +214,6 @@
     gap: 10px;
   }
 
-  .task-content h3 {
-    font-size: 1.05rem;
-  }
-
-  .task-content .due-time {
-    font-size: 0.8rem;
-  }
 
   .view-task-btn {
     align-self: flex-end;
@@ -218,15 +221,8 @@
     padding: 8px;
     font-size: 0.9rem;
   }
-
-  .no-tasks-container {
-    padding: 16px 12px;
-  }
-
-  .no-tasks {
-    font-size: 0.95rem;
-  }
 }
+
 
 /* Small phones (e.g., iPhone SE) */
 @media (max-width: 480px) {
@@ -236,40 +232,50 @@
     min-height: calc(100vh - 40px);
   }
 
+
   .header {
     padding: 12px 10px;
   }
 
+
+  /* ✅ FIXED: Equal width and height for circle */
   .avatar {
-    width: 85px;
-    height: 55px;
-    margin-right: -1px;
+    width: 48px;
+    height: 48px;
+    margin-right: 10px;
   }
+
 
   .avatar-fallback {
     font-size: 16px;
   }
 
+
   .header-info h1 {
     font-size: 1.1rem;
   }
 
+
   .header-info p {
     font-size: 0.8rem;
   }
+
 
   .task-item {
     padding: 12px;
     gap: 8px;
   }
 
+
   .task-content h3 {
     font-size: 1rem;
   }
 
+
   .task-content .due-time {
-    font-size: 0.68rem;
+    font-size: 0.75rem;
   }
+
 
   .view-task-btn {
     padding: 8px;

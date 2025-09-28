@@ -9,6 +9,7 @@
   flex-direction: column;
 }
 
+
 /* Main Content */
 .todo-detail-main {
   flex: 1;
@@ -18,6 +19,7 @@
   overflow-y: auto;
   margin-top: 30px;
 }
+
 
 /* Back Button */
 .todo-back-btn {
@@ -39,9 +41,11 @@
   transition: text-decoration 0.2s ease;
 }
 
+
 .todo-back-btn:hover {
   text-decoration: underline;
 }
+
 
 .todo-back-btn span {
   display: flex;
@@ -50,6 +54,7 @@
   font-size: 18px;
 }
 
+
 /* Header */
 .todo-header {
   display: flex;
@@ -57,6 +62,7 @@
   gap: 25px;
   margin-bottom: 10px;
 }
+
 
 .todo-icon {
   background: #333;
@@ -70,10 +76,12 @@
   font-size: 20px;
 }
 
+
 .todo-icon svg {
   width: 20px;
   height: 20px;
 }
+
 
 .todo-title {
   font-size: 24px;
@@ -82,6 +90,7 @@
   margin: 0;
   flex: 1;
 }
+
 
 .todo-status {
   font-size: 14px;
@@ -94,6 +103,7 @@
   gap: 4px;
 }
 
+
 /* Greyed out complete button */
 .complete-btn:disabled {
   background-color: #cccccc !important;
@@ -101,6 +111,7 @@
   cursor: not-allowed !important;
   opacity: 0.7;
 }
+
 
 /* Highlighted back button when task is completed */
 .highlighted-back-btn {
@@ -111,12 +122,14 @@
   transform: translateY(-1px);
 }
 
+
 /* Revision section styling */
 .revision-section {
   margin-top: 2rem;
   padding-top: 1rem;
   border-top: 2px dashed #e9ecef;
 }
+
 
 .revision-title {
   color: #6c757d;
@@ -125,6 +138,7 @@
   font-weight: 600;
 }
 
+
 /* Button container for side-by-side buttons */
 .task-actions-container {
   display: flex;
@@ -132,14 +146,16 @@
   margin-top: 20px;
 }
 
+
 /* Individual action buttons */
 .action-btn {
-  padding: 12px 24px; 
+  padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
+
 
 .complete-btn {
   background-color: #4CAF50;
@@ -147,9 +163,11 @@
   border: none;
 }
 
+
 .complete-btn:hover:not(:disabled) {
   background-color: #3e8e41;
 }
+
 
 .cancel-btn {
   background-color: #f44336;
@@ -157,9 +175,11 @@
   border: none;
 }
 
+
 .cancel-btn:hover {
   background-color: #d32f2f;
 }
+
 
 /* Meta Info */
 .todo-meta {
@@ -170,13 +190,16 @@
   font-size: 12px;
 }
 
+
 .todo-category {
   font-style: normal;
 }
 
+
 .todo-due {
   font-weight: normal;
 }
+
 
 .divider {
   height: 1px;
@@ -185,6 +208,7 @@
   border: none;
 }
 
+
 /* Author */
 .todo-author {
   color: #666;
@@ -192,12 +216,14 @@
   margin-bottom: 20px;
 }
 
+
 /* Description */
 .todo-description {
   color: #333;
   line-height: 1.6;
   margin-bottom: 30px;
 }
+
 
 /* Comment Link */
 .comment-link {
@@ -211,6 +237,7 @@
   font-family: inherit;
 }
 
+
 .comment-link span {
   display: flex;
   align-items: center;
@@ -218,10 +245,12 @@
   font-size: 18px;
 }
 
+
 .comment-link svg {
   width: 25px;
   height: 25px;
 }
+
 
 /* Error Container */
 .error-container {
@@ -230,15 +259,18 @@
   color: #666;
 }
 
+
 .error-container p {
   font-size: 18px;
   margin-bottom: 10px;
 }
 
+
 .error-container small {
   font-size: 14px;
   color: #999;
 }
+
 
 /* Loading Spinner Container */
 .loading-container {
@@ -251,10 +283,12 @@
   color: #666;
 }
 
+
 .loading-container p {
   margin-top: 16px;
   font-size: 16px;
 }
+
 
 /* Spinner Animation */
 .spinner {
@@ -266,10 +300,12 @@
   animation: spin 1s linear infinite;
 }
 
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
 
 .todo-description {
   margin-top: 1rem;
@@ -280,18 +316,21 @@
   margin-bottom: -10px;
 }
 
+
 /* Links Section */
 .todo-links-section1, .todo-links-section3 {
   margin-top: -20px;
   margin-left: 15px;
   padding-bottom: 30px;
-} 
+}
+
 
 .todo-links-section1 {
   margin-top: -20px;
   margin-left: 15px;
   padding-bottom: 30px;
 }
+
 
 .todo-links-title1 {
   font-size: 14px;
@@ -300,6 +339,7 @@
   margin-bottom: 8px;
 }
 
+
 .todo-links-title2 {
   font-size: 14px;
   color: #6c757d;
@@ -307,15 +347,18 @@
   margin-bottom: 8px;
 }
 
+
 .todo-links-list {
   list-style-type: none;
   padding: 0;
   margin: 0;
 }
 
+
 .todo-link-item1 {
   margin-bottom: 8px;
 }
+
 
 .todo-link-item2 {
   margin-bottom: 8px;
@@ -329,9 +372,11 @@
   position: relative;
 }
 
+
 .todo-link-item2:hover {
   background: #e9ecef;
 }
+
 
 .todo-link1 {
   color: #007bff;
@@ -340,6 +385,7 @@
   font-size: 14px;
 }
 
+
 .todo-link2 {
   color: #007bff;
   text-decoration: underline;
@@ -347,10 +393,12 @@
   font-size: 14px;
 }
 
+
 .todo-link:hover {
   color: #0056b3;
   text-decoration: underline;
 }
+
 
 @keyframes pulse {
   0% { opacity: 1; }
@@ -358,10 +406,12 @@
   100% { opacity: 1; }
 }
 
+
 /* ✅ Styled Link Containers — For Submitted & Revision Links */
 .attached-links-section {
   margin: 1.5rem 0;
 }
+
 
 .attached-section-title {
   font-size: 0.875rem;
@@ -372,11 +422,13 @@
   letter-spacing: 0.5px;
 }
 
+
 .attached-links-list {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
+
 
 .attached-link-item {
   display: flex;
@@ -389,9 +441,11 @@
   position: relative;
 }
 
+
 .attached-link-item:hover {
   background: #e9ecef;
 }
+
 
 .attached-link-icon {
   font-size: 1.25rem;
@@ -400,11 +454,13 @@
   flex-shrink: 0;
 }
 
+
 .link-info {
   flex: 1;
   min-width: 0;
   margin-right: 0.5rem;
 }
+
 
 .attached-link-url {
   color: #007bff;
@@ -416,10 +472,12 @@
   display: block;
 }
 
+
 .attached-link-url:hover {
   text-decoration: underline;
   color: #0056b3;
 }
+
 
 .todo-remove-link-btn {
   background: none;
@@ -434,15 +492,18 @@
   margin-left: auto;
 }
 
+
 .todo-remove-link-btn:hover {
   background: #dc3545;
   color: white;
 }
 
+
 /* Link sections */
 .todo-links-section {
   margin-top: 1.5rem;
 }
+
 
 .todo-links-title {
   font-size: 16px;
@@ -451,11 +512,13 @@
   color: #333;
 }
 
+
 .todo-links-container {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 
 /* Wrapper to allow remove button on right */
 .submitted-link-wrapper {
@@ -464,6 +527,7 @@
   align-items: center;
   gap: 12px;
 }
+
 
 .todo-remove-link-btn {
   background: #ffebee;
@@ -484,15 +548,19 @@
   z-index: 2;
 }
 
+
 .todo-remove-link-btn:hover {
   background: #ffcdd2;
 }
 
+
 /* FOR MOBILE CSS */
 /* FOR MOBILE CSS */
 /* FOR MOBILE CSS */
 
+
 /* ============= MEDIA QUERIES FOR MOBILE ============= */
+
 
 @media (max-width: 767px) {
   /* App & Main Layout */
@@ -501,16 +569,19 @@
     margin-top: 0;
   }
 
+
   .todo-detail-main {
     padding: 16px;
     margin-top: 60px;
   }
+
 
   /* Back Button */
   .todo-back-btn {
     margin-bottom: 20px;
     font-size: 14px;
   }
+
 
   /* Header */
   .todo-header {
@@ -519,13 +590,16 @@
     gap: 12px;
   }
 
+
   .todo-title {
     font-size: 20px;
   }
 
+
   .todo-status {
     font-size: 12px;
   }
+
 
   /* Meta Info */
   .todo-meta {
@@ -534,9 +608,11 @@
     font-size: 11px;
   }
 
+
   .todo-due {
     text-align: left;
   }
+
 
   /* Author */
   .todo-author {
@@ -544,11 +620,13 @@
     margin-bottom: 16px;
   }
 
+
   /* Description */
   .todo-description {
     font-size: 0.9rem;
     padding: 0.75rem;
   }
+
 
   /* Links Sections */
   .todo-links-section1,
@@ -560,47 +638,25 @@
     padding: 0 0 16px 0;
   }
 
+
   .todo-links-title1,
   .todo-links-title2,
   .revision-title {
     font-size: 13px;
   }
 
+
   .todo-link-item2 {
     padding: 0.5rem;
     font-size: 13px;
   }
+
 
   .todo-link1,
   .todo-link2 {
     font-size: 13px;
   }
 
-  /* Task Actions */
-  .task-actions {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .task-actions-buttons-container {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .task-actions-link-btn,
-  .task-actions-complete-btn,
-  .task-actions-cancel-btn {
-    width: 100%;
-    justify-content: center;
-    padding: 10px 16px;
-    font-size: 14px;
-  }
-
-  .task-actions-status-completed {
-    justify-content: center;
-    padding: 10px 16px;
-  }
 
   /* Shared Button */
   .shared-button--small,
@@ -610,11 +666,13 @@
     justify-content: center;
   }
 
+
   /* Attached Links Modal */
   .al-modal {
     margin: 1rem;
     max-width: none;
   }
+
 
   .al-header,
   .al-body,
@@ -622,14 +680,17 @@
     padding: 1rem;
   }
 
+
   .al-form-input {
     font-size: 14px;
     padding: 10px;
   }
 
+
   .al-form-label {
     font-size: 13px;
   }
+
 
   /* Loading & Error States */
   .loading-container,
@@ -637,10 +698,12 @@
     padding: 20px 16px;
   }
 
+
   .loading-container p,
   .error-container p {
     font-size: 16px;
   }
+
 
     /* Adjust Toastify container and toast styles for mobile */
   .Toastify__toast-container--top-right {
@@ -651,15 +714,18 @@
     max-width: 85% !important; /* Decrease max width */
   }
 
+
   .Toastify__toast {
     min-height: auto !important;
     padding: 16px 14px !important; /* Reduce padding for smaller height */
     font-size: 13px !important;
   }
 
+
   .Toastify__toast-body {
     padding: 0 !important;
   }
+
 
   /* Optional: Adjust icon size if needed */
   .Toastify__toast-icon {
@@ -669,15 +735,18 @@
   }
 }
 
+
 /* Optional: Extra small screens (e.g., iPhone SE) */
 @media (max-width: 375px) {
   .todo-detail-main {
     padding: 14px;
   }
 
+
   .todo-title {
     font-size: 18px;
   }
+
 
   .task-actions-link-btn,
   .task-actions-complete-btn,
@@ -687,13 +756,19 @@
     font-size: 13px;
   }
 
+
+  .todo-back-btn {
+    font-size: 18px;
+  }
+
+
   .al-header h3 {
     font-size: 1rem;
   }
+
 
   .al-form-input {
     padding: 8px;
     font-size: 13px;
   }
 }
-

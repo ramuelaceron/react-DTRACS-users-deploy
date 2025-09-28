@@ -21,7 +21,7 @@ const AttachmentsPage = () => {
   return (
     <div className="attachments-page">
       <button className="attachments-back-btn" onClick={() => navigate(-1)}>
-        <IoChevronBackOutline /> Back
+        <IoChevronBackOutline className="icon-md" /> Back
       </button>
 
       <div className="attachments-header">

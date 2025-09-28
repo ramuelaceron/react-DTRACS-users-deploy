@@ -1,11 +1,10 @@
-
-
 .task-description {
-  padding: 1rem 1.5rem; 
+  padding: 1rem 1.5rem;
   background: #fff;
   border-radius: 8px;
   position: relative;
 }
+
 
 .task-header {
   display: flex;
@@ -13,6 +12,7 @@
   gap: 15px;
   margin-bottom: 15px;
 }
+
 
 .task-description-icon {
   background: #333;
@@ -27,10 +27,12 @@
   flex-shrink: 0;
 }
 
+
 .task-description-icon svg {
   width: 20px;
   height: 20px;
 }
+
 
 /* 💙 Pulsing animation for incomplete tasks (blue) */
 @keyframes pulse-blue {
@@ -39,6 +41,7 @@
   100% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0); }
 }
 
+
 /* 🔴 Pulsing animation for overdue tasks (red) */
 @keyframes pulse-red {
   0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
@@ -46,13 +49,16 @@
   100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
 }
 
+
 .task-icon-pulse-red {
   animation: pulse-red 2s infinite;
 }
 
+
 .task-icon-pulse {
   animation: pulse-blue 2s infinite;
 }
+
 
 .task-title-container {
   display: flex;
@@ -61,6 +67,7 @@
   flex: 1;
   gap: 15px;
 }
+
 
 .task-title {
   font-size: 20px;
@@ -72,10 +79,12 @@
   word-break: break-word;
 }
 
+
 .task-actions-container {
   position: relative;
   flex-shrink: 0;
 }
+
 
 .task-options-button {
   background: none;
@@ -90,10 +99,12 @@
   transition: all 0.2s;
 }
 
+
 .task-options-button:hover {
   background-color: #f8f9fa;
   color: #34495e;
 }
+
 
 /* Options dropdown */
 .options-dropdown {
@@ -109,6 +120,7 @@
   overflow: hidden;
 }
 
+
 .dropdown-item {
   width: 100%;
   padding: 12px 16px;
@@ -121,21 +133,26 @@
   transition: background-color 0.2s;
 }
 
+
 .dropdown-item:hover {
   background-color: #f8f9fa;
 }
+
 
 .dropdown-item.delete {
   color: #e74c3c;
 }
 
+
 .dropdown-item.delete:hover {
   background-color: #fdf2f2;
 }
 
+
 .task-due {
   font-size: 12px;
 }
+
 
 .task-meta {
   display: flex;
@@ -145,15 +162,18 @@
   font-size: 12px;
 }
 
+
 .task-author .author {
   font-weight: 500;
   color: #333;
 }
 
+
 .task-author .dot-space {
   margin: 0 10px;
   color: black;
 }
+
 
 .divider {
   height: 1px;
@@ -162,11 +182,13 @@
   border: none;
 }
 
+
 .task-author {
   color: #666;
   font-size: 12px;
   margin-bottom: 20px;
 }
+
 
 .task-body {
   font-size: 15px;
@@ -174,12 +196,14 @@
   color: #333;
 }
 
+
 /* Late badge */
 .task-late-badge {
   color: #ff9800;
   font-weight: bold;
   margin-left: 6px;
 }
+
 
 /* Links */
 .task-links-container {
@@ -194,10 +218,12 @@
   color: #555;
 }
 
+
 .task-links-container .task-link-label {
   font-weight: 600;
   color: #333;
 }
+
 
 .task-links-container .task-link {
   display: block;
@@ -211,10 +237,12 @@
   padding: 4px 0;
 }
 
+
 .task-links-container .task-link:hover {
   color: #0b7dda;
   text-decoration: underline;
 }
+
 
 .task-links-container .task-link::after {
   content: " ↗";
@@ -223,10 +251,12 @@
   color: #666;
 }
 
+
 /* In TaskDescription.css */
 .task-links-section {
   margin-top: 1.5rem;
 }
+
 
 .task-link-header {
   font-size: 15px;
@@ -235,11 +265,13 @@
   color: #333;
 }
 
+
 .task-links-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 
 /* Error Container */
 .error-container {
@@ -248,17 +280,21 @@
   color: #666;
 }
 
+
 .error-container p {
   font-size: 18px;
   margin-bottom: 10px;
 }
+
 
 .error-container small {
   font-size: 14px;
   color: #999;
 }
 
+
 /* ============= MEDIA QUERIES FOR MOBILE ============= */
+
 
 @media (max-width: 767px) {
   .task-description {
@@ -266,13 +302,15 @@
     border-radius: 0;
   }
 
+
   .task-header {
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
     gap: 12px;
     margin-bottom: 16px;
     flex-wrap: wrap;
   }
+
 
   .task-description-icon {
     width: 44px;
@@ -280,60 +318,81 @@
     font-size: 22px;
   }
 
+
   .task-description-icon svg {
     width: 22px;
     height: 22px;
   }
 
+
   .task-title-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
+    justify-content: space-between;
     flex: 1;
-    min-width: 0;
     gap: 8px;
+    min-width: 0;
+    flex-wrap: wrap; /* Allow children to wrap if needed */
   }
+
 
   .task-title {
     font-size: 18px;
     line-height: 1.4;
     margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 100%;
-    margin-top: 10px;
+    flex: 1;
+    min-width: 0; /* Critical for flex children to shrink */
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    /* Remove all restrictive nowrap/ellipsis */
   }
+
 
   .task-actions-container {
-    position: relative;
-    align-self: flex-start;
-    margin-top: 2px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-start;
+    margin-top: 2px; /* Minor vertical alignment tweak */
   }
+
 
   .task-options-button {
-    padding: 8px;
-    border-radius: 50%;
-    color: #7f8c8d;
     background: none;
     border: none;
+    padding: 6px;
+    border-radius: 50%;
+    color: #7f8c8d;
     cursor: pointer;
     display: flex;
-    padding-left: 260px;
-    margin-top: -45px;
+    align-items: center;
+    justify-content: center;
     transition: all 0.2s;
+    /* ✅ Remove hardcoded padding-left and negative margin! */
   }
 
+
+  .task-options-button:hover {
+    background-color: #f8f9fa;
+    color: #34495e;
+  }
+
+
+  /* Ensure dropdown appears correctly */
   .options-dropdown {
-    min-width: 160px;
+    top: 100%;
     right: 0;
     left: auto;
+    min-width: 140px;
   }
+
 
   .dropdown-item {
     padding: 14px 16px;
     font-size: 14px;
   }
+
 
   .task-meta {
     flex-direction: column;
@@ -342,22 +401,27 @@
     font-size: 13px;
   }
 
+
   .task-category {
     font-weight: 600;
   }
+
 
   .task-due,
   .task-completed {
     font-size: 13px;
   }
 
+
   .task-late-badge {
     font-size: 13px;
   }
 
+
   .divider {
     margin: 12px 0;
   }
+
 
   .task-author {
     font-size: 13px;
@@ -368,14 +432,17 @@
     align-items: center;
   }
 
+
   .task-author .dot-space {
     margin: 0 6px;
   }
+
 
   .task-body {
     font-size: 15px;
     line-height: 1.6;
   }
+
 
   .task-links-container {
     margin-top: 16px;
@@ -383,30 +450,37 @@
     font-size: 13px;
   }
 
+
   .task-links-container .task-link-label {
     font-size: 14px;
     font-weight: 600;
   }
+
 
   .task-links-container .task-link {
     font-size: 13px;
     padding: 6px 0;
   }
 
+
   .task-links-container .task-link::after {
     font-size: 0.7em;
   }
 }
+
 
 @media (max-width: 375px) {
   .task-description {
     padding: 14px 10px;
   }
 
+
   .task-header {
-    gap: 10px;
-    margin-bottom: 14px;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
   }
+
 
   .task-description-icon {
     width: 40px;
@@ -414,31 +488,38 @@
     font-size: 20px;
   }
 
+
   .task-description-icon svg {
     width: 20px;
     height: 20px;
   }
 
+
   .task-title {
-    font-size: 17px;
+    font-size: 18px;
   }
+
 
   .task-actions-container {
     margin-top: 1px;
   }
 
+
   .task-options-button {
-    padding: 6px;
+    padding: 5px;
   }
+
 
   .options-dropdown {
     min-width: 140px;
   }
 
+
   .dropdown-item {
     padding: 12px 14px;
     font-size: 13px;
   }
+
 
   .task-meta {
     font-size: 12px;
@@ -446,18 +527,22 @@
     margin-bottom: 10px;
   }
 
+
   .task-due,
   .task-completed {
     font-size: 12px;
   }
 
+
   .task-late-badge {
     font-size: 12px;
   }
 
+
   .divider {
     margin: 10px 0;
   }
+
 
   .task-author {
     font-size: 12px;
@@ -465,13 +550,16 @@
     gap: 4px;
   }
 
+
   .task-author .dot-space {
     margin: 0 4px;
   }
 
+
   .task-body {
     font-size: 14px;
   }
+
 
   .task-links-container {
     margin-top: 14px;
@@ -479,14 +567,17 @@
     font-size: 12px;
   }
 
+
   .task-links-container .task-link-label {
     font-size: 13px;
   }
+
 
   .task-links-container .task-link {
     font-size: 12px;
     padding: 5px 0;
   }
+
 
   .task-links-container .task-link::after {
     font-size: 0.6em;

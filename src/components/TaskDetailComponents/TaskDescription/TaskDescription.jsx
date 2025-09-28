@@ -48,9 +48,12 @@ const parseDate = (str) => {
   if (!str) return null;
   if (str instanceof Date) return str;
   if (typeof str === 'string') {
-    // If it's an ISO-like string without timezone, treat as UTC
+    // If it's an ISO-like string WITHOUT timezone info,
+    // assume it's in LOCAL time (not UTC), so DO NOT append 'Z'
+    // Only treat as UTC if it explicitly has 'Z' or offset
     if (str.includes('T') && !str.endsWith('Z') && !/[+-]\d{2}:?\d{2}$/.test(str)) {
-      str = str + 'Z';
+      // Keep as local time — do nothing
+      // Example: "2025-09-27T16:22:18" → parsed as local 4:22 PM
     }
   }
   const date = new Date(str);
@@ -182,10 +185,15 @@ const pulseClass = getPulseClass();
       }
 
       const deletedTask = await response.json();
-      toast.success(`✅ Task "${deletedTask.title}" deleted successfully!`);
-      navigate(-1);
+      toast.success(`Task "${deletedTask.title}"deleted successfully!`);
+
+      // ✅ Delay navigation to let toast show
+      setTimeout(() => {
+        navigate(-1);
+      }, 2000); // 1 second delay — enough for toast to appear
+
     } catch (err) {
-      console.error("❌ Error deleting task:", err);
+      console.error("Error deleting task:", err);
       toast.error(`Failed to delete task: ${err.message}`);
     }
   };

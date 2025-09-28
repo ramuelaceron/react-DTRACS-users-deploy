@@ -414,7 +414,7 @@ const SchoolCard = ({ school, taskDeadline, getAccountStatusLabel, onAccountClic
   // ✅ Get school-level status label and class
   const schoolStatus = getAccountStatusLabel(school.status, taskDeadline);
 
-  return (
+ return (
     <div
       className="school-card"
       onMouseEnter={() => setIsHovered(true)}
@@ -436,18 +436,21 @@ const SchoolCard = ({ school, taskDeadline, getAccountStatusLabel, onAccountClic
         </span>
       </div>
 
+
       {/* Accounts List (on hover) */}
       <div className={`accounts-list ${isHovered ? 'expanded' : ''}`}>
         {school.accounts.map((account) => {
           // ✅ Get account-level status label and class
           const accountStatus = getAccountStatusLabel(account.status, taskDeadline);
 
-          const isClickable = 
-            account.status === "COMPLETE" && 
+
+          const isClickable =
+            account.status === "COMPLETE" &&
             account.attachments?.some(att => att?.url);
 
+
           return (
-            <div key={account.id} className="account-item">
+            <div key={account.id} className="school-stats-account-item">
               <span className="account-name">
                 Assigned to:{" "}
                 <strong

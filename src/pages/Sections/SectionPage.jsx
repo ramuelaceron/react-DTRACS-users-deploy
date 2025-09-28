@@ -66,6 +66,15 @@ const SectionPage = () => {
     fetchFocalPersons();
   }, [sectionId, section]);
 
+  if (loading) {
+    return (
+      <div className="loading-container" aria-live="polite">
+        <div className="spinner" role="status" aria-label="Loading focal persons"></div>
+        <p>Loading section details...</p>
+      </div>
+    );
+  }
+
   // If on task-list route, render Outlet only
   if (window.location.pathname.includes("task-list")) {
     return <Outlet />;

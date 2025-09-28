@@ -111,8 +111,9 @@ const ToDoListPage = () => {
       </div>
 
       {loading ? (
-        <div className="no-tasks-container">
-          <p className="no-tasks">Loading tasks...</p>
+        <div className="loading-container" aria-live="polite">
+          <div className="spinner" role="status" aria-label="Loading"></div>
+          <p>Loading tasks...</p>
         </div>
       ) : error ? (
         <div className="no-tasks-container">

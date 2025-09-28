@@ -142,3 +142,41 @@
   margin: 0;
 }
 
+/* ============= MOBILE: CENTERED BUTTONS ============= */
+@media (max-width: 767px) {
+  .task-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+
+  /* Center all actionable elements */
+  .task-actions-link-btn,
+  .task-actions-complete-btn,
+  .task-actions-cancel-btn,
+  .task-actions-status-completed {
+    max-width: 300px; /* Prevents overly wide buttons on large mobile screens */
+    justify-content: center;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+
+  /* Completed status: match visual style */
+  .task-actions-status-completed {
+    background: #e8f5e9;
+    color: #28a745;
+    border: 1px solid #28a745;
+  }
+
+
+  /* Ensure icons are centered */
+  .task-actions-icon {
+    margin-right: 6px;
+  }
+}

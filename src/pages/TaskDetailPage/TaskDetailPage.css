@@ -1,26 +1,27 @@
-
-
 .task-detail-page {
   display: flex;
   gap: 20px;
-  padding: 70px 10px; 
+  padding: 70px 10px;
   margin-right: -20px;
 }
 
+
 .task-detail-left {
   flex: 1;
-  margin-top: 2px; 
+  margin-top: 2px;
 }
 
+
 .task-detail-right {
-  flex: 1; 
-  margin-top: 60px; 
+  flex: 1;
+  margin-top: 60px;
 }
+
 
 .task-back-btn {
   background: none;
   border: none;
-  color: #1a73e8;
+  color: #000;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
@@ -35,10 +36,12 @@
   width: fit-content;
 }
 
+
 .task-back-btn:hover {
   color: #0d47a1;
   text-decoration: underline;
 }
+
 
 .task-back-btn span {
   display: flex;
@@ -47,6 +50,7 @@
   font-size: 18px;
 }
 
+
 /* Comment Section */
 .task-comment-section {
   margin-top: -15px;
@@ -54,17 +58,20 @@
   border-radius: 8px;
 }
 
+
 .task-comment-section h3 {
   margin-bottom: 15px;
   color: #333;
   font-size: 18px;
 }
 
+
 /* Comments Toggle Section */
 .comments-toggle-section {
   margin-top: 1.5rem;
   padding: 0 1.5rem;
 }
+
 
 .comments-toggle-btn {
   display: flex;
@@ -79,19 +86,23 @@
   transition: color 0.2s ease;
 }
 
+
 .comments-toggle-btn:hover {
   color: #1d4ed8;
   text-decoration: underline;
 }
 
+
 .comments-toggle-btn .icon-md {
   font-size: 1.1rem;
 }
+
 
 /* Comments Section */
 .comments-section {
   margin-top: 1.5rem;
 }
+
 
 /* No Comments Message */
 .no-comments-message {
@@ -100,16 +111,19 @@
   color: #6c757d;
 }
 
+
 .no-comments-message p {
   margin: 0;
   font-style: italic;
 }
+
 
 /* Comments Toggle Section */
 .comments-toggle-section {
   margin-bottom: 1rem;
   padding: 0 1.5rem;
 }
+
 
 .comments-toggle-btn {
   display: flex;
@@ -124,25 +138,31 @@
   transition: color 0.2s ease;
 }
 
+
 .comments-toggle-btn:hover {
   color: #1d4ed8;
   text-decoration: underline;
 }
 
+
 .comments-toggle-btn .icon-md {
   font-size: 1.1rem;
 }
+
 
 .loading{
   padding-left: 40px;
   font-style: italic;
 }
 
+
 /* FOR MOBILE CSS */
 /* FOR MOBILE CSS */
 /* FOR MOBILE CSS */
 
+
 /* ============= MEDIA QUERIES FOR MOBILE ============= */
+
 
 @media (max-width: 767px) {
   /* Main Page Layout */
@@ -154,6 +174,7 @@
     margin-top: 60px;
   }
 
+
   /* Left Panel (Task Description) */
   .task-detail-left {
     flex: none;
@@ -161,17 +182,20 @@
     width: 100%;
   }
 
+
   /* Back Button */
   .task-back-btn {
-    margin: 0 0 16px 0;
+    margin-bottom: 16px;
     padding: 10px 8px;
     font-size: 15px;
     gap: 6px;
   }
 
+
   .task-back-btn .icon-md {
     font-size: 20px;
   }
+
 
   /* Right Panel (School Stats) */
   .task-detail-right {
@@ -182,6 +206,7 @@
     border-top: 1px solid #eee;
   }
 
+
   /* Loading State */
   .loading {
     padding-left: 0;
@@ -191,6 +216,7 @@
     color: #555;
   }
 
+
   /* Error Container */
   .error-container {
     padding: 20px;
@@ -199,6 +225,7 @@
     font-size: 16px;
   }
 
+
   .error-container small {
     display: block;
     margin-top: 8px;
@@ -206,16 +233,19 @@
     color: #888;
   }
 
+
   /* Comment Section */
   .task-comment-section {
     margin-top: 10px;
     padding: 16px;
   }
 
+
   .task-comment-section h3 {
     font-size: 18px;
     margin-bottom: 12px;
   }
+
 
   /* Comments Toggle */
   .comments-toggle-section {
@@ -223,14 +253,17 @@
     padding: 0 12px;
   }
 
+
   .comments-toggle-btn {
     font-size: 15px;
     padding: 8px 0;
   }
 
+
   .comments-toggle-btn .icon-md {
     font-size: 1.2rem;
   }
+
 
   /* No Comments Message */
   .no-comments-message {
@@ -238,10 +271,12 @@
     font-size: 14px;
   }
 
+
   .no-comments-message p {
     font-size: 14px;
   }
 }
+
 
 /* Extra Small Screens */
 @media (max-width: 375px) {
@@ -249,43 +284,53 @@
     padding: 12px 8px 70px;
   }
 
+
   .task-back-btn {
     font-size: 14px;
     padding: 8px 6px;
   }
 
+
   .task-back-btn .icon-md {
     font-size: 18px;
   }
+
 
   .task-detail-left,
   .task-detail-right {
     padding: 0;
   }
 
+
   .task-comment-section {
     padding: 14px;
   }
+
 
   .task-comment-section h3 {
     font-size: 17px;
   }
 
+
   .comments-toggle-btn {
     font-size: 14px;
   }
+
 
   .loading {
     font-size: 15px;
   }
 
+
   .error-container {
     font-size: 15px;
   }
 
+
   .error-container small {
     font-size: 13px;
   }
+
 
   .no-comments-message {
     padding: 14px;

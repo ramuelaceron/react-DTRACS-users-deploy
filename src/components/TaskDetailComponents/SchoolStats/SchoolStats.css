@@ -1,4 +1,3 @@
-/* SchoolStats.css - Updated */
 .school-stats {
   font-family: "Inter", sans-serif;
   background: #ffffff;
@@ -10,6 +9,7 @@
   overflow: hidden;
 }
 
+
 .stats-tabs {
   display: flex;
   justify-content: space-between;
@@ -17,6 +17,7 @@
   margin-bottom: 1rem;
   padding: 0;
 }
+
 
 .tab {
   flex: 1;
@@ -30,9 +31,11 @@
   border-right: 1px solid #eee;
 }
 
+
 .tab:last-child {
   border-right: none;
 }
+
 
 .tab-count {
   font-size: 30px;
@@ -41,16 +44,19 @@
   margin-bottom: 4px;
 }
 
+
 .tab-label {
   font-size: 12px;
   font-weight: 500;
   color: #6b7280;
 }
 
+
 .tab:hover,
 .tab.active {
   background: #A1A1A1;
 }
+
 
 .tab:hover .tab-count,
 .tab.active .tab-count,
@@ -59,12 +65,14 @@
   color: #ffffff;
 }
 
+
 /* School list */
 .school-list {
   display: flex;
   flex-direction: column;
   padding: 0 8px 8px;
 }
+
 
 .school-card {
   display: flex;
@@ -79,10 +87,12 @@
   overflow: hidden;
 }
 
+
 .school-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
+
 
 .school-header {
   display: flex;
@@ -94,6 +104,7 @@
   transition: border-bottom 0.2s ease;
 }
 
+
 /* Add border-bottom only when school-card is hovered */
 .school-card:hover .school-header {
   border-bottom: 1.5px solid #eee;
@@ -101,11 +112,13 @@
   padding-bottom: 8px;
 }
 
+
 .school-left {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
 
 .school-left img {
   width: 32px;
@@ -113,6 +126,7 @@
   border-radius: 50%;
   object-fit: cover;
 }
+
 
 .school-name {
   font-size: 14px;
@@ -124,6 +138,7 @@
   max-width: 300px;
 }
 
+
 /* Accounts list */
 .accounts-list {
   max-height: 0;
@@ -132,23 +147,27 @@
   transition: all 0.3s ease;
 }
 
+
 .accounts-list.expanded {
   max-height: 200px;
   opacity: 1;
   margin-top: 12px;
 }
 
-.account-item {
+
+.school-stats-account-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 8px 0 8px 44px;
 }
 
+
 .account-name {
   font-size: 0.85rem;
   color: #6b7280;
 }
+
 
 /* Status badges */
 .status-badge {
@@ -159,25 +178,30 @@
   white-space: nowrap;
 }
 
+
 .status-badge.small {
   padding: 2px 8px;
   font-size: 0.75rem;
 }
+
 
 .status-badge.submitted {
   background: #d1fae5;
   color: #065f46;
 }
 
+
 .status-badge.not_submitted {
   background: #e0e7ff;
   color: #3730a3;
 }
 
+
 .status-badge.past_due {
   background: #fee2e2;
   color: #991b1b;
 }
+
 
 /* Empty states */
 .no-task-data,
@@ -187,6 +211,7 @@
   color: #6b7280;
 }
 
+
 .account-status-badge {
   padding: 4px 10px;
   font-size: 12px;
@@ -195,10 +220,12 @@
   white-space: nowrap;
 }
 
+
 .account-status-badge.small {
   padding: 2px 8px;
   font-size: 0.75rem;
 }
+
 
 .clickable-account {
   color: #2196F3;
@@ -206,14 +233,17 @@
   text-decoration: underline;
 }
 
+
 .clickable-account:hover {
   color: #1976D2;
 }
+
 
 .non-clickable-account {
   color: #6b7280;
   cursor: default;
 }
+
 
 /* Status Badges */
 .status-badge {
@@ -226,22 +256,28 @@
   display: inline-block;
 }
 
+
 .status-submitted {
   background-color: #4CAF50;
   color: white;
 }
 
+
 .status-pending {
   background-color: #BBDEFB;
   color: #0D47A1;
 
+
 }
+
 
 .status-incomplete {
   background-color: #FFCDD2;
   color: #C62828;
 
+
 }
+
 
 /* Optional: Hover effect for clickable accounts */
 .clickable-account {
@@ -250,20 +286,25 @@
   cursor: pointer;
 }
 
+
 .clickable-account:hover {
   color: #0056b3;
 }
+
 
 .non-clickable-account {
   color: #6c757d;
   cursor: default;
 }
 
+
 /* FOR MOBILE CSS */
 /* FOR MOBILE CSS */
 /* FOR MOBILE CSS */
 
+
 /* ============= MEDIA QUERIES FOR MOBILE ============= */
+
 
 @media (max-width: 767px) {
   /* Main Container */
@@ -275,6 +316,7 @@
     max-width: 100%;
   }
 
+
   /* Tabs */
   .stats-tabs {
     flex-direction: row;
@@ -283,6 +325,7 @@
     margin-bottom: 12px;
   }
 
+
   .tab {
     flex: 1;
     padding: 14px 8px;
@@ -290,23 +333,28 @@
     min-width: 0;
   }
 
+
   .tab:last-child {
     border-right: none;
   }
+
 
   .tab-count {
     font-size: 24px;
     margin-bottom: 2px;
   }
 
+
   .tab-label {
     font-size: 11px;
   }
+
 
   /* School List */
   .school-list {
     padding: 0 8px;
   }
+
 
   /* School Card */
   .school-card {
@@ -316,6 +364,7 @@
     border: 1px solid #f0f0f0;
   }
 
+
   .school-header {
     align-items: center;
     gap: 10px;
@@ -324,11 +373,13 @@
     flex-wrap: wrap;
   }
 
+
   .school-card:hover .school-header {
     border-bottom: 1px solid #eee;
     margin-bottom: 8px;
     padding-bottom: 8px;
   }
+
 
   .school-left {
     display: flex;
@@ -338,10 +389,12 @@
     min-width: 0;
   }
 
+
   .school-left img {
     width: 36px;
     height: 36px;
   }
+
 
   .school-name {
     font-size: 15px;
@@ -352,6 +405,7 @@
     flex: 1;
   }
 
+
   /* Status Badge */
   .status-badge {
     padding: 4px 10px;
@@ -359,6 +413,7 @@
     white-space: nowrap;
     margin-top: 4px;
   }
+
 
   /* Accounts List - ALWAYS VISIBLE ON MOBILE */
   .accounts-list {
@@ -369,13 +424,15 @@
     transition: none;
   }
 
+
   .accounts-list.expanded {
     max-height: none;
     opacity: 1;
   }
 
+
   /* Account Item */
-  .account-item {
+  .school-stats-account-item {
     padding: 8px 0 8px 40px;
     display: flex;
     justify-content: space-between;
@@ -384,10 +441,12 @@
     margin-bottom: 4px;
   }
 
-  .account-item:last-child {
+
+  .school-stats-account-item:last-child {
     border-bottom: none;
     margin-bottom: 0;
   }
+
 
   .account-name {
     font-size: 13px;
@@ -397,9 +456,11 @@
     gap: 4px;
   }
 
+
   .account-name-text {
     font-weight: 500;
   }
+
 
   .clickable-account {
     color: #2196F3;
@@ -407,14 +468,17 @@
     font-size: 13px;
   }
 
+
   .clickable-account:hover {
     color: #1976D2;
   }
+
 
   .non-clickable-account {
     color: #6b7280;
     font-size: 13px;
   }
+
 
   /* Account Status Badge */
   .account-status-badge {
@@ -422,6 +486,7 @@
     font-size: 11px;
     white-space: nowrap;
   }
+
 
   /* Empty States */
   .no-task-data,
@@ -431,6 +496,7 @@
     color: #6b7280;
   }
 }
+
 
 /* Extra Small Screens */
 @media (max-width: 375px) {
@@ -464,7 +530,7 @@
     font-size: 14px;
   }
 
-  .account-item {
+  .school-stats-account-item {
     padding: 8px 0 8px 36px;
   }
 
@@ -476,6 +542,7 @@
   .non-clickable-account {
     font-size: 12px;
   }
+
 
   .account-status-badge {
     padding: 2px 6px;

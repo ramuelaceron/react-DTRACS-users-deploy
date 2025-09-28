@@ -198,8 +198,11 @@ const TaskDetailPage = () => {
   const handleTaskUpdated = async (updatedTaskData) => {
     setTask(prev => ({ ...prev, ...updatedTaskData }));
     await loadAndEnrichTask();
-    navigate(-1);
     toast.success("✅ Task Updated!");
+    // ✅ Delay navigation to let toast show
+      setTimeout(() => {
+        navigate(-1);
+      }, 2000); // 1 second delay — enough for toast to appear
   };
 
   if (!initialTask && !state) {
