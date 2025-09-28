@@ -121,10 +121,10 @@ const TaskPage = () => {
           return acc;
         }, {});
 
-        const enrichedTasks = await enrichTasksWithAssignments(groupedBySection, token);
+      const enrichedTasks = await enrichTasksWithAssignments(groupedBySection, token);
 
-        setTasks(enrichedTasks);
-        setHasLoaded(true); // Set hasLoaded to true after successful fetch
+    setTasks(enrichedTasks);
+    setHasLoaded(true); // Set hasLoaded to true after successful fetch
       } catch (err) {
         console.error("Error fetching and enriching tasks:", err);
         // Instead of setting an error, we'll just set empty tasks

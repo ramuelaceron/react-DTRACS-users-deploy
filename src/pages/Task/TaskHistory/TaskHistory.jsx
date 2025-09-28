@@ -1,5 +1,4 @@
 
-
 import { useState, useEffect } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { PiClipboardTextBold } from "react-icons/pi";
@@ -10,14 +9,89 @@ import {
   getWeekday,
   getTaskCompletionStats,
 } from "../../../utils/taskHelpers";
+import config from "../../../config"; // ✅ Make sure this is imported
 import "./TaskHistory.css";
+
+// ✅ NEW: Enrich tasks with assignment data (one task at a time)
+const enrichTaskWithAssignment = async (task, token) => {
+  try {
+    const response = await fetch(
+      `${config.API_BASE_URL}/focal/task/assignments?task_id=${encodeURIComponent(task.task_id)}`,
+      {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.warn(`Failed to fetch assignments for task ${task.task_id}`);
+      return task;
+    }
+
+    const assignments = await response.json();
+    const completedAssignments = assignments.filter(a => a.status === "COMPLETE");
+
+    if (completedAssignments.length === 0) return task;
+
+    // Get the latest completed assignment
+    const latest = completedAssignments.reduce((prev, curr) => {
+      const prevTime = prev.status_updated_at ? new Date(prev.status_updated_at) : new Date(0);
+      const currTime = curr.status_updated_at ? new Date(curr.status_updated_at) : new Date(0);
+      return currTime > prevTime ? curr : prev;
+    });
+
+    return {
+      ...task,
+      remarks: latest.remarks || task.remarks,
+      status_updated_at: latest.status_updated_at || task.status_updated_at,
+    };
+  } catch (err) {
+    console.error(`Error enriching task ${task.task_id}:`, err);
+    return task;
+  }
+};
 
 const TaskHistory = () => {
   const { completedTasks, selectedSort, loading, hasLoaded } = useOutletContext();
 
+  // ✅ New state for enriched tasks
+  const [enrichedTasks, setEnrichedTasks] = useState([]);
+  const [enrichmentLoading, setEnrichmentLoading] = useState(false);
+
+  // ✅ Enrich tasks when completedTasks loads
+  useEffect(() => {
+    if (!hasLoaded || completedTasks.length === 0) {
+      setEnrichedTasks([]);
+      return;
+    }
+
+    setEnrichmentLoading(true);
+    const currentUser = JSON.parse(sessionStorage.getItem("currentUser")) || {};
+    const token = currentUser.token;
+
+    // Enrich all tasks
+    Promise.all(
+      completedTasks.map(task => enrichTaskWithAssignment(task, token))
+    ).then(tasks => {
+      setEnrichedTasks(tasks);
+      setEnrichmentLoading(false);
+    }).catch(err => {
+      console.error("Failed to enrich tasks:", err);
+      setEnrichedTasks(completedTasks); // fallback
+      setEnrichmentLoading(false);
+    });
+  }, [completedTasks, hasLoaded]);
+
+  // ✅ Use enriched tasks if available
+  const tasksToUse = enrichedTasks.length > 0 ? enrichedTasks : completedTasks;
+  const isLoading = loading || (hasLoaded && enrichmentLoading && completedTasks.length > 0);
+
   // Group tasks by formatted completion date
-  const groupedByDate = completedTasks.reduce((groups, task) => {
-    const completionDate = task.completion_date || task.creation_date;
+  const groupedByDate = tasksToUse.reduce((groups, task) => {
+    // ✅ Use real submission time: status_updated_at > completion_date > creation_date
+    const completionDate = task.status_updated_at || task.completion_date || task.creation_date;
     const formattedDate = formatDate(completionDate);
     
     if (!groups[formattedDate]) groups[formattedDate] = [];
@@ -72,7 +146,7 @@ const TaskHistory = () => {
   return (
     <div className="history-app">
       <main className="history-main">
-        {loading ? (
+        {isLoading ? (
           <div className="history-loading">
             <div className="history-spinner"></div>
             <p>Loading tasks...</p>
@@ -108,12 +182,11 @@ const TaskHistory = () => {
                   <div className="history-task-list">
                     {tasks.map((task) => {
                       const { total, completed } = getTaskCompletionStats(task);
-                      const completionDate = task.completion_date || task.creation_date;
+                      const actualCompletion = task.status_updated_at || task.completion_date || task.creation_date;
 
-                      // ✅ Determine if task was completed LATE
-                      const isLate = task.deadline && completionDate
-                        ? new Date(completionDate) > new Date(task.deadline)
-                        : false;
+                      // ✅ CORRECT LATE DETECTION: Use remarks FIRST
+                      const isLate = task.remarks === "TURNED IN LATE" || 
+                        (task.deadline && actualCompletion && new Date(actualCompletion) > new Date(task.deadline));
 
                       return (
                         <div
@@ -133,8 +206,8 @@ const TaskHistory = () => {
                               </div>
                             </div>
                             <div className="history-task-completion">
-                              Completed on {formatDate(completionDate)} at{" "}
-                              <span className="history-time">{formatTime(completionDate)}</span>
+                              Completed on {formatDate(actualCompletion)} at{" "}
+                              <span className="history-time">{formatTime(actualCompletion)}</span>
                               {isLate && (
                                 <span className="history-late-badge"> (Late)</span>
                               )}
@@ -149,7 +222,7 @@ const TaskHistory = () => {
                                 taskTitle: task.title,
                                 deadline: task.deadline,
                                 creation_date: task.creation_date,
-                                completion_date: task.completion_date,
+                                completion_date: actualCompletion, // ✅ Use real completion
                                 taskDescription: task.description,
                                 taskId: task.id,
                                 creator_name: task.creator_name,

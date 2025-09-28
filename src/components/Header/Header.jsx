@@ -7,6 +7,7 @@ import logo from "../../assets/images/logo-w-text.png";
 import { FaUser, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import { IoChevronDownCircle } from "react-icons/io5";
 import { generateAvatar } from "../../utils/iconGenerator";
+import config from "../../config";
 
 const Header = ({ toggleSidebar }) => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Header = ({ toggleSidebar }) => {
   }, []);
 
   const handleLogoClick = () => {
-    navigate("/");
+    navigate("/home");
   };
 
   const toggleDropdown = () => {
@@ -54,47 +55,57 @@ const Header = ({ toggleSidebar }) => {
   };
 
   const handleSignOut = async () => {
-    try {
-      // Get the access token from wherever you store it (e.g., sessionStorage or a context)
-      const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-      const accessToken = currentUser?.access_token; // assuming you store it here
+    const savedUser = sessionStorage.getItem("currentUser");
+    if (!savedUser) {
+      window.location.replace("/login/school");
+      return;
+    }
 
-      if (!accessToken) {
-        console.warn("No access token found. Proceeding with local logout.");
-      } else {
-        // Call the backend logout endpoint
-        const response = await fetch("/api/auth/logout", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // Important: to send cookies with the request
-        });
+    const currentUser = JSON.parse(savedUser);
+    const accessToken = sessionStorage.getItem("authToken");
+    const refreshToken = sessionStorage.getItem("refreshToken")
 
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          console.error("Logout API error:", errorData.detail || "Unknown error");
-          // Optionally show a toast/notification about partial logout
-        }
-      }
-    } catch (error) {
-      console.error("Failed to call logout API:", error);
-      // Still proceed to clear local state — better to log out locally than leave user stuck
-    } finally {
-      // Clear frontend session regardless of API success
+    // Always clear local session — regardless of backend response
+    const clearSession = () => {
       sessionStorage.removeItem("currentUser");
+      sessionStorage.removeItem("authToken");
       setCurrentUser(null);
       setAvatarProps(null);
+    };
 
-      // Redirect based on role
-      const role = currentUser?.role;
-      if (role === "office") {
-        window.location.replace("/login/office");
-      } else {
-        window.location.replace("/login/school");
-      }
+    // Determine redirect path
+    const redirectPath = currentUser?.role === "office" 
+      ? "/login/office" 
+      : "/login/school";
 
+    // If no token, just clear and redirect
+    if (!refreshToken) {
+      clearSession();
+      window.location.replace(redirectPath);
+      setIsDropdownOpen(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${config.API_BASE_URL}/auth/logout`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${refreshToken}`,
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      // ✅ Even if response is 401, we consider logout successful
+      // because token is no longer valid
+      clearSession();
+      window.location.replace(redirectPath);
+    } catch (error) {
+      console.error("Network error during logout:", error);
+      // ✅ Still clear session on network failure
+      clearSession();
+      window.location.replace(redirectPath);
+    } finally {
       setIsDropdownOpen(false);
     }
   };
@@ -111,9 +122,6 @@ const Header = ({ toggleSidebar }) => {
               <img src={logo} className="logo-w-text" alt="Logo" />
             </div>
           </div>
-        </div>
-        <div className="header-right">
-          <span className="profile-placeholder">Loading...</span>
         </div>
       </header>
     );

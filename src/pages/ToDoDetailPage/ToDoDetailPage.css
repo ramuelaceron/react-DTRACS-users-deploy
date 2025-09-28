@@ -277,6 +277,7 @@
   border-radius: 8px;
   line-height: 1.6;
   font-size: 0.95rem;
+  margin-bottom: -10px;
 }
 
 /* Links Section */
@@ -436,6 +437,55 @@
 .todo-remove-link-btn:hover {
   background: #dc3545;
   color: white;
+}
+
+/* Link sections */
+.todo-links-section {
+  margin-top: 1.5rem;
+}
+
+.todo-links-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.todo-links-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Wrapper to allow remove button on right */
+.submitted-link-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.todo-remove-link-btn {
+  background: #ffebee;
+  color: #c62828;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  margin-left: -50px; /* Pull over the Open button */
+  z-index: 2;
+}
+
+.todo-remove-link-btn:hover {
+  background: #ffcdd2;
 }
 
 /* FOR MOBILE CSS */

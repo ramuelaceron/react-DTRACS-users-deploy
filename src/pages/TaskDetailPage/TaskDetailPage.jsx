@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef, useCallback } from "react"; // 👈 Added useCallback
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./TaskDetailPage.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -23,7 +23,6 @@ const TaskDetailPage = () => {
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [isCompleted, setIsCompleted] = useState(false);
 
   const currentUserRef = useRef(JSON.parse(sessionStorage.getItem("currentUser")) || null);
@@ -81,6 +80,8 @@ const TaskDetailPage = () => {
       const schoolsSubmitted = new Set();
       const accountsRequired = [];
       const accountsSubmitted = [];
+      let latestSubmissionTime = null;
+      let latestRemarks = "PENDING";
 
       data.forEach((assignment) => {
         if (!assignment.school_name || !assignment.account_name) return;
@@ -89,6 +90,15 @@ const TaskDetailPage = () => {
         if (assignment.status === "COMPLETE") {
           schoolsSubmitted.add(assignment.school_name);
           accountsSubmitted.push({ ...assignment, status: "COMPLETE" });
+
+          const updatedAt = assignment.status_updated_at;
+          if (updatedAt) {
+            const updatedDate = new Date(updatedAt);
+            if (!latestSubmissionTime || updatedDate > latestSubmissionTime) {
+              latestSubmissionTime = updatedDate;
+              latestRemarks = assignment.remarks || "TURNED IN ON TIME";
+            }
+          }
         }
         accountsRequired.push({
           ...assignment,
@@ -96,21 +106,27 @@ const TaskDetailPage = () => {
         });
       });
 
-      return {
+      const enrichment = {
         schools_required: Array.from(schoolsRequired),
         schools_submitted: Array.from(schoolsSubmitted),
         schools_not_submitted: Array.from(schoolsRequired).filter(s => !schoolsSubmitted.has(s)),
         accounts_required: accountsRequired,
         accounts_submitted: accountsSubmitted,
         accounts_not_submitted: accountsRequired.filter(acc => acc.status !== "COMPLETE"),
+        completedTime: latestSubmissionTime ? latestSubmissionTime.toISOString() : null,
+        remarks: latestRemarks,
       };
+
+      console.log("🔍 FOCAL - Raw API Response:", data);
+      console.log("🔍 FOCAL - Enrichment Result:", enrichment);
+
+      return enrichment;
     } catch (err) {
       console.error("❌ Failed to fetch task assignments:", err);
       return {};
     }
   };
 
-  // ✅ Wrap with useCallback to satisfy exhaustive-deps
   const loadAndEnrichTask = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -142,10 +158,17 @@ const TaskDetailPage = () => {
         currentUserRef.current?.token
       );
 
+      console.log("🔍 FOCAL - initialTask:", initialTask);
+      console.log("🔍 FOCAL - enrichment.remarks:", enrichment.remarks);
+
       const enrichedTask = {
         ...initialTask,
         ...enrichment,
+        completedTime: enrichment.completedTime || initialTask.completedTime || initialTask.creation_date,
+        remarks: enrichment.remarks, // ✅ DO NOT fall back to initialTask
       };
+
+      console.log("🔍 FOCAL - Final enrichedTask.remarks:", enrichedTask.remarks);
 
       setTask(enrichedTask);
     } catch (err) {
@@ -154,11 +177,11 @@ const TaskDetailPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [initialTask, selectedFocal]); // ✅ Dependencies are stable
+  }, [initialTask, selectedFocal]);
 
   useEffect(() => {
     loadAndEnrichTask();
-  }, [loadAndEnrichTask]); // ✅ Now safe to include
+  }, [loadAndEnrichTask]);
 
   useEffect(() => {
     const status = task?.task_status || state?.task_status;
@@ -229,26 +252,18 @@ const TaskDetailPage = () => {
           <IoChevronBackOutline className="icon-md" /> Back
         </button>
         <TaskDescription
-          task={task || {
-            title: task?.title,
-            task_id: task?.task_id,
-            deadline: task?.deadline,
-            creation_date: task?.creation_date,
-            description: task?.description,
-            creator_name: task?.creator_name,
-            task_status: task?.task_status || "ONGOING",
-            section: task?.sectionName,
-          }}
+          task={task}
           creator_name={task?.creator_name}
           creation_date={task?.creation_date}
-          completion_date={state?.completion_date || task?.completedTime}
+          completion_date={null}
           deadline={task?.deadline}
           description={task?.description}
           isCompleted={isCompleted}
           schools_required={task?.schools_required || []}
           accounts_required={task?.accounts_required || []}
-          token={token}
           onTaskUpdated={handleTaskUpdated}
+          completedTime={task?.completedTime}
+          remarks={task?.remarks} // ✅ This should now work
         />
       </div>
 
@@ -272,4 +287,4 @@ const TaskDetailPage = () => {
   );
 };
 
-export default TaskDetailPage;  
+export default TaskDetailPage;

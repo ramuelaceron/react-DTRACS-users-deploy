@@ -23,7 +23,6 @@ const ManageAccount = () => {
   // ✅ State: user data from backend
   const [userData, setUserData] = useState(null);
   const [avatar, setAvatar] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const fileInputRef = useRef(null);
 
@@ -41,75 +40,69 @@ const ManageAccount = () => {
     const fetchUserData = async () => {
       console.log("[DEBUG] fetchUserData started");
       try {
-        const savedUser = sessionStorage.getItem("currentUser");
-        if (!savedUser) {
-          toast.error("Not logged in. Redirecting...");
+        const token = sessionStorage.getItem("authToken");
+        if (!token) {
+          toast.error("Not authenticated. Redirecting...");
           setTimeout(() => {
             window.location.href = "/";
           }, 1500);
           return;
         }
 
-        const currentUser = JSON.parse(savedUser);
-        const userId = currentUser.user_id;
-        const role = currentUser.role;
-
-        console.log("[DEBUG] userId:", userId, "role:", role);
-
-        if (!userId) {
-          throw new Error("User ID not found");
-        }
-
-        // ✅ Choose endpoint based on role
-        const endpoint = role === "school"
-          ? `/school/account/info/id/?user_id=${encodeURIComponent(userId)}`
-          : `/focal/account/info/id/?user_id=${encodeURIComponent(userId)}`;
-
-        // ✅ Build full URL
-        const fullUrl = `${config.API_BASE_URL}${endpoint}`;
+        const fullUrl = `${config.API_BASE_URL}/auth/get/current/user`;
         console.log("[DEBUG] Fetching from:", fullUrl);
 
-        // ✅ Use fetch
         const res = await fetch(fullUrl, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            // Add Authorization header if your backend requires it:
-            // Authorization: `Bearer ${currentUser.token}`,
+            'Authorization': `Bearer ${token}`,
           },
         });
 
         if (!res.ok) {
-          throw new Error(`Failed to fetch user  ${res.status} ${res.statusText}`);
+          if (res.status === 401) {
+            // Token expired or invalid
+            sessionStorage.removeItem("currentUser");
+            sessionStorage.removeItem("authToken");
+            toast.error("Session expired. Please log in again.");
+            setTimeout(() => {
+              window.location.href = "/login/school";
+            }, 2000);
+            return;
+          }
+          throw new Error(`Failed to fetch user: ${res.status} ${res.statusText}`);
         }
 
-        const rawData = await res.json();
-        console.log("[Raw API Response]", rawData);
-
-        // ✅ Assume backend returns user object directly
-        const backendData = rawData;
-
-        // ✅ Optional: Validate it has required fields instead
-        if (!backendData || typeof backendData !== 'object') {
-          throw new Error("Invalid response structure: expected user object");
-        }
+        const backendData = await res.json();
         console.log("[API Response - User Data]", backendData);
+
+        // ✅ Determine role from user_id (as done in Login.jsx)
+        let role = "school"; // default
+        if (backendData.user_id?.includes("FOCAL")) {
+          role = "office";
+        } else if (backendData.user_id?.includes("ADMIN")) {
+          role = "admin";
+        }
 
         // ✅ Build merged user data
         let mergedData = {
-          user_id: backendData.user_id || userId,
+          user_id: backendData.user_id || "",
           first_name: backendData.first_name || "",
           last_name: backendData.last_name || "",
           middle_name: backendData.middle_name || "",
           email: backendData.email || "",
           contact_number: backendData.contact_number || "",
           avatar: backendData.avatar || null,
-          role: role, // preserve from session
+          role: role,
           school_name: backendData.school_name || "Not specified",
           school_address: backendData.school_address || "Not specified",
           position: backendData.position || "Not specified",
           office: backendData.office || "Not specified",
           section_designation: backendData.section_designation || "Not specified",
+          registration_date: backendData.registration_date || new Date().toISOString(),
+          active: backendData.active !== undefined ? backendData.active : true,
+          token: token, // optional, but consistent with Login.jsx
         };
 
         // ✅ Auto-fill school address if missing and role is "school"
@@ -134,29 +127,12 @@ const ManageAccount = () => {
           contact_number: mergedData.contact_number,
         });
 
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching user data:", error);
-        setLoading(false);
-
-        const savedUser = sessionStorage.getItem("currentUser");
-        if (savedUser) {
-          const fallbackData = JSON.parse(savedUser);
-          setUserData(fallbackData);
-          setAvatar(fallbackData.avatar || null);
-          setTempProfile({
-            first_name: fallbackData.first_name || "",
-            middle_name: fallbackData.middle_name || "",
-            last_name: fallbackData.last_name || "",
-            email: fallbackData.email || "",
-            contact_number: fallbackData.contact_number || "",
-          });
-        } else {
-          toast.error("Failed to load user data. Please login again.");
-          setTimeout(() => {
-            window.location.href = "/";
-          }, 2000);
-        }
+        toast.error("Failed to load profile. Please log in again.");
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 2000);
       }
     };
 
@@ -171,10 +147,6 @@ const ManageAccount = () => {
       sessionStorage.removeItem("showProfileUpdateSuccess"); // Clean up
     }
   }, []);
-
-  if (loading) {
-    return <div className="manage-account-app">Loading...</div>;
-  }
 
   if (!userData) {
     return <div className="manage-account-app">No user data available</div>;

@@ -1,4 +1,4 @@
-/* src/components/TaskDescription/TaskDescription.css */
+
 
 .task-description {
   padding: 1rem 1.5rem; 
@@ -32,15 +32,26 @@
   height: 20px;
 }
 
-/* Pulsing animation for future incomplete tasks */
+/* 💙 Pulsing animation for incomplete tasks (blue) */
+@keyframes pulse-blue {
+  0% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(33, 150, 243, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0); }
+}
+
+/* 🔴 Pulsing animation for overdue tasks (red) */
 @keyframes pulse-red {
   0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
   70% { box-shadow: 0 0 0 8px rgba(211, 47, 47, 0); }
   100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
 }
 
-.task-icon-pulse {
+.task-icon-pulse-red {
   animation: pulse-red 2s infinite;
+}
+
+.task-icon-pulse {
+  animation: pulse-blue 2s infinite;
 }
 
 .task-title-container {
@@ -210,6 +221,24 @@
   font-size: 0.8em;
   vertical-align: middle;
   color: #666;
+}
+
+/* In TaskDescription.css */
+.task-links-section {
+  margin-top: 1.5rem;
+}
+
+.task-link-header {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.task-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 /* Error Container */

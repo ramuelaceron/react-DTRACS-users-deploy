@@ -20,22 +20,23 @@
 .task-back-btn {
   background: none;
   border: none;
-  color: #000;
-  font-size: 16px;
+  color: #1a73e8;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
-  padding: 8px;
-  margin-bottom: 20px;
-  margin-left: 10px;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: inherit;
-  line-height: 1;
+  padding: 0 24px;
+  margin-bottom: 24px;
   text-decoration: none;
-  transition: text-decoration 0.2s ease;
+  transition: color 0.2s;
+  font-family: inherit;
+  width: fit-content;
 }
 
 .task-back-btn:hover {
+  color: #0d47a1;
   text-decoration: underline;
 }
 

@@ -1,4 +1,4 @@
-// src/components/TaskDetailComponents/TaskDescription/TaskDescription.jsx
+
 import React, { useState, useRef } from "react";
 import { PiClipboardTextBold } from "react-icons/pi";
 import { SlOptionsVertical } from "react-icons/sl";
@@ -9,6 +9,7 @@ import config from "../../../config";
 import { useNavigate } from "react-router-dom";
 import DOMPurify from 'dompurify';
 import "./TaskDescription.css";
+import LinkDisplay from "../../../components/LinkDisplay/LinkDisplay";
 
 // Utility to format date
 const formatDate = (dateString) => {
@@ -42,43 +43,61 @@ const formatTime = (dateString) => {
   }
 };
 
-// ✅ Safe date parser for backend formats like "2025-09-20 15:09:00"
+// ✅ FIXED: Robust date parser that handles "2025-09-27T16:22:18"
 const parseDate = (str) => {
   if (!str) return null;
-  if (str.includes('T')) return new Date(str);
-  const parts = str.split(' ');
-  if (parts.length === 2) {
-    const [datePart, timePart] = parts;
-    const [year, month, day] = datePart.split('-').map(Number);
-    const normalized = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${timePart}`;
-    return new Date(normalized);
+  if (str instanceof Date) return str;
+  if (typeof str === 'string') {
+    // If it's an ISO-like string without timezone, treat as UTC
+    if (str.includes('T') && !str.endsWith('Z') && !/[+-]\d{2}:?\d{2}$/.test(str)) {
+      str = str + 'Z';
+    }
   }
-  return new Date(str);
+  const date = new Date(str);
+  return isNaN(date.getTime()) ? null : date;
 };
 
-// ✅ Determine icon color: green (on time), orange (late), red (incomplete)
-const getIconColor = ({ isCompleted, completion_date, deadline }) => {
-  if (isCompleted) {
-    if (!completion_date || !deadline) {
-      return "#4CAF50"; // Green by default
+// ✅ Icon color logic with remarks fallback
+const getIconColor = ({ isCompleted, deadline, completedTime, remarks }) => {
+  // Parse deadline once
+  const due = parseDate(deadline);
+  const now = new Date();
+
+  // Case 1: Task is NOT completed
+  if (!isCompleted) {
+    // If deadline exists and is in the past → overdue (red)
+    if (due && now > due) {
+      return "#d32f2f"; // Red for overdue incomplete tasks
     }
-    const completed = parseDate(completion_date);
-    const due = parseDate(deadline);
-    if (isNaN(completed.getTime()) || isNaN(due.getTime())) {
-      return "#4CAF50";
-    }
-    return completed > due ? "#FF9800" : "#4CAF50"; // Orange or Green
+    // Otherwise, it's incomplete but not overdue → blue
+    return "#2196F3";
   }
 
-  // ✅ All incomplete tasks = red
-  return "#D32F2F";
+  // Case 2: Task IS completed
+  // Priority 1: Use remarks (most reliable)
+  if (remarks === "TURNED IN LATE") {
+    return "#FF9800"; // Orange for late submission
+  }
+
+  // Priority 2: Fallback to timestamp comparison
+  if (!completedTime || !deadline) {
+    return "#4CAF50"; // Default green
+  }
+
+  const actualCompletion = parseDate(completedTime);
+
+  if (!actualCompletion || !due || isNaN(actualCompletion.getTime()) || isNaN(due.getTime())) {
+    return "#4CAF50";
+  }
+
+  return actualCompletion > due ? "#FF9800" : "#4CAF50";
 };
+
 
 const TaskDescription = ({ 
   task, 
   creator_name, 
   creation_date, 
-  completion_date, 
   deadline, 
   description, 
   isCompleted,
@@ -86,7 +105,16 @@ const TaskDescription = ({
   schools_required = [],
   accounts_required = [],
   token,
+  completedTime,
+  remarks, // ✅ Accept remarks prop
 }) => {
+  console.log("🔍 FINAL CHECK - TaskDescription Props:", {
+  isCompleted,
+  completedTime,
+  deadline,
+  remarks,
+  iconColor: getIconColor({ isCompleted, deadline, completedTime, remarks })
+});
 
   const navigate = useNavigate();
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
@@ -97,14 +125,27 @@ const TaskDescription = ({
     if (showOptionsMenu) setShowOptionsMenu(false);
   });
 
-  const iconColor = getIconColor({ isCompleted, completion_date, deadline });
+  const iconColor = getIconColor({ 
+    isCompleted, 
+    deadline, 
+    completedTime,
+    remarks // ✅ Pass to color logic
+  });
 
-  // ✅ Check if task is future incomplete (for pulsing effect)
-  const isFutureIncomplete = !isCompleted && deadline && (() => {
-    const now = new Date();
-    const due = parseDate(deadline);
-    return !isNaN(due.getTime()) && now <= due;
-  })();
+  // Determine pulse class based on status
+  const getPulseClass = () => {
+    if (!isCompleted) {
+      const due = parseDate(deadline);
+      const now = new Date();
+      if (due && now > due) {
+        return 'task-icon-pulse-red';
+      }
+      return 'task-icon-pulse'; // blue pulse
+    }
+    return ''; // no pulse if completed
+  };
+
+const pulseClass = getPulseClass();
 
   const toggleOptionsMenu = () => {
     setShowOptionsMenu(!showOptionsMenu);
@@ -172,7 +213,7 @@ const TaskDescription = ({
     <div className="task-description">
       <div className="task-header">
         <div 
-          className={`task-description-icon ${isFutureIncomplete ? 'task-icon-pulse' : ''}`}
+          className={`task-description-icon ${pulseClass}`}
           style={{ backgroundColor: iconColor }}
         >
           <PiClipboardTextBold className="icon-lg" style={{ color: "white" }} />
@@ -209,9 +250,9 @@ const TaskDescription = ({
 
       <div className="task-meta">
         <div className="task-category">{task?.section || task?.sectionName || "Unknown Section"}</div>
-        {isCompleted && completion_date ? (
+        {isCompleted && completedTime ? (
           <div className="task-completed">
-            Completed on {formatDate(completion_date)} at {formatTime(completion_date)}
+            Completed on {formatDate(completedTime)} at {formatTime(completedTime)}
             {iconColor === "#FF9800" && (
               <span className="task-late-badge"> (Late)</span>
             )}
@@ -243,34 +284,22 @@ const TaskDescription = ({
           ? task.links.length > 0
           : typeof task.links === 'string' && task.links.trim() !== ""
         ) && (
-          <div className="task-links-container">
-            <span className="task-link-label">
-              Links{Array.isArray(task.links) && task.links.length > 1 ? 's' : ''}:
-            </span>
-            {Array.isArray(task.links) ? (
-              task.links.map((link, index) => (
-                <a
-                  key={index}
-                  href={link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="task-link"
-                  title="Open link in new tab"
-                >
-                  {link}
-                </a>
-              ))
-            ) : (
-              <a
-                href={task.links}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="task-link"
-                title="Open link in new tab"
-              >
-                {task.links}
-              </a>
-            )}
+          <div className="task-links-section">
+            <h3 className="task-link-header">
+              Attached Link/s:
+            </h3>
+            <div className="task-links-list">
+              {Array.isArray(task.links)
+                ? task.links.map((link, idx) => (
+                    <LinkDisplay
+                      key={idx}
+                      url={link}
+                      index={idx}
+                      total={task.links.length}
+                    />
+                  ))
+                : <LinkDisplay url={task.links} />}
+            </div>
           </div>
         )
       )}

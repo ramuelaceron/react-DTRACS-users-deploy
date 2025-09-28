@@ -7,7 +7,6 @@ import background from "../../assets/images/Start-Up.png";
 import ParticleBackground from "../../components/ParticleBackground/Particle2.jsx";
 import logo from "../../assets/images/logo-w-text.png";
 import { schoolAddresses } from "../../data/schoolAddresses";
-
 import config from "../../config";
 
 const Login = () => {
@@ -18,9 +17,9 @@ const Login = () => {
   const location = useLocation();
 
   const isSchoolPath = location.pathname.includes("/login/school");
-    const isOfficePath = location.pathname.includes("/login/office");
+  const isOfficePath = location.pathname.includes("/login/office");
 
-    const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError(""); // Clear previous error
 
@@ -29,7 +28,7 @@ const Login = () => {
     const password = formData.get("password");
 
     try {
-      // Step 1: Login to get access_token
+      // Step 1: Login to get access_token and refresh_token
       const loginResponse = await fetch(`${config.API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: {
@@ -48,11 +47,11 @@ const Login = () => {
           throw new Error(`Server returned ${loginResponse.status} with non-JSON body`);
         }
 
-        if (typeof loginData.detail === 'string') {
+        if (typeof loginData.detail === "string") {
           errorMsg = loginData.detail;
         } else if (Array.isArray(loginData.detail)) {
           errorMsg = loginData.detail
-            .map(e => e.msg || e.message || "Invalid input")
+            .map((e) => e.msg || e.message || "Invalid input")
             .filter(Boolean)
             .join(" • ");
         } else if (loginData.message) {
@@ -64,19 +63,29 @@ const Login = () => {
         throw new Error(errorMsg);
       }
 
-      const { access_token } = await loginResponse.json();
+      // Extract both tokens from response
+      const { access_token, refresh_token, user_id } = await loginResponse.json();
 
       if (!access_token) {
         throw new Error("Access token not returned from login");
       }
 
-      // Step 2: Fetch current user profile using the unified endpoint
-      const profileResponse = await fetch(`${config.API_BASE_URL}/auth/get/current/user`, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${access_token}`,
-        },
-      });
+      // Step 2: Fetch current user profile using the access token
+      // const profileResponse = await fetch(`${config.API_BASE_URL}/auth/proxy/get/current/user`, {
+      //   method: "GET",
+      //   headers: {
+      //     "Authorization": `Bearer ${access_token}`,
+      //   },
+      // });
+      const profileResponse = await fetch(
+        `${config.API_BASE_URL}/auth/proxy/get/current/user?user_id=${encodeURIComponent(user_id)}`,
+        {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${access_token}`,
+          },
+        }
+      );
 
       if (!profileResponse.ok) {
         const profileError = await profileResponse.json().catch(() => ({}));
@@ -122,8 +131,12 @@ const Login = () => {
         }
       }
 
-      // Save to sessionStorage
+      // Save user data and tokens to sessionStorage
       sessionStorage.setItem("currentUser", JSON.stringify(userData));
+      sessionStorage.setItem("authToken", access_token);
+      if (refresh_token) {
+        sessionStorage.setItem("refreshToken", refresh_token); // ✅ Save refresh token
+      }
 
       // Navigate based on role
       if (role === "school") {
@@ -133,7 +146,6 @@ const Login = () => {
       } else {
         navigate("/home");
       }
-
     } catch (err) {
       setError(err.message || "Unable to connect to server. Please try again later.");
       console.error("Login error:", err);
@@ -173,7 +185,7 @@ const Login = () => {
           </div>
 
           {/* ✅ Only render if `error` is a non-empty string */}
-          {error && typeof error === 'string' && error.length > 0 && (
+          {error && typeof error === "string" && error.length > 0 && (
             <div className="login-error">
               <p>{error}</p>
             </div>
@@ -181,7 +193,9 @@ const Login = () => {
 
           <form className="login-form" onSubmit={handleSubmit}>
             <div className="login-form-group">
-              <label htmlFor="email" className="login-form-label">Email</label>
+              <label htmlFor="email" className="login-form-label">
+                Email
+              </label>
               <div className="login-input-group">
                 <input
                   type="email"
@@ -195,7 +209,9 @@ const Login = () => {
             </div>
 
             <div className="login-form-group">
-              <label htmlFor="password" className="login-form-label">Password</label>
+              <label htmlFor="password" className="login-form-label">
+                Password
+              </label>
               <div className="login-password-input-group">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -205,11 +221,7 @@ const Login = () => {
                   placeholder="Enter password"
                   required
                 />
-                <button
-                  type="button"
-                  className="login-toggle-password"
-                  onClick={togglePasswordVisibility}
-                >
+                <button type="button" className="login-toggle-password" onClick={togglePasswordVisibility}>
                   {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
@@ -219,7 +231,6 @@ const Login = () => {
                   I forgot my password
                 </a>
               </div>
-
             </div>
 
             <button
@@ -228,8 +239,8 @@ const Login = () => {
               onMouseEnter={() => setIsHovering(true)}
               onMouseLeave={() => setIsHovering(false)}
               style={{
-                backgroundColor: isHovering ? '#1e4a76' : '#2563eb',
-                transition: 'background-color 0.2s ease'
+                backgroundColor: isHovering ? "#1e4a76" : "#2563eb",
+                transition: "background-color 0.2s ease",
               }}
             >
               <FiLogIn className="login-icon" />
@@ -250,10 +261,9 @@ const Login = () => {
             </p>
           </div>
 
-           <div className="login-terms-notice">
+          <div className="login-terms-notice">
             <p>
-              By using this service, you understand and agree to the DepEd
-              Online Services{" "}
+              By using this service, you understand and agree to the DepEd Online Services{" "}
               <a href="#terms" className="login-terms-link">
                 Terms of Use
               </a>{" "}

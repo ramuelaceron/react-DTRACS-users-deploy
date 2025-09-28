@@ -34,7 +34,7 @@ const ToDoPage = () => {
     }
 
     try {
-      const token = currentUser?.token;
+      const token = sessionStorage.getItem("authToken");
 
       // ✅ Step 1: Fetch tasks for current user
       const tasksResponse = await fetch(

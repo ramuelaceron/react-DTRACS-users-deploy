@@ -10,6 +10,7 @@ import { formatDate, formatTime } from "../../utils/dateUtils";
 import { getRemarksStatusInfo } from "../../utils/taskStatusUtils";
 import { fetchTaskDetails, updateTaskStatus, revertTaskStatus } from "../../api/taskApi";
 import DOMPurify from 'dompurify';
+import LinkDisplay from "../../components/LinkDisplay/LinkDisplay";
 
 const ToDoDetailPage = () => {
   const navigate = useNavigate();
@@ -336,24 +337,21 @@ const ToDoDetailPage = () => {
           }}
         />
 
-        {/* Display Original Links from state */}
+        {/* Display Original Links from task (read-only) */}
         {normalizedTaskLinks.length > 0 && (
-          <div className="todo-links-section1">
-            <h3 className="todo-links-title1">Links</h3>
-            <ul className="todo-links-list">
+          <div className="todo-links-section">
+            <h3 className="todo-links-title">Attached Link/s:</h3>
+            <div className="todo-links-container">
               {normalizedTaskLinks.map((link, index) => (
-                <li key={index} className="todo-link-item1">
-                  <a
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="todo-link1"
-                  >
-                    {link.url}
-                  </a>
-                </li>
+                <LinkDisplay
+                  key={index}
+                  url={link.url}
+                  index={index}
+                  total={normalizedTaskLinks.length}
+                  showOpenButton={true} // 👈 Explicitly keep it
+                />
               ))}
-            </ul>
+            </div>
           </div>
         )}
 
@@ -368,21 +366,18 @@ const ToDoDetailPage = () => {
           onAddRevision={handleAddRevision}
         />
 
-        {/* ✅ REPLACED AttachedFiles — Display User-Attached Links */}
         {(attachedLinks.length > 0 || task?.submitted_links?.length > 0) && (
-          <div className="todo-links-section2">
-            <h3 className="todo-links-title2">Submitted Links</h3>
-            <ul className="todo-links-list">
+          <div className="todo-links-section">
+            <h3 className="todo-links-title">Submitted Links</h3>
+            <div className="todo-links-container">
               {(isCompleted ? task?.submitted_links || [] : attachedLinks).map((link, index) => (
-                <li key={index} className="todo-link-item2">
-                  <a
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="todo-link2"
-                  >
-                    {link.url}
-                  </a>
+                <div key={index} className="submitted-link-wrapper">
+                  <LinkDisplay
+                    url={link.url}
+                    index={index}
+                    total={(isCompleted ? task?.submitted_links || [] : attachedLinks).length}
+                    showOpenButton={false} // 👈 HIDE OPEN BUTTON
+                  />
                   {!isCompleted && (
                     <button
                       type="button"
@@ -393,39 +388,34 @@ const ToDoDetailPage = () => {
                       ✕
                     </button>
                   )}
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         )}
 
-        {/* Revision Links */}
         {revisionLinks.length > 0 && (
-          <div className="revision-section">
-            <h3 className="revision-title">Revision Links</h3>
-            <div className="todo-links-section3">
-              <ul className="todo-links-list">
-                {revisionLinks.map((link, index) => (
-                  <li key={link.id || index} className="todo-link-item">
-                    <a
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="todo-link"
-                    >
-                      {link.url}
-                    </a>
-                    <button
-                      type="button"
-                      className="todo-remove-link-btn"
-                      onClick={() => setRevisionLinks(prev => prev.filter((_, i) => i !== index))}
-                      aria-label="Remove revision link"
-                    >
-                      ✕
-                    </button>
-                  </li>
-                ))}
-              </ul>
+          <div className="todo-links-section">
+            <h3 className="todo-links-title">Revision Links</h3>
+            <div className="todo-links-container">
+              {revisionLinks.map((link, index) => (
+                <div key={link.id || index} className="submitted-link-wrapper">
+                  <LinkDisplay
+                    url={link.url}
+                    index={index}
+                    total={revisionLinks.length}
+                    showOpenButton={false} // 👈 HIDE OPEN BUTTON
+                  />
+                  <button
+                    type="button"
+                    className="todo-remove-link-btn"
+                    onClick={() => setRevisionLinks(prev => prev.filter((_, i) => i !== index))}
+                    aria-label="Remove revision link"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         )}
